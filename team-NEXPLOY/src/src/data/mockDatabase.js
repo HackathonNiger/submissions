@@ -75,7 +75,7 @@ const rawDatabase = [
   },
   {
     nafdacNo: 'B2-9999',
-    batchNo: 'FAKE001',
+    batchNo: 'FAK20241201',
     productName: 'Counterfeit Medicine',
     manufacturer: 'Unknown',
     status: 'counterfeit'

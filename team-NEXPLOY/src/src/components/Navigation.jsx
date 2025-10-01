@@ -1,4 +1,3 @@
-import React from 'react';
 import { CheckCircle, Home, Book } from 'lucide-react';
 
 const Navigation = ({ currentPage, setCurrentPage, resetVerification }) => (

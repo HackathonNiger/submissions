@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Camera, Upload, FileText, AlertTriangle, CheckCircle, Search, QrCode, Image } from 'lucide-react';
 import Navigation from './Navigation';
 import CameraModal from './CameraModal';
@@ -72,11 +72,11 @@ const HomePage = ({
     />
     {!verificationMethod && !verificationResult && (
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-green-700 mb-4">
+        <div className="bg-green-700 text-center p-8 rounded-xl mb-12">
+          <h1 className="text-4xl font-bold text-white mb-4">
             Verify Your Medicine
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-100 max-w-2xl mx-auto">
             Protect yourself and your loved ones from counterfeit drugs.
             Choose a verification method below to check your medicine's authenticity.
           </p>

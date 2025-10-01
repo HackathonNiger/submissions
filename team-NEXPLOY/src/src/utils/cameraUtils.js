@@ -1,7 +1,3 @@
-/**
- * Camera utility functions for better camera access and control
- */
-
 // Check if camera is available and request permissions
 export const checkCameraAvailability = async () => {
   try {

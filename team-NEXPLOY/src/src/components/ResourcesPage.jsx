@@ -1,4 +1,3 @@
-import React from 'react';
 import { Book, AlertTriangle } from 'lucide-react';
 import Navigation from './Navigation';
 

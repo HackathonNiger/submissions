@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import HomePage from './components/HomePage';
 import ResourcesPage from './components/ResourcesPage';
+import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
 import useVerification from './hooks/useVerification';
 
@@ -24,6 +25,7 @@ const App = () => {
             resetVerification={verificationProps.resetVerification}
           />
         )}
+        <Footer />
       </div>
     </ErrorBoundary>
   );
