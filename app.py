@@ -1,70 +1,64 @@
-# main.py
-"""
-Main runner for UweTalk demo: starts both
-- Gradio web demo (port 7860)
-- FastAPI API + WebSocket (port 8000)
-
-Usage:
-    python main.py
-"""
-
+import gradio as gr
+from tts_engine import TTSEngine
+from translation import Translator, CustomTranslator
+from data_manager import save_uploaded_file, convert_to_jsonl
+from training.train_translation import train_from_jsonl
+from stt_engine import STTEngine
 import os
-import threading
-import time
-import logging
 
-# import Gradio demo and FastAPI app
-# web.py must expose a variable named `demo` (gradio.Interface)
-# api.py must expose a variable named `app` (FastAPI)
-from web import demo    # gradio interface
-from api import app     # fastapi app
+# Init engines
+stt_engine = STTEngine()
+tts_engine = TTSEngine(use_coqui=True)
+translator = CustomTranslator() if os.path.exists("./training/outputs/model") else Translator()
 
-import uvicorn
+LANGUAGES = ["english", "yoruba", "igbo", "hausa", "pidgin", "esan", "tiv", "calabar", "benin"]
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("uwetalk.main")
+def handle_conversation(audio, src_lang, tgt_lang, clone_voice):
+    if audio is None:
+        return "", None
 
+    # Step 1: Speech to Text
+    text = stt_engine.transcribe(audio, language=src_lang)
 
-def run_uvicorn():
-    """Run FastAPI (uvicorn) server in this thread."""
-    logger.info("Starting FastAPI on port 8000 ...")
-    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="info")
+    # Step 2: Translate
+    translated = translator.translate(text, src_lang, tgt_lang)
 
+    # Step 3: Text to Speech
+    audio_path = tts_engine.speak(translated, lang=tgt_lang, voice_clone=clone_voice)
 
-def run_gradio():
-    """Run Gradio demo (blocks until closed)."""
-    logger.info("Starting Gradio demo on port 7860 ...")
-    # demo.launch is blocking — run it in the main thread
-    demo.launch(server_name="0.0.0.0", server_port=7860, share=False)
+    return translated, audio_path
 
+def admin_upload(file):
+    file_path = save_uploaded_file(file, file.name)
+    jsonl_path = convert_to_jsonl(file_path)
+    train_from_jsonl(jsonl_path)
+    return "✅ Training done. Model updated!"
 
-def main():
-    # quick environment check
-    hf_token = os.getenv("HF_TOKEN")
-    if not hf_token:
-        logger.warning(
-            "HF_TOKEN environment variable not set. "
-            "Hugging Face calls will fail without it. "
-            "Set HF_TOKEN in your environment or in a .env file for local testing."
+with gr.Blocks(title="🌍 Two-Way Voice Translator") as demo:
+    gr.Markdown("# 🌍 Nigerian Two-Way Voice Translator")
+    with gr.Tab("Translator"):
+        with gr.Row():
+            src_lang = gr.Dropdown(LANGUAGES, value="english", label="Speaker A Language")
+            tgt_lang = gr.Dropdown(LANGUAGES, value="hausa", label="Speaker B Language")
+
+        with gr.Row():
+            audio_in = gr.Audio(sources=["microphone"], type="filepath", label="🎤 Speak")
+            translated = gr.Textbox(label="Translated Text", interactive=False)
+            audio_out = gr.Audio(label="🔊 Translation Audio")
+
+        clone_voice = gr.Checkbox(value=False, label="🎙️ Use my cloned voice (if my_voice.wav exists)")
+
+        audio_in.change(
+            handle_conversation,
+            inputs=[audio_in, src_lang, tgt_lang, clone_voice],
+            outputs=[translated, audio_out]
         )
 
-    # start FastAPI in a daemon thread
-    uv_thread = threading.Thread(target=run_uvicorn, daemon=True)
-    uv_thread.start()
+    with gr.Tab("Admin (Training)"):
+        gr.Markdown("Upload Hausa ↔ English data (.csv, .xlsx, .tsv, .jsonl)")
+        file_in = gr.File(label="Upload dataset")
+        train_btn = gr.Button("🚀 Train Model")
+        output_box = gr.Textbox(label="Training Status")
+        train_btn.click(admin_upload, inputs=file_in, outputs=output_box)
 
-    # give uvicorn a second to bind ports (not required but nicer UX)
-    time.sleep(1.0)
-
-    try:
-        # run Gradio in the foreground (so logs print to console)
-        run_gradio()
-    except KeyboardInterrupt:
-        logger.info("Keyboard interrupt received — shutting down.")
-    except Exception as e:
-        logger.exception("Unhandled exception in main: %s", e)
-    finally:
-        logger.info("Main exiting. If FastAPI is still running, it will exit when process ends.")
-
-
-if __name__ == "__main__":
-    main()
+demo.launch()
