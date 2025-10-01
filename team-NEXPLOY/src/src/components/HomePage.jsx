@@ -16,7 +16,11 @@ const HomePage = ({
   handleImageScan,
   handleManualVerification,
   resetVerification,
-  setManualInput
+  setManualInput,
+  searchTerm,
+  searchResults,
+  handleSearchChange,
+  selectProduct
 }) => {
   const [inputErrors, setInputErrors] = useState({ nafdacNo: '', batchNo: '' });
   const [cameraModalOpen, setCameraModalOpen] = useState(false);
@@ -24,8 +28,9 @@ const HomePage = ({
 
   const validateNafdacNo = (value) => {
     if (!value) return '';
-    const regex = /^[A-Z]\d-\d{4}$/;
-    return regex.test(value) ? '' : 'NAFDAC number must be in format like A4-1234';
+    // Updated regex to match actual NAFDAC formats: "03-6514" or "A3-100797"
+    const regex = /^(?:[A-Z]\d-\d{4,6}|[0-9]{2}-\d{4})$/;
+    return regex.test(value) ? '' : 'NAFDAC number must be in format like 03-6514 or A3-100797';
   };
 
   const validateBatchNo = (value) => {
@@ -82,7 +87,7 @@ const HomePage = ({
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* QR Code Method */}
           <div
             onClick={() => setVerificationMethod('qr')}
@@ -124,6 +129,20 @@ const HomePage = ({
               Enter NAFDAC or Batch number manually from your package
             </p>
           </div>
+
+          {/* Search Method */}
+          <div
+            onClick={() => setVerificationMethod('search')}
+            className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-transparent hover:border-green-500"
+          >
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+              <Search className="text-green-600" size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-gray-800 mb-2 text-center">Search Database</h3>
+            <p className="text-gray-600 text-center">
+              Search for medicines by name, manufacturer, or NAFDAC number
+            </p>
+          </div>
         </div>
 
         {/* Report Section */}
@@ -146,6 +165,68 @@ const HomePage = ({
                 Report to NAFDAC
               </a>
             </div>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {verificationMethod === 'search' && !verificationResult && (
+      <div className="max-w-2xl mx-auto px-4 py-8">
+        <button
+          onClick={resetVerification}
+          className="mb-6 text-green-600 hover:text-green-700 font-semibold"
+        >
+          ← Back to Methods
+        </button>
+
+        <div className="bg-white rounded-xl shadow-lg p-8">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+            Search Medicine Database
+          </h2>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Search for Medicine
+              </label>
+              <input
+                type="text"
+                placeholder="Enter medicine name, manufacturer, or NAFDAC number..."
+                value={searchTerm}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-black focus:outline-none focus:border-green-500"
+              />
+            </div>
+
+            {searchResults.length > 0 && (
+              <div className="border-2 border-gray-200 rounded-lg max-h-80 overflow-y-auto">
+                <div className="p-3 bg-gray-50 border-b border-gray-200">
+                  <span className="text-sm text-gray-600">
+                    Found {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
+                  </span>
+                </div>
+                {searchResults.map((product, index) => (
+                  <div
+                    key={index}
+                    onClick={() => selectProduct(product)}
+                    className="p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0"
+                  >
+                    <div className="font-semibold text-gray-800">{product.productName}</div>
+                    <div className="text-sm text-gray-600">{product.manufacturer}</div>
+                    <div className="text-sm text-green-600">NAFDAC: {product.nafdacNo}</div>
+                    {product.activeIngredients && (
+                      <div className="text-sm text-blue-600 mt-1">{product.activeIngredients}</div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {searchTerm.length >= 2 && searchResults.length === 0 && (
+              <div className="text-center text-gray-500 py-4">
+                No medicines found matching "{searchTerm}"
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -276,7 +357,7 @@ const HomePage = ({
               </label>
               <input
                 type="text"
-                placeholder="e.g., A4-1234"
+                placeholder="e.g., 03-6514 or A3-100797"
                 value={manualInput.nafdacNo}
                 onChange={handleNafdacChange}
                 className={`w-full px-4 py-3 border-2 rounded-lg text-black focus:outline-none ${
@@ -430,7 +511,7 @@ const HomePage = ({
           {verificationResult.status === 'verified' && (
             <div className="bg-white rounded-lg p-6 mb-6">
               <h3 className="font-bold text-gray-800 mb-4 text-lg">Product Details</h3>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Product Name:</span>
                   <span className="font-semibold text-gray-800">{verificationResult.productName}</span>
@@ -447,10 +528,45 @@ const HomePage = ({
                   <span className="text-gray-600">Manufacturer:</span>
                   <span className="font-semibold text-gray-800">{verificationResult.manufacturer}</span>
                 </div>
+                {verificationResult.activeIngredients && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Active Ingredients:</span>
+                    <span className="font-semibold text-gray-800">{verificationResult.activeIngredients}</span>
+                  </div>
+                )}
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Approval Date:</span>
+                  <span className="font-semibold text-gray-800">{verificationResult.approvalDate}</span>
+                </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Expiry Date:</span>
-                  <span className="font-semibold text-gray-800">{verificationResult.expiryDate}</span>
+                  <span className={`font-semibold ${verificationResult.isExpired ? 'text-red-600' : verificationResult.isExpiringSoon ? 'text-orange-600' : 'text-gray-800'}`}>
+                    {verificationResult.expiryDate}
+                  </span>
                 </div>
+
+                {/* Expiry Alert */}
+                {verificationResult.isExpired && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3 mt-4">
+                    <div className="flex items-center">
+                      <AlertTriangle className="text-red-600 mr-2" size={20} />
+                      <span className="text-red-700 font-semibold">This product has expired!</span>
+                    </div>
+                    <p className="text-red-600 text-sm mt-1">Do not use this medicine. It may be unsafe.</p>
+                  </div>
+                )}
+
+                {verificationResult.isExpiringSoon && !verificationResult.isExpired && (
+                  <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mt-4">
+                    <div className="flex items-center">
+                      <AlertTriangle className="text-orange-600 mr-2" size={20} />
+                      <span className="text-orange-700 font-semibold">Expiring Soon</span>
+                    </div>
+                    <p className="text-orange-600 text-sm mt-1">
+                      This product expires in {verificationResult.expiryStatus.daysUntilExpiry} days.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           )}

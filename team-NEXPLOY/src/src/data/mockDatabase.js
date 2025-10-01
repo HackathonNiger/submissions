@@ -54,41 +54,20 @@ const validateDatabase = (db) => {
   return db;
 };
 
-const rawDatabase = [
-  {
-    nafdacNo: 'A4-1234',
-    batchNo: 'BTH20240101',
-    productName: 'Paracetamol 500mg Tablets',
-    manufacturer: 'May & Baker Nigeria Plc',
-    expiryDate: '2026-12-31',
-    status: 'verified',
-    qrCode: 'NAFDAC-A4-1234-BTH20240101'
-  },
-  {
-    nafdacNo: 'A7-5678',
-    batchNo: 'BTH20240205',
-    productName: 'Amoxicillin 250mg Capsules',
-    manufacturer: 'GlaxoSmithKline Nigeria',
-    expiryDate: '2027-06-30',
-    status: 'verified',
-    qrCode: 'NAFDAC-A7-5678-BTH20240205'
-  },
-  {
-    nafdacNo: 'B2-9999',
-    batchNo: 'FAK20241201',
-    productName: 'Counterfeit Medicine',
-    manufacturer: 'Unknown',
-    status: 'counterfeit'
-  },
-  {
-    nafdacNo: 'A1-2468',
-    batchNo: 'BTH20231115',
-    productName: 'Vitamin C 1000mg',
-    manufacturer: 'Emzor Pharmaceutical',
-    expiryDate: '2026-08-15',
-    status: 'verified',
-    qrCode: 'NAFDAC-A1-2468-BTH20231115'
-  }
-];
+import processedData from './processedData.json';
+
+// Transform processed data to match expected format
+const rawDatabase = processedData.map(entry => ({
+  nafdacNo: entry.nafdacNo,
+  batchNo: entry.batchNo,
+  productName: entry.productName,
+  manufacturer: entry.manufacturer,
+  expiryDate: entry.expiryDate,
+  status: entry.status,
+  qrCode: entry.qrCode,
+  activeIngredients: entry.activeIngredients,
+  approvalDate: entry.approvalDate,
+  qrCodeImage: entry.qrCodeImage
+}));
 
 export const mockDatabase = validateDatabase(rawDatabase);

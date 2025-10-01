@@ -8,8 +8,52 @@ const useVerification = () => {
   const [verificationResult, setVerificationResult] = useState(null);
   const [manualInput, setManualInput] = useState({ nafdacNo: '', batchNo: '' });
   const [isProcessing, setIsProcessing] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
   const fileInputRef = useRef(null);
   const cameraInputRef = useRef(null);
+
+  // Search function for product lookup
+  const searchProducts = (searchTerm) => {
+    if (!searchTerm || searchTerm.length < 2) return [];
+
+    const results = mockDatabase.filter(item =>
+      item.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.manufacturer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.nafdacNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (item.activeIngredients && item.activeIngredients.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+
+    // Sort by relevance (prioritize product name matches)
+    const sortedResults = results.sort((a, b) => {
+      const aName = a.productName.toLowerCase().indexOf(searchTerm.toLowerCase());
+      const bName = b.productName.toLowerCase().indexOf(searchTerm.toLowerCase());
+
+      if (aName === 0 && bName !== 0) return -1;
+      if (bName === 0 && aName !== 0) return 1;
+
+      return a.productName.localeCompare(b.productName);
+    });
+
+    return sortedResults.slice(0, 15); // Limit to 15 results for better UX
+  };
+
+  // Check if product is expired or expiring soon
+  const checkExpiryStatus = (expiryDate) => {
+    if (!expiryDate) return { status: 'unknown', daysUntilExpiry: null };
+
+    const today = new Date();
+    const expiry = new Date(expiryDate);
+    const daysUntilExpiry = Math.ceil((expiry - today) / (1000 * 60 * 60 * 24));
+
+    if (daysUntilExpiry < 0) {
+      return { status: 'expired', daysUntilExpiry };
+    } else if (daysUntilExpiry <= 90) {
+      return { status: 'expiring_soon', daysUntilExpiry };
+    } else {
+      return { status: 'valid', daysUntilExpiry };
+    }
+  };
 
   // Verification function
   const verifyMedicine = (searchTerm, searchType) => {
@@ -36,6 +80,24 @@ const useVerification = () => {
               searchTerm.includes(item.nafdacNo) || searchTerm.includes(item.batchNo)
             );
             result = found;
+          }
+
+          if (result) {
+            // Add expiry status to result
+            const expiryInfo = checkExpiryStatus(result.expiryDate);
+            result = {
+              ...result,
+              expiryStatus: expiryInfo,
+              isExpiringSoon: expiryInfo.status === 'expiring_soon',
+              isExpired: expiryInfo.status === 'expired'
+            };
+
+            // Set status based on expiry
+            if (expiryInfo.status === 'expired') {
+              result.status = 'expired';
+            } else if (expiryInfo.status === 'expiring_soon') {
+              result.status = 'expiring_soon';
+            }
           }
 
           if (searchType === 'qrCode' && !result) {
@@ -170,11 +232,34 @@ const useVerification = () => {
     }
   };
 
+  // Handle search input change
+  const handleSearchChange = (term) => {
+    setSearchTerm(term);
+    if (term.length >= 2) {
+      const results = searchProducts(term);
+      setSearchResults(results);
+    } else {
+      setSearchResults([]);
+    }
+  };
+
+  // Select a product from search results
+  const selectProduct = (product) => {
+    setVerificationResult({
+      ...product,
+      status: 'verified'
+    });
+    setSearchTerm('');
+    setSearchResults([]);
+  };
+
   // Reset verification
   const resetVerification = () => {
     setVerificationResult(null);
     setVerificationMethod(null);
     setManualInput({ nafdacNo: '', batchNo: '' });
+    setSearchTerm('');
+    setSearchResults([]);
   };
 
   return {
@@ -189,7 +274,11 @@ const useVerification = () => {
     handleQRScan,
     handleImageScan,
     handleManualVerification,
-    resetVerification
+    resetVerification,
+    searchTerm,
+    searchResults,
+    handleSearchChange,
+    selectProduct
   };
 };
 
