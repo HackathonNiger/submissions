@@ -279,7 +279,7 @@ const HomePage = ({
                 placeholder="e.g., A4-1234"
                 value={manualInput.nafdacNo}
                 onChange={handleNafdacChange}
-                className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none ${
+                className={`w-full px-4 py-3 border-2 rounded-lg text-black focus:outline-none ${
                   inputErrors.nafdacNo ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-green-500'
                 }`}
               />
@@ -299,7 +299,7 @@ const HomePage = ({
                 placeholder="e.g., BTH20240101"
                 value={manualInput.batchNo}
                 onChange={handleBatchChange}
-                className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none ${
+                className={`w-full px-4 py-3 border-2 rounded-lg text-black focus:outline-none ${
                   inputErrors.batchNo ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-green-500'
                 }`}
               />
