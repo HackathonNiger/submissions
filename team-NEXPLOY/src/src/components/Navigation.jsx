@@ -1,14 +1,16 @@
-import { CheckCircle, Home, Book } from 'lucide-react';
+import { Home, Book } from 'lucide-react';
+import logo from '../assets/VerifyMedsTransp.png'
 
 const Navigation = ({ currentPage, setCurrentPage, resetVerification }) => (
   <nav className="bg-white border-b-2 border-green-600">
     <div className="max-w-6xl mx-auto px-4">
       <div className="flex justify-between items-center h-16">
         <div className="flex items-center space-x-2">
-          <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
-            <CheckCircle className="text-white" size={24} />
+          <div className="w-10 h-10  flex items-center justify-center">
+            <img src={logo} alt="VerifyMeds Logo" />
           </div>
           <span className="text-xl font-bold text-green-700">VerifyMeds</span>
+           
         </div>
         <div className="flex space-x-1">
           <button

@@ -1,5 +1,6 @@
 import { Book, AlertTriangle } from 'lucide-react';
 import Navigation from './Navigation';
+import logo from '../assets/VerifyMedsLogo.png'
 
 const ResourcesPage = ({ currentPage, setCurrentPage, resetVerification }) => (
   <div className="min-h-screen bg-gradient-to-br from-green-50 to-white">
@@ -78,6 +79,7 @@ const ResourcesPage = ({ currentPage, setCurrentPage, resetVerification }) => (
         <h2 className="text-2xl font-bold text-gray-800 mb-4">
           About VerifyMeds
         </h2>
+        <img src={logo} alt="VerifyMeds Logo" className='w-auto h-20 m-4' />
         <p className="text-gray-600 leading-relaxed mb-4">
           VerifyMeds is a user-friendly platform designed to empower Nigerians in the fight
           against counterfeit medicines. By providing easy-to-use verification tools, we aim
