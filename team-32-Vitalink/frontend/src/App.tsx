@@ -1,16 +1,24 @@
-import { motion } from "framer-motion";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import PageNotFound from "./pages/PageNotFound";
+import LandingPage from "./pages/LandingPage";
+import AppLayout from "./ui/AppLayout";
+
+const queryClient = new QueryClient();
 
 export default function App() {
   return (
-    <div className="flex items-center justify-center min-h-screen w-screen bg-slate-700">
-      <motion.h1
-        className="text-4xl font-bold text-white"
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-      >
-        Hello Chief 🧐, get ready to build!!!
-      </motion.h1>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+
+          <Route element={<AppLayout />}></Route>
+
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 }
