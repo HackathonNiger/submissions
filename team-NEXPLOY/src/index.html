@@ -1,13 +1,80 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Essential Meta Tags -->
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- SEO and Application Meta Tags -->
+    <title>VerifyMeds - Nigeria Medical Verification Platform</title>
+    <meta name="description" content="VerifyMeds is a comprehensive medical verification platform that ensures medication authenticity and provides real-time drug information using advanced scanning technology." />
+    <meta name="keywords" content="medical verification, drug authenticity, medication scanning, pharmaceutical safety, VerifyMeds" />
+    <meta name="author" content="VerifyMeds Team" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Theme and Mobile Optimization -->
+    <meta name="theme-color" content="#2563eb" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="VerifyMeds" />
+
+    <!-- Favicon and Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/VerifyMeds1.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/VerifyMeds1.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/VerifyMeds1.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://verifymeds.app/" />
+    <meta property="og:title" content="VerifyMeds - Advanced Medical Verification Platform" />
+    <meta property="og:description" content="Verify medication authenticity and access real-time drug information with our advanced scanning technology platform." />
+    <meta property="og:image" content="/VerifyMeds1.png" />
+    <meta property="og:image:alt" content="VerifyMeds Logo" />
+    <meta property="og:site_name" content="VerifyMeds" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://verifymeds.app/" />
+    <meta name="twitter:title" content="VerifyMeds - Nigeria Medical Verification Platform" />
+    <meta name="twitter:description" content="Verify medication authenticity and access real-time drug information with our advanced scanning technology platform." />
+    <meta name="twitter:image" content="/VerifyMeds1.png" />
+    <meta name="twitter:image:alt" content="VerifyMeds Logo" />
+    <meta name="twitter:creator" content="@VerifyMeds" />
+    <meta name="twitter:site" content="@VerifyMeds" />
+
+    <!-- Security and Performance -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()" />
+
+    <!-- Performance Optimization -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="preload" href="/src/main.jsx" as="script" />
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/src/index.css" />
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Root element for React application -->
+    <div id="root" role="application" aria-label="VerifyMeds Application"></div>
+
+    <!-- Main application script -->
     <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Fallback for users with JavaScript disabled -->
+    <noscript>
+      <div style="text-align: center; padding: 2rem; font-family: system-ui, sans-serif;">
+        <h1>JavaScript Required</h1>
+        <p>VerifyMeds requires JavaScript to function properly. Please enable JavaScript in your browser settings and reload the page.</p>
+      </div>
+    </noscript>
   </body>
 </html>

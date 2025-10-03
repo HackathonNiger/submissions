@@ -11,9 +11,13 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.13",
+    "jsqr": "^1.4.0",
+    "lucide-react": "^0.544.0",
+    "qrcode": "^1.5.4",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "tailwindcss": "^4.1.13"
+    "tailwindcss": "^4.1.13",
+    "tesseract.js": "^6.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
