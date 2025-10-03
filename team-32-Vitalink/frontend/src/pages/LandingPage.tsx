@@ -1,29 +1,44 @@
-import { Heart, Shield, Users, Clock } from "lucide-react";
+import { Heart, Shield, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
 import { cn } from "../lib/utils";
-import { FaHeartbeat } from "react-icons/fa";
+import { FaHandHoldingHeart, FaHeartbeat } from "react-icons/fa";
+import { GiHeartPlus, GiHeartShield } from "react-icons/gi";
+import { LuBrainCircuit } from "react-icons/lu";
+import { RiMentalHealthFill } from "react-icons/ri";
+
 import vitaband from "../assets/vitaband.png";
-// import RippleGrid from "../components/ui/RippleGrid";
 
 const LandingPage = () => {
   const features = [
     {
-      icon: Heart,
+      icon: GiHeartPlus,
       title: "Comprehensive Care",
       description:
         "Complete health monitoring and management for patients and doctors",
     },
     {
-      icon: Shield,
+      icon: LuBrainCircuit,
+      title: "AI Powered Insight",
+      description:
+        "Leverage AI to gain actionable insight and get the best recommendations.",
+    },
+    {
+      icon: RiMentalHealthFill,
+      title: "Mental Health First Aid",
+      description:
+        "A chatbot that provides first aid for mental health based on the reading of Ur vitals",
+    },
+    {
+      icon: GiHeartShield,
       title: "Secure & Private",
       description:
         "Healthcare-grade security ensuring your medical data stays protected",
     },
     {
-      icon: Users,
+      icon: FaHandHoldingHeart,
       title: "Connected Care",
       description:
         "Seamless communication between patients and healthcare providers",
@@ -46,10 +61,13 @@ const LandingPage = () => {
             <span className="text-2xl font-bold text-foreground">vitaLink</span>
           </div>
           <div className="flex space-x-4">
-            <Button variant="ghost" asChild>
+            <Button
+              className="text-black shadow-none bg-gray-50 hover:bg-gray-200 hover:text-black"
+              asChild
+            >
               <Link to="/login">Sign In</Link>
             </Button>
-            <Button asChild>
+            <Button className="hover:text-white" asChild>
               <Link to="/signup">Get Started</Link>
             </Button>
           </div>
@@ -80,7 +98,7 @@ const LandingPage = () => {
               >
                 <div className="space-y-4">
                   <h1 className="text-4xl font-bold leading-tight text-center lg:text-6xl text-foreground">
-                    Modern Healthcare
+                    Innovative AI Health and Mental Assistant
                     <span className="block text-transparent bg-gradient-primary bg-clip-text">
                       Management
                     </span>
@@ -88,7 +106,9 @@ const LandingPage = () => {
                   <p className="text-xl leading-relaxed text-center text-muted-foreground">
                     Connect patients and healthcare providers through our
                     secure, comprehensive platform. Monitor vitals, share
-                    insights, and deliver better care together.
+                    insights, and deliver better care together. Experience our
+                    innovative AI Health Assistant features and see how we're
+                    transforming healthcare.
                   </p>
                 </div>
 
@@ -99,7 +119,7 @@ const LandingPage = () => {
                   transition={{ duration: 0.8, delay: 0.3 }}
                 >
                   <Button size="lg" className="px-8 text-lg h-14" asChild>
-                    <Link to="/signup?type=patient">Join as Patient</Link>
+                    <Link to="/patient">Join as Patient</Link>
                   </Button>
                   <Button
                     size="lg"
@@ -141,14 +161,14 @@ const LandingPage = () => {
           </div>
 
           <motion.div
-            className="grid gap-8 md:grid-cols-2 lg:grid-cols-4"
+            className="grid items-center justify-center w-full gap-8 md:grid-cols-2 lg:grid-cols-3"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={{
               hidden: {},
               visible: {
-                transition: { staggerChildren: 0.2 },
+                transition: { staggerChildren: 0.1 },
               },
             }}
           >
@@ -180,7 +200,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section className="py-16">
+      <section className="py-16" id="setup">
         <div className="container grid grid-cols-2 gap-5 px-36">
           <div className="flex flex-col">
             <p className="text-gray-500 uppercase">// Setup</p>
@@ -247,7 +267,6 @@ const LandingPage = () => {
       </motion.section>
 
       {/* Footer */}
-
       <div className="relative flex h-[30rem] w-full items-center justify-center bg-white dark:bg-black">
         <div
           className={cn(
@@ -287,7 +306,10 @@ const LandingPage = () => {
                 <a href="#" className="pb-2 font-medium text-black uppercase">
                   features
                 </a>
-                <a href="#" className="pb-2 font-medium text-black uppercase">
+                <a
+                  href="#setup"
+                  className="pb-2 font-medium text-black uppercase"
+                >
                   setup
                 </a>
                 <a href="#" className="pb-2 font-medium text-black uppercase">
