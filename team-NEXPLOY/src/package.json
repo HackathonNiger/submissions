@@ -10,14 +10,22 @@
     "preview": "vite preview"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@tailwindcss/postcss": "^4.1.14",
     "@tailwindcss/vite": "^4.1.14",
+=======
+    "@tailwindcss/vite": "^4.1.13",
+>>>>>>> ce4f729e2c400200517d21f26deadd9b0c510526
     "jsqr": "^1.4.0",
     "lucide-react": "^0.544.0",
     "qrcode": "^1.5.4",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+<<<<<<< HEAD
     "tailwindcss": "^4.1.14",
+=======
+    "tailwindcss": "^4.1.13",
+>>>>>>> ce4f729e2c400200517d21f26deadd9b0c510526
     "tesseract.js": "^6.0.1"
   },
   "devDependencies": {
