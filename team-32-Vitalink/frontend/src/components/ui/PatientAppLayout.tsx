@@ -1,54 +1,23 @@
-import React from "react";
 import { Outlet } from "react-router-dom";
-import PatientSideBar from "./PatientSideBar";
 import Header from "./Header";
+import PatientSideBar from "../PatientSideBar";
 
-const PatientAppLayout: React.FC = () => {
-  // const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  // const toggleSidebar = () => {
-  //   setIsSidebarOpen((open) => !open);
-  // };
-
+export default function AppLayout() {
   return (
-    <div
-      className="
-        grid 
-        grid-cols-[24rem_1fr] 
-        grid-rows-[auto_1fr] 
-        h-[100vh] 
-        gap-2 
-        tablet:grid-cols-1 
-        tablet:grid-rows-[auto_auto_1fr]
-        w-screen
-        bg-red-800
-      "
-    >
-      {/* Header */}
-      <div className="bg-green-800 tablet:col-start-1 tablet:row-start-1">
-        <Header />
-      </div>
-
-      {/* Sidebar */}
-      <PatientSideBar />
-
-      {/* Main Content */}
-      <main className="p-16 w-full bg-gray-50 rounded-[15px] overflow-y-scroll scrollbar-hide tablet:col-start-1  tablet:row-start-3 tablet:p-12 mobileL:p-2    ">
-        <div
-          className="
-            max-w-[120rem] 
-            mx-auto 
-            flex 
-            flex-col 
-            gap-12 
-            mobileL:max-w-full
-          "
-        >
-          <Outlet />
+    <div className="w-screen m-auto h-full  overflow-hidden">
+      <div className="flex items-start w-full h-full">
+        <div className="md:flex-[1.7] h-full w-full bg-white">
+          <PatientSideBar />
         </div>
-      </main>
+        <div className="md:flex-[8]  w-[100%] h-full overflow-y-scroll">
+          <Header />
+          <div className="w-full h-full  p-4">
+            <main className="max-w-[185rem]  p-4 ">
+              <Outlet />
+            </main>
+          </div>
+        </div>
+      </div>
     </div>
   );
-};
-
-export default PatientAppLayout;
+}
