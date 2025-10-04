@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Send, Paperclip } from "lucide-react";
+import { Send, Paperclip, User, User2Icon } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { PatientSidebar } from "../../../sidebars/PatientSidebar";
 import { SidebarProvider, SidebarTrigger } from "../../../ui/sidebar";
@@ -9,7 +9,7 @@ import { RiRobot2Fill } from "react-icons/ri";
 
 interface Message {
   id: string;
-  sender: "doctor" | "patient";
+  sender: "bot" | "patient";
   content: string;
   timestamp: string;
   type: "text" | "file";
@@ -17,12 +17,12 @@ interface Message {
 
 const ChatUI = () => {
   const location = useLocation();
-  const isBot = location.pathname.includes("/doctor/");
+  const isBot = location.pathname.includes("/bot/");
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      sender: "doctor",
+      sender: "bot",
       content: "Hello John! How are you feeling today? I've reviewed your latest vitals and they look good.",
       timestamp: "10:30 AM",
       type: "text",
@@ -33,7 +33,7 @@ const ChatUI = () => {
     if (newMessage.trim()) {
       const message: Message = {
         id: Date.now().toString(),
-        sender: isBot ? "doctor" : "patient",
+        sender: isBot ? "bot" : "patient",
         content: newMessage,
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
         type: "text",
@@ -47,10 +47,9 @@ const ChatUI = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex max-w-[100vw] w-full bg-background">
+      <div className="min-h-screen flex w-full m-auto absolute top-0 bg-background">
         <SidebarComponent />
-
-        <div className="flex flex-col w-full max-w-[100vw]">
+        <div className="flex flex-col w-full">
           {/* Header */}
           <header className="h-16 border-b bg-card/50 backdrop-blur-sm flex items-center px-6">
             <SidebarTrigger className="mr-4" />
@@ -66,15 +65,16 @@ const ChatUI = () => {
             <div className="flex-1 flex flex-col">
               {/* Chat Header */}
               <div className="p-4 border-b bg-card flex items-center justify-between">
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col">
                   <div className="flex items-center space-x-2">
-                    <RiRobot2Fill />
+                    <RiRobot2Fill size={20} className="text-blue-600" />
                     <span className="text-sm">Health Bot</span>
                   </div>
                   <div>
-                    <p className="text-sm text-success">Online</p>
+                    <p className="text-sm text-success">online</p>
                   </div>
                 </div>
+                <Button variant="outline">New Conversation</Button>
               </div>
 
               {/* Messages */}
@@ -82,13 +82,20 @@ const ChatUI = () => {
                 {messages.map((message) => (
                   <div
                     key={message.id}
-                    className={`flex ${
-                      (isBot && message.sender === "doctor") || (!isBot && message.sender === "patient") ? "justify-end" : "justify-start"
+                    className={`flex gap-1 ${
+                      (isBot && message.sender === "bot") || (!isBot && message.sender === "patient") ? "justify-end" : "justify-start"
                     }`}
                   >
+                    {message.sender === "bot" ? (
+                      <>
+                        <RiRobot2Fill size={20} className="text-blue-600" />
+                      </>
+                    ) : (
+                      <></>
+                    )}
                     <div
                       className={`max-w-xs lg:max-w-md px-4 py-3 rounded-lg ${
-                        (isBot && message.sender === "doctor") || (!isBot && message.sender === "patient")
+                        (isBot && message.sender === "bot") || (!isBot && message.sender === "patient")
                           ? "bg-primary text-primary-foreground"
                           : "bg-accent text-accent-foreground"
                       }`}
@@ -96,7 +103,7 @@ const ChatUI = () => {
                       <p className="text-sm">{message.content}</p>
                       <p
                         className={`text-xs mt-1 ${
-                          (isBot && message.sender === "doctor") || (!isBot && message.sender === "patient")
+                          (isBot && message.sender === "bot") || (!isBot && message.sender === "patient")
                             ? "text-primary-foreground/70"
                             : "text-accent-foreground/70"
                         }`}
