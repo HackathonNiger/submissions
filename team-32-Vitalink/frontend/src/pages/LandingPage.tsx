@@ -12,42 +12,42 @@ import { RiMentalHealthFill } from "react-icons/ri";
 import vitaband from "../assets/vitaband.png";
 
 const LandingPage = () => {
-  const features = [
+const features = [
     {
       icon: GiHeartPlus,
-      title: "Comprehensive Care",
+      title: "Holistic Health View",
       description:
-        "Complete health monitoring and management for patients and doctors",
+        "Continuous, real-time tracking of both physical vitals and mental health indicators.",
     },
     {
       icon: LuBrainCircuit,
-      title: "AI Powered Insight",
+      title: "Predictive AI Insights",
       description:
-        "Leverage AI to gain actionable insight and get the best recommendations.",
+        "Leverage smart algorithms for early warning alerts and best-practice care recommendations.",
     },
     {
       icon: RiMentalHealthFill,
-      title: "Mental Health First Aid",
+      title: "Integrated Mental Support",
       description:
-        "A chatbot that provides first aid for mental health based on the reading of Ur vitals",
+        "An empathetic chatbot provides immediate mental health first-aid based on vital sign changes.",
     },
     {
       icon: GiHeartShield,
-      title: "Secure & Private",
+      title: "Secure & Compliant Data",
       description:
-        "Healthcare-grade security ensuring your medical data stays protected",
+        "Enterprise-grade encryption ensures your sensitive patient data remains private and protected.",
     },
     {
       icon: FaHandHoldingHeart,
-      title: "Connected Care",
+      title: "Seamless Connected Care",
       description:
-        "Seamless communication between patients and healthcare providers",
+        "Effortless communication and data sharing between patients, caregivers, and providers.",
     },
     {
       icon: Clock,
-      title: "24/7 Access",
+      title: "24/7 Remote Access",
       description:
-        "Access your health information and connect with care teams anytime",
+        "Access critical health information and connect with your care team anytime, anywhere.",
     },
   ];
 
