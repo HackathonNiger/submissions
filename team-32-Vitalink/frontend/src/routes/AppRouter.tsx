@@ -17,8 +17,6 @@ export default function AppRouter() {
           <Routes>
             <Route path="/" element={<LandingPage />} />
 
-            {/* PATIENT ROUTE */}
-
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
 

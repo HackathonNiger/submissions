@@ -55,7 +55,7 @@ const SignUp = () => {
 
       toast({
         title: "Account created successfully!",
-        description: `Welcome to HealthCare Connect as a ${userType}.`,
+        description: `Welcome to Vitalink as a ${userType}.`,
       });
       navigate(userType === "doctor" ? "/doctor/dashboard" : "/patient/dashboard");
       setIsLoading(false);
@@ -63,7 +63,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex items-center justify-center w-[100vw] min-h-screen p-4 bg-blue-50">
+    <div className="flex items-center justify-center place-content-center w-[100vw] max-w-full min-h-screen p-10 m-auto  bg-blue-50">
       <div className="w-full max-w-2xl">
         {/* Header */}
         <div className="mb-8 text-center">

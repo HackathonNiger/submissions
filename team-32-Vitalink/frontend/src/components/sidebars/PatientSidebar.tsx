@@ -15,6 +15,7 @@ import {
 import { LayoutDashboard, MessageCircle, Brain, Settings, Heart, LogOut } from "lucide-react";
 import { Button } from "../ui/button";
 import { useUser } from "../../contexts/UserContext";
+import { FaHeartbeat } from "react-icons/fa";
 
 const navigationItems = [
   { title: "Dashboard", url: "/patient/dashboard", icon: LayoutDashboard },
@@ -46,7 +47,7 @@ export function PatientSidebar() {
         {/* Header */}
         <div className="p-4 border-b">
           <div className="flex items-center space-x-2">
-            <Heart className="h-10 w-10 text-primary" />
+            <FaHeartbeat className="w-8 h-8 text-red-400" />
             {!collapsed && (
               <div>
                 <h2 className="text-lg font-semibold text-foreground">Vitalink</h2>
