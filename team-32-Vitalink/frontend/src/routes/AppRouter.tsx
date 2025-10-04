@@ -9,6 +9,8 @@ import { UserProvider } from "../contexts/UserContext";
 import ChatUI from "../components/sections/patient/chat_components/ChaiUI";
 import AISuggestionsPage from "../pages/AISuggestionsPage";
 import SettingsPage from "../pages/SettingsPage";
+import DoctorDashboard from "../pages/DoctorDashboard";
+import PatientsPage from "../pages/PatientsPage";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +30,11 @@ export default function AppRouter() {
             <Route path="/patient/chat" element={<ChatUI />} />
             <Route path="/patient/suggestions" element={<AISuggestionsPage />} />
             <Route path="/patient/settings" element={<SettingsPage />} />
+
+            {/* Doctor Routes */}
+            <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
+            <Route path="/doctor/patients" element={<PatientsPage />} />
+            <Route path="/doctor/settings" element={<SettingsPage />} />
 
             <Route path="*" element={<PageNotFound />} />
           </Routes>

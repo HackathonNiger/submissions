@@ -8,6 +8,10 @@ interface UserData {
   doctor: string;
   avatar: string;
   username: string;
+  contact: string;
+  specs: string;
+  address: string;
+  license: string;
 }
 
 interface UserContextType {

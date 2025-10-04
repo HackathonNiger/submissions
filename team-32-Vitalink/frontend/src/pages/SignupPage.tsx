@@ -23,9 +23,13 @@ const SignUp = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [preferredHospital, setPreferredHospital] = useState("");
+  const [specialization, setSpecialization] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [hospitalName, setHospitalName] = useState("");
+  const [hospitalAddress, setHospitalAddress] = useState("");
   const [phone, setPhone] = useState("");
+  const [license, setLicense] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [gender, setGender] = useState("");
   const [emergencyContact, setEmergencyContact] = useState("");
@@ -48,9 +52,24 @@ const SignUp = () => {
           doctor: "Dr. Sarah Johnson",
           avatar: avatar,
           username: firstName,
+          specs: "",
+          contact: "",
+          address: "",
+          license: "",
         });
       } else {
-        setUser(null);
+        setUser({
+          patientId: "",
+          hospital: hospitalName,
+          doctor: "",
+          name: firstName + " " + lastName,
+          specs: specialization || "Cardiologist",
+          avatar: avatar,
+          contact: phone,
+          address: hospitalAddress,
+          username: firstName,
+          license: license,
+        });
       }
 
       toast({
@@ -139,18 +158,30 @@ const SignUp = () => {
                 <>
                   <div className="space-y-2">
                     <Label htmlFor="hospitalName">Hospital/Clinic Name</Label>
-                    <Input id="hospitalName" placeholder="City General Hospital" required />
+                    <Input
+                      id="hospitalName"
+                      placeholder="City General Hospital"
+                      value={hospitalName}
+                      onChange={(e) => setHospitalName(e.target.value)}
+                      required
+                    />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="hospitalAddress">Hospital/Clinic Address</Label>
-                    <Textarea id="hospitalAddress" placeholder="123 Medical Center Drive, City, State 12345" required />
+                    <Textarea
+                      id="hospitalAddress"
+                      placeholder="123 Medical Center Drive, City, State 12345"
+                      value={hospitalAddress}
+                      onChange={(e) => setHospitalAddress(e.target.value)}
+                      required
+                    />
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="specialization">Specialization</Label>
-                      <Select required>
+                      <Select value={specialization} onValueChange={setSpecialization} required>
                         <SelectTrigger>
                           <SelectValue placeholder="Select specialization" />
                         </SelectTrigger>
@@ -187,7 +218,7 @@ const SignUp = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="licenseNumber">Medical License Number</Label>
-                    <Input id="licenseNumber" placeholder="MD123456789" required />
+                    <Input id="licenseNumber" placeholder="MD123456789" value={license} onChange={(e) => setLicense(e.target.value)} required />
                   </div>
                 </>
               )}
