@@ -28,7 +28,7 @@ const PatientDashboard = () => {
             <div className="flex items-center space-x-4">
               <Button variant="outline" size="sm">
                 <MessageCircle className="h-4 w-4 mr-2" />
-                Contact Doctor
+                mental health chatbot
               </Button>
             </div>
           </header>
