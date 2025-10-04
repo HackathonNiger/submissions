@@ -1,0 +1,108 @@
+import { useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarTrigger,
+  useSidebar,
+} from "../ui/sidebar";
+import { LayoutDashboard, Activity, MessageCircle, Brain, Settings, Heart, LogOut, User } from "lucide-react";
+import { Button } from "../ui/button";
+import { useUser } from "../../contexts/UserContext";
+
+const navigationItems = [
+  { title: "Dashboard", url: "/patient/dashboard", icon: LayoutDashboard },
+  { title: "Vitals", url: "/patient/vitals", icon: Activity },
+  { title: "Chat", url: "/patient/chat", icon: MessageCircle },
+  { title: "AI Suggestions", url: "/patient/suggestions", icon: Brain },
+  { title: "Settings", url: "/patient/settings", icon: Settings },
+];
+
+export function PatientSidebar() {
+  const { state } = useSidebar();
+  const location = useLocation();
+  const currentPath = location.pathname;
+  const collapsed = state === "collapsed";
+
+  const { user } = useUser();
+
+  if (!user) return null;
+
+  const isActive = (path: string) => currentPath === path;
+  const getNavCls = ({ isActive }: { isActive: boolean }) =>
+    isActive ? "bg-primary text-primary-foreground" : "hover:bg-accent hover:text-accent-foreground";
+
+  const handleLogout = () => {
+    // In a real app, this would clear auth tokens
+    window.location.href = "/";
+  };
+
+  return (
+    <Sidebar className={collapsed ? "w-14" : "w-64"} collapsible="icon">
+      <SidebarContent className="bg-card border-r">
+        {/* Header */}
+        <div className="p-4 border-b">
+          <div className="flex items-center space-x-2">
+            <Heart className="h-10 w-10 text-primary" />
+            {!collapsed && (
+              <div>
+                <h2 className="text-lg font-semibold text-foreground">Vitalink</h2>
+                <p className="text-sm text-muted-foreground">Patient Portal</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navigationItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <NavLink to={item.url} className={getNavCls}>
+                      <item.icon className="h-5 w-5" />
+                      {!collapsed && <span>{item.title}</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* User Section */}
+        <div className="mt-auto p-4 border-t">
+          {!collapsed ? (
+            <div className="space-y-3">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+                  <span className="text-primary-foreground font-semibold">{user?.avatar}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">{user?.name}</p>
+                  <p className="text-xs text-muted-foreground truncate">{user?.hospital}</p>
+                </div>
+              </div>
+              <Button variant="secondary" size="sm" className="w-full justify-start" onClick={handleLogout}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
+            </div>
+          ) : (
+            <Button variant="secondary" size="sm" className="w-full p-2" onClick={handleLogout}>
+              <LogOut className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+      </SidebarContent>
+    </Sidebar>
+  );
+}

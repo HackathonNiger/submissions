@@ -78,7 +78,7 @@ const LandingPage = () => {
 
         {/* Radial gradient for the container to give a faded look */}
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black"></div>
-        <section className="z-20 pt-24 pb-16 bg-gradient-hero">
+        <section className="z-20 pt-24 pb-16">
           <div className="container flex items-center justify-center mx-auto px-34">
             <div className="flex items-center justify-center gap-12">
               <motion.div
@@ -105,7 +105,7 @@ const LandingPage = () => {
                   transition={{ duration: 0.8, delay: 0.3 }}
                 >
                   <Button size="lg" className="px-8 text-lg h-14" asChild>
-                    <Link to="/patient">Join as Patient</Link>
+                    <Link to="/signup?type=patient">Join as Patient</Link>
                   </Button>
                   <Button size="lg" variant="outline" className="px-8 text-lg h-14" asChild>
                     <Link to="/signup?type=doctor">Join as Doctor</Link>
