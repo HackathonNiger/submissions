@@ -21,7 +21,9 @@ const PatientDashboard = () => {
             <SidebarTrigger className="mr-4" />
             <div className="flex-1">
               <h1 className="text-2xl font-bold text-foreground">Patient Dashboard</h1>
-              <p className="text-sm text-muted-foreground">Welcome back, {user.name}! Your health journey continues.</p>
+              <p className="text-sm text-muted-foreground">
+                Welcome back, <strong>{user.username}</strong>! your health journey continues.
+              </p>
             </div>
             <div className="flex items-center space-x-4">
               <Button variant="outline" size="sm">

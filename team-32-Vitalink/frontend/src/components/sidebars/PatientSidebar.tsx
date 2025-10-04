@@ -12,13 +12,12 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "../ui/sidebar";
-import { LayoutDashboard, Activity, MessageCircle, Brain, Settings, Heart, LogOut, User } from "lucide-react";
+import { LayoutDashboard, MessageCircle, Brain, Settings, Heart, LogOut } from "lucide-react";
 import { Button } from "../ui/button";
 import { useUser } from "../../contexts/UserContext";
 
 const navigationItems = [
   { title: "Dashboard", url: "/patient/dashboard", icon: LayoutDashboard },
-  { title: "Vitals", url: "/patient/vitals", icon: Activity },
   { title: "Chat", url: "/patient/chat", icon: MessageCircle },
   { title: "AI Suggestions", url: "/patient/suggestions", icon: Brain },
   { title: "Settings", url: "/patient/settings", icon: Settings },
@@ -35,8 +34,6 @@ export function PatientSidebar() {
   if (!user) return null;
 
   const isActive = (path: string) => currentPath === path;
-  const getNavCls = ({ isActive }: { isActive: boolean }) =>
-    isActive ? "bg-primary text-primary-foreground" : "hover:bg-accent hover:text-accent-foreground";
 
   const handleLogout = () => {
     // In a real app, this would clear auth tokens
@@ -66,8 +63,8 @@ export function PatientSidebar() {
             <SidebarMenu>
               {navigationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink to={item.url} className={getNavCls}>
+                  <SidebarMenuButton asChild isActive={isActive(item.url)}>
+                    <NavLink to={item.url}>
                       <item.icon className="h-5 w-5" />
                       {!collapsed && <span>{item.title}</span>}
                     </NavLink>
