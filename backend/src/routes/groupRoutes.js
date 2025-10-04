@@ -1,3 +1,5 @@
+// backend/src/routes/groupRoutes.js - UPDATED
+
 const express = require('express');
 const router = express.Router();
 
@@ -7,6 +9,7 @@ const {
   getGroupById,
   findGroupByCode,
   joinGroup,
+  processPayout, // NEW
   updateGroupStatus,
   getGroupStats
 } = require('../controllers/groupContoller');
@@ -30,5 +33,6 @@ router.post('/:id/join', requireVerification, joinGroup);
 
 // Group management (admin only)
 router.put('/:id/status', requireVerification, updateGroupStatus);
+router.post('/:id/process-payout', requireVerification, processPayout); // NEW
 
 module.exports = router;

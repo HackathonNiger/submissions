@@ -14,8 +14,9 @@ const { sanitizeInput } = require('./src/middlewares/validation');
 // Import routes
 const authRoutes = require('./src/routes/authRoutes');
 const transactionRoutes = require('./src/routes/transactionRoutes');
-const groupRoutes = require('./src/routes/groupRoutes'); // NEW
+const groupRoutes = require('./src/routes/groupRoutes');
 
+const walletRoutes = require('./src/routes/walletRoutes');
 const initializeDatabase = async () => {
   try {
     await connectDB();
@@ -81,7 +82,7 @@ const createApp = () => {
   app.use('/api/auth', authRoutes);
   app.use('/api/transactions', transactionRoutes);
   app.use('/api/groups', groupRoutes); // NEW
-  
+  app.use('/api/wallets', walletRoutes);
   app.use(notFoundHandler);
   app.use(globalErrorHandler);
   

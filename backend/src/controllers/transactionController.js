@@ -1,97 +1,182 @@
-const { asyncErrorHandler } = require('../middlewares/errorHandler');
+// backend/src/controllers/transactionController.js - UPDATED
 
+const Transaction = require('../models/Transactions');
+const Wallet = require('../models/Wallets');
+const Group = require('../models/Groups');
+const { asyncErrorHandler, ValidationError, NotFoundError } = require('../middlewares/errorHandler');
+
+/**
+ * Get Transactions Handler
+ * 
+ * @route   GET /api/transactions
+ * @desc    Get user's transactions with optional filters
+ * @access  Private
+ */
 const getTransactions = asyncErrorHandler(async (req, res) => {
   const userId = req.user._id;
+  const { type, groupId, status, limit = 50, skip = 0 } = req.query;
 
   console.log(`📊 Getting transactions for user: ${userId}`);
 
   try {
-    const dummyTransactions = [
-      {
-        id: 1,
-        type: 'contribution',
-        amount: 50.00,
-        vendor: 'Coffee Shop',
-        date: '2023-10-20',
-        status: 'completed',
-        description: 'Monthly contribution to Office Colleagues group'
-      },
-      {
-        id: 2,
-        type: 'payout',
-        amount: 1500.00,
-        vendor: 'Payout',
-        date: '2023-10-15',
-        status: 'completed',
-        description: 'Received payout from Family Savings group'
-      },
-      {
-        id: 3,
-        type: 'contribution',
-        amount: 25.00,
-        vendor: 'Tech Community',
-        date: '2023-10-12',
-        status: 'pending',
-        description: 'Weekly contribution to Tech Community group'
-      }
-    ];
+    // Build query
+    const query = { userId };
+    
+    if (type) query.type = type;
+    if (groupId) query.groupId = groupId;
+    if (status) query.status = status;
 
-    // Send success response
+    // Fetch transactions
+    const transactions = await Transaction.find(query)
+      .populate('groupId', 'name')
+      .sort({ createdAt: -1 })
+      .limit(parseInt(limit))
+      .skip(parseInt(skip));
+
+    const total = await Transaction.countDocuments(query);
+
+    console.log(`✅ Found ${transactions.length} transactions`);
+
     res.status(200).json({
       success: true,
-      message: `Successfully retrieved transactions for user: ${userId}`,
+      message: 'Transactions retrieved successfully',
       data: {
-        transactions: dummyTransactions,
-        count: dummyTransactions.length,
-        userId: userId
+        transactions,
+        count: transactions.length,
+        total,
+        hasMore: total > (parseInt(skip) + transactions.length)
       },
       timestamp: new Date().toISOString()
     });
-
   } catch (error) {
-    console.error(`❌ Failed to get transactions for user ${userId}:`, error.message);
+    console.error(`❌ Failed to get transactions:`, error.message);
     throw error;
   }
 });
 
 /**
- * Create Transaction Handler
+ * Create Contribution Transaction Handler
  * 
- * @route   POST /api/transactions
- * @desc    Create a new transaction
- * @access  Private (requires authentication)
+ * @route   POST /api/transactions/contribution
+ * @desc    Process a contribution payment (after Paystack verification)
+ * @access  Private
  */
-const createTransaction = asyncErrorHandler(async (req, res) => {
+const createContribution = asyncErrorHandler(async (req, res) => {
   const userId = req.user._id;
-  const { amount, type, description, groupId } = req.body;
+  const { groupId, reference, amount } = req.body;
 
-  console.log(`💰 Creating transaction for user: ${userId}`);
+  console.log(`💰 Processing contribution:`, { userId, groupId, amount, reference });
 
   try {
-    // TODO: Implement actual transaction creation logic
-    const newTransaction = {
-      id: Date.now(),
-      userId: userId,
-      amount: parseFloat(amount),
-      type,
-      description,
-      groupId,
-      status: 'pending',
-      createdAt: new Date().toISOString()
-    };
+    // 1. Verify group exists and user is a member
+    const group = await Group.findById(groupId);
+    if (!group) {
+      throw new NotFoundError('Group not found');
+    }
 
-    // Send success response
+    if (!group.members.includes(userId)) {
+      throw new ValidationError('You are not a member of this group');
+    }
+
+    // 2. Verify amount matches group contribution
+    if (amount !== group.contributionAmount) {
+      throw new ValidationError('Amount does not match group contribution amount');
+    }
+
+    // 3. Check for duplicate transaction (same reference)
+    const existingTxn = await Transaction.findOne({ 
+      'metadata.paystack_reference': reference 
+    });
+    
+    if (existingTxn) {
+      console.warn('⚠️ Duplicate transaction detected:', reference);
+      return res.status(200).json({
+        success: true,
+        message: 'Transaction already processed',
+        data: {
+          transaction: existingTxn
+        }
+      });
+    }
+
+    // 4. Get user's wallet
+    let wallet = await Wallet.findOne({ userId });
+    if (!wallet) {
+      console.log('💰 Creating wallet for user:', userId);
+      wallet = new Wallet({
+        userId,
+        totalBalance: 0,
+        availableBalance: 0,
+        lockedBalance: 0
+      });
+      await wallet.save();
+    }
+
+    // 5. Generate unique transaction ID
+    const transactionId = Transaction.generateTransactionId();
+
+    // 6. Create transaction record
+    const transaction = new Transaction({
+      userId,
+      groupId,
+      transactionId,
+      type: 'contribution',
+      amount,
+      status: 'completed',
+      description: `Contribution to ${group.name}`,
+      paymentMethod: 'card',
+      metadata: {
+        paystack_reference: reference,
+        group_name: group.name,
+        frequency: group.frequency
+      },
+      completedAt: new Date()
+    });
+
+    await transaction.save();
+    console.log('✅ Transaction created:', transactionId);
+
+    // 7. Update wallet
+    wallet.totalContributions += amount;
+    await wallet.save();
+    console.log('✅ Wallet updated - Total contributions:', wallet.totalContributions);
+
+    // 8. Update group pool
+    group.totalPool += amount;
+    
+    // 9. Update member's contribution count in membersList
+    const memberIndex = group.membersList.findIndex(
+      m => m.userId.toString() === userId.toString()
+    );
+    
+    if (memberIndex !== -1) {
+      group.membersList[memberIndex].contributionsMade += 1;
+      console.log(`✅ Member contribution count updated: ${group.membersList[memberIndex].contributionsMade}`);
+    }
+
+    await group.save();
+    console.log('✅ Group updated - Total pool:', group.totalPool);
+
+    // 10. Return success response
     res.status(201).json({
       success: true,
-      message: 'Transaction created successfully',
+      message: 'Contribution processed successfully',
       data: {
-        transaction: newTransaction
+        transaction,
+        wallet: {
+          totalContributions: wallet.totalContributions,
+          availableBalance: wallet.availableBalance
+        },
+        group: {
+          totalPool: group.totalPool,
+          name: group.name
+        }
       },
       timestamp: new Date().toISOString()
     });
 
   } catch (error) {
-    console.error(`❌ Failed to create transaction for user ${userId}:`, error.message);
+    console.error(`❌ Contribution processing failed:`, error.message);
     throw error;
   }
 });
@@ -101,7 +186,7 @@ const createTransaction = asyncErrorHandler(async (req, res) => {
  * 
  * @route   GET /api/transactions/:id
  * @desc    Get a specific transaction by ID
- * @access  Private (requires authentication)
+ * @access  Private
  */
 const getTransactionById = asyncErrorHandler(async (req, res) => {
   const userId = req.user._id;
@@ -110,18 +195,21 @@ const getTransactionById = asyncErrorHandler(async (req, res) => {
   console.log(`🔍 Getting transaction ${transactionId} for user: ${userId}`);
 
   try {
-    // TODO: Implement actual transaction lookup
-    const transaction = {
-      id: transactionId,
-      userId: userId,
-      amount: 50.00,
-      type: 'contribution',
-      description: 'Monthly contribution',
-      status: 'completed',
-      createdAt: '2023-10-20T10:00:00Z'
-    };
+    const transaction = await Transaction.findById(transactionId)
+      .populate('groupId', 'name contributionAmount frequency')
+      .populate('userId', 'firstName lastName email');
 
-    // Send success response
+    if (!transaction) {
+      throw new NotFoundError('Transaction not found');
+    }
+
+    // Verify user owns this transaction
+    if (transaction.userId._id.toString() !== userId.toString()) {
+      throw new ValidationError('Access denied to this transaction');
+    }
+
+    console.log('✅ Transaction found:', transaction.transactionId);
+
     res.status(200).json({
       success: true,
       message: 'Transaction retrieved successfully',
@@ -132,7 +220,84 @@ const getTransactionById = asyncErrorHandler(async (req, res) => {
     });
 
   } catch (error) {
-    console.error(`❌ Failed to get transaction ${transactionId} for user ${userId}:`, error.message);
+    console.error(`❌ Failed to get transaction:`, error.message);
+    throw error;
+  }
+});
+
+/**
+ * Get Transaction Statistics Handler
+ * 
+ * @route   GET /api/transactions/stats
+ * @desc    Get user's transaction statistics
+ * @access  Private
+ */
+const getTransactionStats = asyncErrorHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  console.log(`📊 Getting transaction stats for user: ${userId}`);
+
+  try {
+    // Aggregate statistics
+    const stats = await Transaction.aggregate([
+      { $match: { userId: userId } },
+      {
+        $group: {
+          _id: '$type',
+          total: { $sum: '$amount' },
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
+    // Format stats
+    const formattedStats = {
+      contributions: {
+        total: 0,
+        count: 0
+      },
+      payouts: {
+        total: 0,
+        count: 0
+      },
+      withdrawals: {
+        total: 0,
+        count: 0
+      }
+    };
+
+    stats.forEach(stat => {
+      if (stat._id === 'contribution') {
+        formattedStats.contributions = {
+          total: stat.total,
+          count: stat.count
+        };
+      } else if (stat._id === 'payout') {
+        formattedStats.payouts = {
+          total: stat.total,
+          count: stat.count
+        };
+      } else if (stat._id === 'withdrawal') {
+        formattedStats.withdrawals = {
+          total: stat.total,
+          count: stat.count
+        };
+      }
+    });
+
+    console.log('✅ Transaction stats calculated');
+
+    res.status(200).json({
+      success: true,
+      message: 'Transaction statistics retrieved successfully',
+      data: {
+        stats: formattedStats
+      },
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error(`❌ Failed to get transaction stats:`, error.message);
     throw error;
   }
 });
@@ -140,6 +305,7 @@ const getTransactionById = asyncErrorHandler(async (req, res) => {
 // Export all controller functions
 module.exports = {
   getTransactions,
-  createTransaction,
-  getTransactionById
+  createContribution,
+  getTransactionById,
+  getTransactionStats
 };

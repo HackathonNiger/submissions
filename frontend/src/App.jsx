@@ -6,6 +6,7 @@ import Home from './pages/Home'
 import Auth from './pages/Auth'
 import Dashboard from './pages/Dashboard'
 import Groups from './pages/Groups'
+import GroupDetail from './pages/GroupDetail'
 import Payment from './pages/Payment'
 import Wallet from './pages/Wallet'
 import CreateGroup from './components/groups/CreateGroup'
@@ -69,6 +70,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Groups />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/groups/:id" 
+              element={
+                <ProtectedRoute>
+                  <GroupDetail />
                 </ProtectedRoute>
               } 
             />

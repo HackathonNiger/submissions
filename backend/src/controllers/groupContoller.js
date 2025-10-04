@@ -1,5 +1,8 @@
 const Group = require('../models/Groups');
 const User = require('../models/Users');
+const Wallet = require('../models/Wallets');
+const Transaction = require('../models/Transactions');
+const axios = require('axios');
 const {
   AppError,
   ValidationError,
@@ -29,7 +32,7 @@ const createGroup = asyncErrorHandler(async (req, res) => {
   const userId = req.user._id;
   const userName = `${req.user.firstName} ${req.user.lastName}`;
 
-  console.log(`🔐 Creating group: ${name} by user: ${userId}`);
+  console.log(`🏗️ Creating group: ${name} by user: ${userId}`);
 
   try {
     // Generate unique invitation code
@@ -276,6 +279,195 @@ const joinGroup = asyncErrorHandler(async (req, res) => {
 });
 
 /**
+ * Process Payout Handler - NEW!
+ * 
+ * @route   POST /api/groups/:id/process-payout
+ * @desc    Process payout to current turn member (Admin only)
+ * @access  Private
+ */
+const processPayout = asyncErrorHandler(async (req, res) => {
+  const groupId = req.params.id;
+  const adminId = req.user._id;
+
+  console.log(`💰 Processing payout for group: ${groupId} by admin: ${adminId}`);
+
+  try {
+    // 1. Get group with full details
+    const group = await Group.findById(groupId)
+      .populate('members', 'firstName lastName email');
+
+    if (!group) {
+      throw new NotFoundError('Group not found');
+    }
+
+    // 2. Verify user is admin
+    if (group.admin.toString() !== adminId.toString()) {
+      throw new ValidationError('Only group admin can process payouts');
+    }
+
+    // 3. Verify group is active
+    if (group.status !== 'active' && group.status !== 'pending') {
+      throw new ValidationError(`Cannot process payout for ${group.status} group`);
+    }
+
+    // 4. Verify group has funds
+    if (group.totalPool <= 0) {
+      throw new ValidationError('Group pool is empty. Wait for contributions.');
+    }
+
+    // 5. Determine who receives payout (current turn)
+    const currentTurnIndex = group.currentTurn;
+    
+    if (currentTurnIndex >= group.membersList.length) {
+      throw new ValidationError('All members have received payouts. Group cycle complete.');
+    }
+
+    const recipientMember = group.membersList[currentTurnIndex];
+    const recipientUserId = recipientMember.userId;
+
+    console.log(`💸 Paying out to: ${recipientMember.name} (Turn ${currentTurnIndex + 1})`);
+
+    // 6. Get recipient's wallet and bank account
+    const recipientWallet = await Wallet.findOne({ userId: recipientUserId });
+    
+    if (!recipientWallet) {
+      throw new ValidationError(`Recipient wallet not found for ${recipientMember.name}`);
+    }
+
+    // Get primary bank account
+    const primaryAccount = recipientWallet.linkedBankAccounts.find(acc => acc.isPrimary);
+    
+    if (!primaryAccount) {
+      throw new ValidationError(
+        `${recipientMember.name} has not added a bank account yet. Please ask them to add one before processing payout.`
+      );
+    }
+
+    const payoutAmount = group.totalPool;
+
+    // 7. Initiate Paystack transfer
+    console.log(`🔄 Initiating Paystack transfer: ₦${payoutAmount} to ${primaryAccount.accountName}`);
+
+    const transferResponse = await axios.post(
+      'https://api.paystack.co/transfer',
+      {
+        source: 'balance',
+        amount: payoutAmount * 100, // Convert to kobo
+        recipient: primaryAccount.recipientCode,
+        reason: `${group.name} - Turn ${currentTurnIndex + 1} Payout`,
+        currency: 'NGN'
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    if (!transferResponse.data.status) {
+      throw new AppError('Paystack transfer failed. Please try again.', 500);
+    }
+
+    console.log(`✅ Paystack transfer initiated:`, transferResponse.data.data.transfer_code);
+
+    // 8. Create payout transaction
+    const transactionId = Transaction.generateTransactionId();
+    
+    const transaction = new Transaction({
+      userId: recipientUserId,
+      groupId: group._id,
+      transactionId,
+      type: 'payout',
+      amount: payoutAmount,
+      status: 'completed',
+      description: `Payout from ${group.name} - Turn ${currentTurnIndex + 1}`,
+      paymentMethod: 'bank_transfer',
+      metadata: {
+        transfer_code: transferResponse.data.data.transfer_code,
+        transfer_reference: transferResponse.data.data.reference,
+        recipient_name: primaryAccount.accountName,
+        recipient_account: primaryAccount.accountNumber,
+        recipient_bank: primaryAccount.bankName,
+        turn_number: currentTurnIndex + 1
+      },
+      completedAt: new Date()
+    });
+
+    await transaction.save();
+    console.log(`✅ Payout transaction created: ${transactionId}`);
+
+    // 9. Update recipient wallet
+    recipientWallet.availableBalance += payoutAmount;
+    recipientWallet.totalBalance += payoutAmount;
+    recipientWallet.totalPayouts += payoutAmount;
+    await recipientWallet.save();
+    console.log(`✅ Recipient wallet updated: +₦${payoutAmount}`);
+
+    // 10. Update group - TURN ROTATION LOGIC
+    group.totalPool = 0; // Reset pool
+    
+    // Update current member status to completed
+    group.membersList[currentTurnIndex].status = 'completed';
+    group.membersList[currentTurnIndex].turns += 1;
+    
+    // Move to next turn
+    group.currentTurn += 1;
+    
+    // If there's a next member, set them as current
+    if (group.currentTurn < group.membersList.length) {
+      group.membersList[group.currentTurn].status = 'current';
+      console.log(`🔄 Next turn: ${group.membersList[group.currentTurn].name}`);
+    } else {
+      // All members have received payouts - mark group as completed
+      group.status = 'completed';
+      console.log(`🎉 Group cycle completed! All members have received payouts.`);
+    }
+
+    await group.save();
+    console.log(`✅ Group updated - Turn ${group.currentTurn}/${group.maxMembers}`);
+
+    // 11. Return success response
+    res.status(200).json({
+      success: true,
+      message: 'Payout processed successfully',
+      data: {
+        transaction,
+        recipient: {
+          name: recipientMember.name,
+          amount: payoutAmount
+        },
+        group: {
+          currentTurn: group.currentTurn,
+          totalTurns: group.maxMembers,
+          status: group.status,
+          nextMember: group.currentTurn < group.membersList.length 
+            ? group.membersList[group.currentTurn].name 
+            : null
+        },
+        transfer: {
+          transferCode: transferResponse.data.data.transfer_code,
+          reference: transferResponse.data.data.reference
+        }
+      },
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error(`❌ Payout processing failed:`, error.message);
+    
+    if (error.response?.data) {
+      throw new AppError(
+        error.response.data.message || 'Paystack transfer failed',
+        500
+      );
+    }
+    
+    throw error;
+  }
+});
+
+/**
  * Update Group Status
  * 
  * @route   PUT /api/groups/:id/status
@@ -392,6 +584,7 @@ module.exports = {
   getGroupById,
   findGroupByCode,
   joinGroup,
+  processPayout, // NEW!
   updateGroupStatus,
   getGroupStats
 };

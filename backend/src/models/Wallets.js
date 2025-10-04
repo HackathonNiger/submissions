@@ -73,7 +73,6 @@ const WalletSchema = new mongoose.Schema({
     }
   },
 
-  // Linked Bank Accounts
   linkedBankAccounts: [{
     accountNumber: {
       type: String,
@@ -92,6 +91,12 @@ const WalletSchema = new mongoose.Schema({
     },
     bankCode: {
       type: String,
+      required: true,
+      trim: true
+    },
+    recipientCode: {
+      type: String,
+      required: true,
       trim: true
     },
     isPrimary: {
