@@ -50,7 +50,7 @@ const SignUp = () => {
           username: firstName,
         });
       } else {
-        setUser(null); // For doctor or others, can extend later
+        setUser(null);
       }
 
       toast({
@@ -63,27 +63,27 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex items-center justify-center place-content-center w-[100vw] max-w-full min-h-screen p-10 m-auto  bg-blue-50">
-      <div className="w-full max-w-2xl">
+    <div className="flex items-center justify-center absolute top-0 left-0 right-0 w-full min-h-screen p-4 sm:p-6 md:p-8 lg:p-10 bg-blue-50">
+      <div className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-3xl">
         {/* Header */}
-        <div className="mb-8 text-center">
-          <Link to="/" className="inline-flex items-center mb-4 space-x-2 text-2xl font-bold text-foreground">
+        <div className="mb-6 sm:mb-8 text-center">
+          <Link to="/" className="inline-flex items-center mb-4 space-x-2 text-xl sm:text-2xl font-bold text-foreground">
             <div className="flex items-center space-x-2">
-              <FaHeartbeat className="w-8 h-8 text-red-400" />
-              <span className="text-2xl font-bold text-foreground">vitaLink</span>
+              <FaHeartbeat className="w-6 h-6 sm:w-8 sm:h-8 text-red-400" />
+              <span className="text-xl sm:text-2xl font-bold text-foreground">vitaLink</span>
             </div>
           </Link>
-          <h1 className="mb-2 text-3xl font-bold text-foreground">Create Your Account</h1>
-          <p className="text-muted-foreground">Join our healthcare community today</p>
+          <h1 className="mb-2 text-2xl sm:text-3xl font-bold text-foreground">Create Your Account</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">Join our healthcare community today</p>
         </div>
 
         <Card className="shadow-strong border-0">
-          <CardHeader className="pb-4">
-            <div className="flex justify-center space-x-4 mb-6">
+          <CardHeader className="pb-4 px-4 sm:px-6">
+            <div className="flex justify-center space-x-2 sm:space-x-4 mb-6">
               <Button
                 variant={userType === "patient" ? "default" : "outline"}
                 onClick={() => setUserType("patient")}
-                className="flex items-center space-x-2"
+                className="flex items-center space-x-2 text-sm sm:text-base"
               >
                 <User className="h-4 w-4" />
                 <span>Patient</span>
@@ -91,22 +91,22 @@ const SignUp = () => {
               <Button
                 variant={userType === "doctor" ? "default" : "outline"}
                 onClick={() => setUserType("doctor")}
-                className="flex items-center space-x-2"
+                className="flex items-center space-x-2 text-sm sm:text-base"
               >
                 <Stethoscope className="h-4 w-4" />
                 <span>Doctor</span>
               </Button>
             </div>
-            <CardTitle className="text-center">{userType === "doctor" ? "Doctor Registration" : "Patient Registration"}</CardTitle>
-            <CardDescription className="text-center">
+            <CardTitle className="text-center text-lg sm:text-xl">{userType === "doctor" ? "Doctor Registration" : "Patient Registration"}</CardTitle>
+            <CardDescription className="text-center text-sm sm:text-base">
               {userType === "doctor"
                 ? "Create your professional healthcare provider account"
                 : "Join our patient community for better health management"}
             </CardDescription>
           </CardHeader>
 
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
+          <CardContent className="px-4 sm:px-6">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               {/* Common Fields */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -239,13 +239,13 @@ const SignUp = () => {
                 </>
               )}
 
-              <Button type="submit" className="w-full h-12 text-lg" disabled={isLoading}>
+              <Button type="submit" className="w-full h-10 sm:h-12 text-base sm:text-lg" disabled={isLoading}>
                 {isLoading ? "Creating Account..." : "Create Account"}
               </Button>
             </form>
 
-            <div className="mt-6 text-center">
-              <p className="text-muted-foreground">
+            <div className="mt-4 sm:mt-6 text-center">
+              <p className="text-sm sm:text-base text-muted-foreground">
                 Already have an account?{" "}
                 <Link to="/login" className="text-primary hover:underline font-medium">
                   Sign in here
