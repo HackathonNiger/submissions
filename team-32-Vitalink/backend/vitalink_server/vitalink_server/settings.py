@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-gimnw0=b$1_8!^s0g5_2*(_6%r_260u5gf#f3ppc&0m4oe0iiq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["vitalink.pythonanywhere.com"]
+ALLOWED_HOSTS = ["vitalink.pythonanywhere.com", "127.0.0.1"]
 
 
 # Application definition
