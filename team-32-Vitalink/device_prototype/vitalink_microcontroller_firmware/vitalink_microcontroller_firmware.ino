@@ -15,8 +15,8 @@ using namespace std;
 
 
 
-const char *ssid     = "CavistaHackathon";
-const char *password = "Cavista2025";
+const char *ssid     = "KHS_Engineering_2.4"; // default wifi network the device connects to
+const char *password = "K@dAv0110";
 
 
 
