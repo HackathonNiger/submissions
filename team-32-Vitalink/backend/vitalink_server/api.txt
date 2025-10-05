@@ -1,0 +1,19 @@
+get: https://url/push?spo2=90&bpm=30&temp=40
+response: {
+    success: true,
+}
+
+get: https://url/update?age=35&gender=1
+response: {
+    success: true,
+}
+
+get: https://url/pull
+response {
+    "spo2": 90,
+    "bpm": 20,
+    "temp": 47.4,
+    "sbp": 100,
+    "dbp": 70,
+    "alert": "get proper rest"
+}

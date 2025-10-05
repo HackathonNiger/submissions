@@ -14,6 +14,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,12 +28,7 @@ const Login = () => {
       if (isDoctor) {
         setUser(null); // For doctor, can extend later
       } else {
-        setUser({
-          name: "John Doe",
-          patientId: "#P-2024-001247",
-          hospital: "City General Hospital",
-          doctor: "Dr. Sarah Johnson",
-        });
+        setUser(null);
       }
       navigate(isDoctor ? "/doctor/dashboard" : "/patient/dashboard");
       setIsLoading(false);
@@ -40,28 +36,28 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4 bg-gradient-hero bg-blue-50 w-[100vw]">
-      <div className="w-full max-w-md">
+    <div className="flex items-center justify-center absolute top-0 left-0 right-0 w-full min-h-screen p-4 sm:p-6 md:p-8 lg:p-10 bg-blue-50">
+      <div className="w-full max-w-sm sm:max-w-md">
         {/* Header */}
-        <div className="mb-8 text-center">
-          <Link to="/" className="inline-flex items-center mb-4 space-x-2 text-2xl font-bold text-foreground">
+        <div className="mb-6 sm:mb-8 text-center">
+          <Link to="/" className="inline-flex items-center mb-4 space-x-2 text-xl sm:text-2xl font-bold text-foreground">
             <div className="flex items-center space-x-2">
-              <FaHeartbeat className="w-8 h-8 text-red-400" />
-              <span className="text-2xl font-bold text-foreground">vitaLink</span>
+              <FaHeartbeat className="w-6 h-6 sm:w-8 sm:h-8 text-red-400" />
+              <span className="text-xl sm:text-2xl font-bold text-foreground">vitaLink</span>
             </div>
           </Link>
-          <h1 className="mb-2 text-3xl font-bold text-foreground">Welcome Back</h1>
-          <p className="text-muted-foreground">Sign in to your healthcare account</p>
+          <h1 className="mb-2 text-2xl sm:text-3xl font-bold text-foreground">Welcome Back</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">Sign in to your healthcare account</p>
         </div>
 
         <Card className="border-0 shadow-strong">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center">Sign In</CardTitle>
-            <CardDescription className="text-center">Enter your credentials to access your account</CardDescription>
+          <CardHeader className="space-y-1 px-4 sm:px-6">
+            <CardTitle className="text-xl sm:text-2xl text-center">Sign In</CardTitle>
+            <CardDescription className="text-center text-sm sm:text-base">Enter your credentials to access your account</CardDescription>
           </CardHeader>
 
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
+          <CardContent className="px-4 sm:px-6">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
                 <Input
@@ -71,7 +67,7 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full h-[2.5rem] rounded-xl"
+                  className="w-full h-10 sm:h-11 rounded-xl"
                 />
               </div>
 
@@ -82,8 +78,10 @@ const Login = () => {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full h-[2.5rem] rounded-xl"
+                    className="w-full h-10 sm:h-11 rounded-xl"
                   />
                   <Button
                     type="button"
@@ -97,7 +95,7 @@ const Login = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
                 <div className="flex items-center space-x-2">
                   <Input id="remember" type="checkbox" className="w-4 h-4 accent-transparent rounded border-border text-primary focus:ring-primary" />
                   <Label htmlFor="remember" className="text-sm font-normal">
@@ -109,13 +107,13 @@ const Login = () => {
                 </Link>
               </div>
 
-              <Button type="submit" className="w-full h-12 text-lg bg-blue-600 hover:bg-blue-500" disabled={isLoading}>
+              <Button type="submit" className="w-full h-10 sm:h-12 text-base sm:text-lg bg-blue-600 hover:bg-blue-500" disabled={isLoading}>
                 {isLoading ? "Signing in..." : "Sign In"}
               </Button>
             </form>
 
-            <div className="mt-6 text-center">
-              <p className="text-muted-foreground">
+            <div className="mt-4 sm:mt-6 text-center">
+              <p className="text-sm sm:text-base text-muted-foreground">
                 Don't have an account?{" "}
                 <Link to="/signup" className="font-medium text-primary hover:underline">
                   Sign up here
