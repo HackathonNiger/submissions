@@ -11,6 +11,7 @@ import AISuggestionsPage from "../pages/AISuggestionsPage";
 import SettingsPage from "../pages/SettingsPage";
 import DoctorDashboard from "../pages/DoctorDashboard";
 import PatientsPage from "../pages/PatientsPage";
+import AnalyticsPage from "../pages/AnalyticsPage";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ export default function AppRouter() {
           <Routes>
             <Route path="/" element={<LandingPage />} />
 
+            {/* Authentication Routes */}
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
 
@@ -34,6 +36,7 @@ export default function AppRouter() {
             {/* Doctor Routes */}
             <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
             <Route path="/doctor/patients" element={<PatientsPage />} />
+            <Route path="/doctor/analytics" element={<AnalyticsPage />} />
             <Route path="/doctor/settings" element={<SettingsPage />} />
 
             <Route path="*" element={<PageNotFound />} />
