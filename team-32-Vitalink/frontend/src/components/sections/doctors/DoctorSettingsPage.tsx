@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Button } from "../../ui/button";
 import { useUser } from "../../../contexts/UserContext";
 
-const SettingsPage = () => {
+const DoctorSettingsPage = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");
@@ -220,4 +220,4 @@ const SettingsPage = () => {
   );
 };
 
-export default SettingsPage;
+export default DoctorSettingsPage;

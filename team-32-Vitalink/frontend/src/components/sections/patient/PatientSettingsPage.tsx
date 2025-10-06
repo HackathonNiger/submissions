@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Camera, Save, Link as LinkIcon } from "lucide-react";
 import { useToast } from "../../ui/use-toast";
 import { SidebarProvider, SidebarTrigger } from "../../ui/sidebar";
-import { PatientSidebar } from "../../sidebars/PatientSidebar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { Input } from "../../ui/input";
@@ -11,8 +10,9 @@ import { Label } from "../../ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
 import { Button } from "../../ui/button";
 import { useUser } from "../../../contexts/UserContext";
+import { PatientSidebar } from "../../sidebars/PatientSidebar";
 
-const SettingsPage = () => {
+const PatientSettingsPage = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [showDeviceInput, setShowDeviceInput] = useState(false);
@@ -83,17 +83,14 @@ const SettingsPage = () => {
 
   return (
     <SidebarProvider>
-      <div className="flex flex-col md:flex-row min-h-screen w-full bg-background">
+      <div className="flex w-full max-w-screen bg-background">
         <PatientSidebar />
-
-        <div className="flex-1">
-          {/* Header */}
+        <div className="w-full">
           <header className="h-16 border-b bg-card flex items-center px-4 sm:px-6">
             <SidebarTrigger />
             <h1 className="text-xl sm:text-2xl font-bold ml-4">Settings</h1>
           </header>
 
-          {/* Main content */}
           <main className="p-4 sm:p-6 lg:p-8 w-full">
             <div className="w-full mx-auto space-y-8">
               {/* Profile Settings */}
@@ -266,4 +263,4 @@ const SettingsPage = () => {
   );
 };
 
-export default SettingsPage;
+export default PatientSettingsPage;

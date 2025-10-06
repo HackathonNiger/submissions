@@ -12,7 +12,8 @@ import DoctorDashboard from "../pages/DoctorDashboard";
 import PatientsPage from "../components/sections/doctors/PatientsPage";
 import AnalyticsPage from "../components/sections/doctors/AnalyticsPage";
 import { FullScreenLoader } from "../components/ui/Loader";
-import SettingsPage from "../components/sections/doctors/SettingsPage";
+import DoctorSettingsPage from "../components/sections/doctors/DoctorSettingsPage";
+import PatientSettingsPage from "./../components/sections/patient/PatientSettingsPage";
 
 const queryClient = new QueryClient();
 
@@ -39,13 +40,13 @@ function AppContent() {
           {/* Patient Routes */}
           <Route path="/patient/dashboard" element={<PatientDashboard />} />
           <Route path="/patient/chat" element={<ChatUI />} />
-          <Route path="/patient/settings" element={<SettingsPage />} />
+          <Route path="/patient/settings" element={<PatientSettingsPage />} />
 
           {/* Doctor Routes */}
           <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
           <Route path="/doctor/patients" element={<PatientsPage />} />
           <Route path="/doctor/analytics" element={<AnalyticsPage />} />
-          <Route path="/doctor/settings" element={<SettingsPage />} />
+          <Route path="/doctor/settings" element={<DoctorSettingsPage />} />
 
           <Route path="*" element={<PageNotFound />} />
         </Routes>
