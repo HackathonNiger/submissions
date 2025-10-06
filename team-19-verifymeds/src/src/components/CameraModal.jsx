@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Camera, X, Check, SwitchCamera } from 'lucide-react';
 import {
   startCameraStream,
@@ -32,9 +32,9 @@ const CameraModal = ({ isOpen, onClose, onCapture, title = "Take Photo" }) => {
         stopCameraStream(stream);
       }
     };
-  }, [isOpen, facingMode]);
+  }, [isOpen, stream]);
 
-  const initializeCamera = async () => {
+  const initializeCamera = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
@@ -55,15 +55,32 @@ const CameraModal = ({ isOpen, onClose, onCapture, title = "Take Photo" }) => {
       setHasPermission(true);
     } catch (err) {
       console.error('Camera initialization error:', err);
-      setError(err.message || 'Failed to access camera');
+
+      // Provide more user-friendly error messages
+      let userFriendlyError = err.message || 'Failed to access camera';
+
+      if (err.message.includes('permission') || err.message.includes('denied')) {
+        userFriendlyError = 'Camera permission required. Please allow camera access in your browser settings and try again.';
+      } else if (err.message.includes('not found') || err.message.includes('No camera')) {
+        userFriendlyError = 'No camera detected on this device.';
+      } else if (err.message.includes('in use') || err.message.includes('already')) {
+        userFriendlyError = 'Camera is being used by another app. Please close other camera apps and try again.';
+      } else if (err.message.includes('timeout')) {
+        userFriendlyError = 'Camera is taking too long to load. Please check your camera and try again.';
+      }
+
+      setError(userFriendlyError);
       setHasPermission(false);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [facingMode]);
 
   const handleCapture = async () => {
-    if (!videoRef.current) return;
+    if (!videoRef.current) {
+      setError('Camera not ready. Please wait and try again.');
+      return;
+    }
 
     try {
       setIsLoading(true);
@@ -79,7 +96,21 @@ const CameraModal = ({ isOpen, onClose, onCapture, title = "Take Photo" }) => {
       onClose();
     } catch (err) {
       console.error('Capture error:', err);
-      setError('Failed to capture photo');
+
+      // Provide more specific error messages for capture failures
+      let captureError = 'Failed to capture photo';
+
+      if (err.message.includes('not ready') || err.message.includes('Video not ready')) {
+        captureError = 'Camera not ready. Please wait a moment and try again.';
+      } else if (err.message.includes('too small')) {
+        captureError = 'Image captured is too small. Please ensure good lighting and try again.';
+      } else if (err.message.includes('data not ready')) {
+        captureError = 'Camera not fully loaded. Please wait and try again.';
+      } else if (err.message.includes('Canvas')) {
+        captureError = 'Unable to process image. Please check your camera settings.';
+      }
+
+      setError(captureError);
     } finally {
       setIsLoading(false);
     }

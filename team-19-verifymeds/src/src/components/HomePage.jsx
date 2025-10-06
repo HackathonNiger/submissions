@@ -87,25 +87,25 @@ const HomePage = ({
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* QR Code Method */}
           <div
             onClick={() => setVerificationMethod('qr')}
-            className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500"
+            className="bg-white rounded-xl shadow-lg p-3 md:p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500 sm:h-28 md:h-60 flex flex-col"
           >
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto">
               <QrCode className="text-green-600" size={32} />
             </div>
             <h3 className="text-xl font-bold text-gray-800 mb-2 text-center">QR Code Scan</h3>
             <p className="text-gray-600 text-center">
-              Scan the QR code on your medicine package using your camera
+              Scan or upload the QR code on your medicine package using your camera
             </p>
           </div>
 
           {/* Image Scan Method */}
           <div
             onClick={() => setVerificationMethod('image')}
-            className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500"
+            className="bg-white rounded-xl shadow-lg p-3 md:p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500 sm:h-28 md:h-60 flex flex-col justify-between"
           >
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto">
               <Image className="text-green-600" size={32} />
@@ -119,7 +119,7 @@ const HomePage = ({
           {/* Manual Input Method */}
           <div
             onClick={() => setVerificationMethod('manual')}
-            className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500"
+            className="bg-white rounded-xl shadow-lg p-3 md:p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500 sm:h-28 md:h-60 flex flex-col justify-between"
           >
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto">
               <FileText className="text-green-600" size={32} />
@@ -133,12 +133,12 @@ const HomePage = ({
           {/* Search Method */}
           <div
             onClick={() => setVerificationMethod('search')}
-            className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500"
+            className="bg-white rounded-xl shadow-lg p-3 md:p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500 sm:h-28 md:h-60 flex flex-col justify-between"
           >
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto">
               <Search className="text-green-600" size={32} />
             </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2 text-center">Search Database</h3>
+            <h3 className="text-xl font-bold text-gray-800 mb-2 text-center">Search</h3>
             <p className="text-gray-600 text-center">
               Search for medicines by name, manufacturer, or NAFDAC number
             </p>
