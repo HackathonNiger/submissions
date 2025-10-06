@@ -25,6 +25,13 @@ interface UserData {
   hospitalAddress?: string;
   specialization?: string;
   licenseNumber?: string;
+
+  // ✅ Add this
+  vitals?: {
+    name: string;
+    value: number | string;
+    unit?: string;
+  }[];
 }
 
 interface UserContextType {
@@ -34,7 +41,9 @@ interface UserContextType {
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const UserProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [user, setUserState] = useState<UserData | null>(() => {
     const savedUser = localStorage.getItem("user");
     return savedUser ? JSON.parse(savedUser) : null;
@@ -49,7 +58,11 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider value={{ user, setUser }}>
+      {children}
+    </UserContext.Provider>
+  );
 };
 
 export const useUser = (): UserContextType => {

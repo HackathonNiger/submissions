@@ -1,24 +1,25 @@
-// getGeminiResponse.ts
 import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({
   apiKey: import.meta.env.VITE_GEMINI_API_KEY as string,
 });
 
-// --- 1. Fetch live vitals ---
+// --- Keep conversation memory in this array ---
+let conversationHistory: { role: "user" | "model"; content: string }[] = [];
+
+// --- Fetch live vitals ---
 async function fetchVitals() {
   try {
     const res = await fetch("https://vitalink.pythonanywhere.com/pull");
     if (!res.ok) throw new Error("Failed to fetch vitals");
-    const data = await res.json();
-    return data;
+    return await res.json();
   } catch (error) {
     console.error("Vitals fetch error:", error);
     return null;
   }
 }
 
-// --- 2. Helper: Create summary and flags for abnormal vitals ---
+// --- Analyze vitals for abnormalities ---
 function analyzeVitals(vitals: any) {
   if (!vitals) return "No vitals available.";
 
@@ -39,7 +40,7 @@ function analyzeVitals(vitals: any) {
     : "All vitals appear within normal range.";
 }
 
-// --- 3. Main Gemini function ---
+// --- Main Gemini call ---
 export const getGeminiResponse = async (message: string) => {
   try {
     const vitals = await fetchVitals();
@@ -57,45 +58,68 @@ ${analyzeVitals(vitals)}
 `
       : "No vitals data available (API unreachable).";
 
-    // --- 4. Send to Gemini ---
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
-      contents: [
-        {
-          role: "user",
-          parts: [
-            {
-              text: `
-You are "Vitalink Health Bot" — an empathetic, wellness-focused assistant.
+    // --- Add new user message to history ---
+    conversationHistory.push({
+      role: "user",
+      content: message,
+    });
 
-Below is the user's **real-time health data** from their monitoring device:
+    // --- Construct chat context with memory ---
+    const chatContext = [
+      {
+        role: "user",
+        parts: [
+          {
+            text: `
+You are "Vitalink Health Bot" — an empathetic, wellness-focused assistant.
+Below is the user's real-time health data:
 ${vitalsSummary}
 
 Your role:
-- Use the live vitals above to answer questions naturally.
-- If vitals are outside normal range, explain what it might mean and offer friendly, actionable advice (e.g., rest, hydration, deep breathing).
-- If vitals are normal, reassure and encourage healthy maintenance.
-- If the user asks about non-health topics, reply:
-  "I'm designed to focus on health and wellbeing. Could you ask me something health-related?"
-- Never diagnose or prescribe treatment — just educate, guide, and encourage.
+- Use vitals to guide conversations about physical and mental health when necessary.
+- Be encouraging and empathetic when the user expresses stress, anxiety, or sadness.
+- Suggest general mental wellness practices (like rest, mindfulness, journaling, or talking to someone).
+- If vitals are abnormal, explain what it might indicate and give kind, simple advice.
+- Never diagnose or prescribe; only guide, reassure, and encourage.
+- Stay conversational and remember context from this chat.
+
+Conversation so far:
+${conversationHistory
+  .map((msg) => `${msg.role === "user" ? "User" : "AI"}: ${msg.content}`)
+  .join("\n")}
 
 User: ${message}
 AI:
-              `,
-            },
-          ],
-        },
-      ],
+          `,
+          },
+        ],
+      },
+    ];
+
+    const response = await ai.models.generateContent({
+      model: "gemini-2.0-flash",
+      contents: chatContext,
     });
 
     const text =
       response?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "I'm here to help, but I couldn't get a response right now.";
+      "I'm here for you, but I couldn’t get a response right now.";
+
+    // --- Add AI reply to history ---
+    conversationHistory.push({
+      role: "model",
+      content: text,
+    });
 
     console.log("Gemini response:", text);
     return text;
   } catch (error) {
     console.error("Gemini API error:", error);
-    return "Sorry, I'm having trouble responding right now. Please try again later.";
+    return "Sorry, I’m having trouble responding right now. Please try again later.";
   }
+};
+
+// --- Reset conversation memory when needed ---
+export const resetConversation = () => {
+  conversationHistory = [];
 };

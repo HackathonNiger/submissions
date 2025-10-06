@@ -8,6 +8,7 @@ import { Input } from "../../../ui/input";
 import { RiRobot2Fill } from "react-icons/ri";
 
 import { getGeminiResponse } from "../../../../services/gemini";
+import { useUser } from "../../../../contexts/UserContext";
 
 interface Message {
   id: string;
@@ -18,6 +19,7 @@ interface Message {
 }
 
 const ChatUI = () => {
+  const { user } = useUser();
   const location = useLocation();
   const isBot = location.pathname.includes("/bot/");
   const [newMessage, setNewMessage] = useState("");
@@ -26,9 +28,11 @@ const ChatUI = () => {
     {
       id: "1",
       sender: "bot",
-      content:
-        "Hello John! How are you feeling today? I've reviewed your latest vitals and they look good.",
-      timestamp: "10:30 AM",
+      content: `Hello ${user?.username} How are you feeling today?`,
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
       type: "text",
     },
   ]);
@@ -48,7 +52,7 @@ const ChatUI = () => {
 
       setMessages((prev) => [...prev, patientMessage]);
       setNewMessage("");
-      setLoading(true); // ✅ Start loader
+      setLoading(true);
 
       try {
         const botReply = await getGeminiResponse(newMessage);
@@ -68,7 +72,7 @@ const ChatUI = () => {
       } catch (error) {
         console.error("Error fetching bot response:", error);
       } finally {
-        setLoading(false); // ✅ Stop loader
+        setLoading(false);
       }
     }
   };
@@ -85,7 +89,7 @@ const ChatUI = () => {
             <SidebarTrigger className="mr-4" />
             <div className="flex-1">
               <h1 className="text-2xl font-bold text-foreground">Chat</h1>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground hidden md:flex">
                 Secure messaging with your mental health chatbot
               </p>
             </div>
@@ -113,14 +117,13 @@ const ChatUI = () => {
                   <Button
                     // onClick={handleUpdateVitals}
                     variant="secondary"
-                    className="bg-green-600 text-white hover:bg-green-700"
+                    className="bg-green-600 text-white hover:bg-green-700 hidden md:block"
                   >
                     Update Vitals
                   </Button>
                 </div>
               </div>
 
-              {/* Messages */}
               {/* Messages */}
               <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {messages.map((message) => (
@@ -169,7 +172,6 @@ const ChatUI = () => {
                       <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
                       <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></span>
                     </div>
-                    {/* <span>typing...</span> */}
                   </div>
                 )}
               </div>
@@ -194,7 +196,7 @@ const ChatUI = () => {
                     <Send className="h-4 w-4" />
                   </Button>
                 </div>
-                <p className="text-xs text-muted-foreground mt-2 px-2">
+                <p className="text-xs text-center md:text-left text-muted-foreground mt-2 px-2">
                   All messages are encrypted and HIPAA compliant
                 </p>
               </div>
