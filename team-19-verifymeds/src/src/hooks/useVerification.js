@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { mockDatabase } from '../data/mockDatabase';
+import nafdacData from '../data/nafdac.json';
 import jsQR from 'jsqr';
 import { createWorker } from 'tesseract.js';
 
@@ -17,43 +17,27 @@ const useVerification = () => {
   const searchProducts = (searchTerm) => {
     if (!searchTerm || searchTerm.length < 2) return [];
 
-    const results = mockDatabase.filter(item =>
-      item.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.manufacturer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.nafdacNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (item.activeIngredients && item.activeIngredients.toLowerCase().includes(searchTerm.toLowerCase()))
+    const results = nafdacData.filter(item =>
+      item['Product Name'].toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.Manufacturer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item['Nafdac Reg. Number'].toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (item['Active Ingredients'] && item['Active Ingredients'].toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
     // Sort by relevance (prioritize product name matches)
     const sortedResults = results.sort((a, b) => {
-      const aName = a.productName.toLowerCase().indexOf(searchTerm.toLowerCase());
-      const bName = b.productName.toLowerCase().indexOf(searchTerm.toLowerCase());
+      const aName = a['Product Name'].toLowerCase().indexOf(searchTerm.toLowerCase());
+      const bName = b['Product Name'].toLowerCase().indexOf(searchTerm.toLowerCase());
 
       if (aName === 0 && bName !== 0) return -1;
       if (bName === 0 && aName !== 0) return 1;
 
-      return a.productName.localeCompare(b.productName);
+      return a['Product Name'].localeCompare(b['Product Name']);
     });
 
     return sortedResults.slice(0, 15); // Limit to 15 results for better UX
   };
 
-  // Check if product is expired or expiring soon
-  const checkExpiryStatus = (expiryDate) => {
-    if (!expiryDate) return { status: 'unknown', daysUntilExpiry: null };
-
-    const today = new Date();
-    const expiry = new Date(expiryDate);
-    const daysUntilExpiry = Math.ceil((expiry - today) / (1000 * 60 * 60 * 24));
-
-    if (daysUntilExpiry < 0) {
-      return { status: 'expired', daysUntilExpiry };
-    } else if (daysUntilExpiry <= 90) {
-      return { status: 'expiring_soon', daysUntilExpiry };
-    } else {
-      return { status: 'valid', daysUntilExpiry };
-    }
-  };
 
   // Verification function
   const verifyMedicine = (searchTerm, searchType) => {
@@ -65,46 +49,39 @@ const useVerification = () => {
           let result = null;
 
           if (searchType === 'qrCode') {
-            result = mockDatabase.find(item => item.qrCode === searchTerm);
+            // QR codes are not available in the real data
+            setVerificationResult({ status: 'qr_not_found' });
+            setIsProcessing(false);
+            return;
           } else if (searchType === 'nafdac') {
-            result = mockDatabase.find(item =>
-              item.nafdacNo.toLowerCase() === searchTerm.toLowerCase()
+            result = nafdacData.find(item =>
+              item['Nafdac Reg. Number'].toLowerCase() === searchTerm.toLowerCase()
             );
           } else if (searchType === 'batch') {
-            result = mockDatabase.find(item =>
-              item.batchNo.toLowerCase() === searchTerm.toLowerCase()
-            );
+            // Batch numbers are not available in the real data
+            setVerificationResult({ status: 'batch_not_found' });
+            setIsProcessing(false);
+            return;
           } else if (searchType === 'ocr') {
-            // Simulate OCR extraction
-            const found = mockDatabase.find(item =>
-              searchTerm.includes(item.nafdacNo) || searchTerm.includes(item.batchNo)
+            // Simulate OCR extraction - search for NAFDAC number in text
+            const found = nafdacData.find(item =>
+              searchTerm.includes(item['Nafdac Reg. Number'])
             );
             result = found;
           }
 
           if (result) {
-            // Add expiry status to result
-            const expiryInfo = checkExpiryStatus(result.expiryDate);
+            // Since we don't have expiry dates in the real data, mark as valid
             result = {
               ...result,
-              expiryStatus: expiryInfo,
-              isExpiringSoon: expiryInfo.status === 'expiring_soon',
-              isExpired: expiryInfo.status === 'expired'
+              expiryStatus: { status: 'valid', daysUntilExpiry: null },
+              isExpiringSoon: false,
+              isExpired: false,
+              status: 'verified'
             };
-
-            // Set status based on expiry
-            if (expiryInfo.status === 'expired') {
-              result.status = 'expired';
-            } else if (expiryInfo.status === 'expiring_soon') {
-              result.status = 'expiring_soon';
-            }
           }
 
-          if (searchType === 'qrCode' && !result) {
-            setVerificationResult({ status: 'qr_not_found' });
-          } else {
-            setVerificationResult(result || { status: 'not_found' });
-          }
+          setVerificationResult(result || { status: 'not_found' });
         } catch (error) {
           console.error('Verification error:', error);
           setVerificationResult({ status: 'verification_error' });
@@ -247,7 +224,14 @@ const useVerification = () => {
   const selectProduct = (product) => {
     setVerificationResult({
       ...product,
-      status: 'verified'
+      status: 'verified',
+      // Map field names to match expected format
+      productName: product['Product Name'],
+      nafdacNo: product['Nafdac Reg. Number'],
+      manufacturer: product.Manufacturer,
+      activeIngredients: product['Active Ingredients'],
+      approvalDate: product['Approval Date'],
+      productStatus: product.Status
     });
     setSearchTerm('');
     setSearchResults([]);
