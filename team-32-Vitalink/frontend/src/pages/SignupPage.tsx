@@ -5,7 +5,7 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Textarea } from "../components/ui/textarea";
-import { Heart, Stethoscope, User } from "lucide-react";
+import { Stethoscope, User } from "lucide-react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { useToast } from "../hooks/use-toast";
 import { FaHeartbeat } from "react-icons/fa";
@@ -30,6 +30,7 @@ const SignUp = () => {
   const [hospitalAddress, setHospitalAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [license, setLicense] = useState("");
+  const [experience, setExperience] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [gender, setGender] = useState("");
   const [emergencyContact, setEmergencyContact] = useState("");
@@ -43,7 +44,7 @@ const SignUp = () => {
       // Generate avatar initials from first and last name
       const avatar = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
 
-      // Set user data in context
+      // Set user data in contex
       if (userType === "patient") {
         setUser({
           name: firstName + " " + lastName,
@@ -56,6 +57,14 @@ const SignUp = () => {
           contact: "",
           address: "",
           license: "",
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          phone: phone,
+          dateOfBirth: dateOfBirth,
+          gender: gender,
+          preferredHospital: preferredHospital,
+          emergencyContact: emergencyContact,
         });
       } else {
         setUser({
@@ -69,6 +78,15 @@ const SignUp = () => {
           address: hospitalAddress,
           username: firstName,
           license: license,
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          phone: phone,
+          experience: experience,
+          hospitalName: hospitalName,
+          hospitalAddress: hospitalAddress,
+          specialization: specialization || "Cardiologist",
+          licenseNumber: license,
         });
       }
 
@@ -201,7 +219,7 @@ const SignUp = () => {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="experience">Years of Experience</Label>
-                      <Select required>
+                      <Select value={experience} onValueChange={setExperience} required>
                         <SelectTrigger>
                           <SelectValue placeholder="Select experience" />
                         </SelectTrigger>
@@ -229,11 +247,11 @@ const SignUp = () => {
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="dateOfBirth">Date of Birth</Label>
-                      <Input id="dateOfBirth" type="date" required />
+                      <Input id="dateOfBirth" type="date" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} required />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="gender">Gender</Label>
-                      <Select required>
+                      <Select value={gender} onValueChange={setGender} required>
                         <SelectTrigger>
                           <SelectValue placeholder="Select gender" />
                         </SelectTrigger>
@@ -265,7 +283,13 @@ const SignUp = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="emergencyContact">Emergency Contact</Label>
-                    <Input id="emergencyContact" placeholder="Contact name and phone" required />
+                    <Input
+                      id="emergencyContact"
+                      value={emergencyContact}
+                      onChange={(e) => setEmergencyContact(e.target.value)}
+                      placeholder="Contact name and phone"
+                      required
+                    />
                   </div>
                 </>
               )}

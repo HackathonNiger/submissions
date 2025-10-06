@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "../ui/sidebar";
-import { LayoutDashboard, MessageCircle, Brain, Settings, Heart, LogOut } from "lucide-react";
+import { LayoutDashboard, MessageCircle, Settings, LogOut } from "lucide-react";
 import { Button } from "../ui/button";
 import { useUser } from "../../contexts/UserContext";
 import { FaHeartbeat } from "react-icons/fa";
@@ -18,7 +18,6 @@ import { FaHeartbeat } from "react-icons/fa";
 const navigationItems = [
   { title: "Dashboard", url: "/patient/dashboard", icon: LayoutDashboard },
   { title: "Chat", url: "/patient/chat", icon: MessageCircle },
-  { title: "AI Suggestions", url: "/patient/suggestions", icon: Brain },
   { title: "Settings", url: "/patient/settings", icon: Settings },
 ];
 

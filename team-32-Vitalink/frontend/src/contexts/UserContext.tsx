@@ -12,6 +12,19 @@ interface UserData {
   specs: string;
   address: string;
   license: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  dateOfBirth?: string;
+  gender?: string;
+  preferredHospital?: string;
+  emergencyContact?: string;
+  experience?: string;
+  hospitalName?: string;
+  hospitalAddress?: string;
+  specialization?: string;
+  licenseNumber?: string;
 }
 
 interface UserContextType {

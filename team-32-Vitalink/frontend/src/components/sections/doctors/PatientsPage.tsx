@@ -1,6 +1,6 @@
-import { useMoveBack } from "../hooks/useMoveBack";
+import { useMoveBack } from "../../../hooks/useMoveBack";
 
-export default function SettingsPage() {
+export default function PatientsPage() {
   const moveBack = useMoveBack();
 
   return (
