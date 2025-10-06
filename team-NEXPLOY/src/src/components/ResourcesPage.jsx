@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-import React from 'react'
-
-const ResourcesPage = () => {
-  return (
-    <div>ResourcesPage</div>
-  )
-}
-
-export default ResourcesPage
-=======
 import { Book, AlertTriangle } from 'lucide-react';
 import Navigation from './Navigation';
 import logo from '../assets/VerifyMedsLogo.png'
@@ -106,4 +95,3 @@ const ResourcesPage = ({ currentPage, setCurrentPage, resetVerification }) => (
 );
 
 export default ResourcesPage;
->>>>>>> ce4f729e2c400200517d21f26deadd9b0c510526

@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-import React from 'react'
-
-const CameraModal = () => {
-  return (
-    <div>CameraModal</div>
-  )
-}
-
-export default CameraModal
-=======
 import { useState, useRef, useEffect } from 'react';
 import { Camera, X, Check, SwitchCamera } from 'lucide-react';
 import {
@@ -197,4 +186,3 @@ const CameraModal = ({ isOpen, onClose, onCapture, title = "Take Photo" }) => {
 };
 
 export default CameraModal;
->>>>>>> ce4f729e2c400200517d21f26deadd9b0c510526
