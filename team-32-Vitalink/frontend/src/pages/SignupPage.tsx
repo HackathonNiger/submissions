@@ -10,12 +10,14 @@ import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { useToast } from "../hooks/use-toast";
 import { FaHeartbeat } from "react-icons/fa";
 import { useUser } from "../contexts/UserContext";
+import { usePatients } from "../contexts/PatientsContext";
 
 const SignUp = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { setUser } = useUser();
+  const { addPatient } = usePatients();
   const [userType, setUserType] = useState(searchParams.get("type") || "patient");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -46,9 +48,55 @@ const SignUp = () => {
 
       // Set user data in contex
       if (userType === "patient") {
+        const patientId = `P-${Date.now()}`;
+        const patientData = {
+          id: patientId,
+          name: firstName + " " + lastName,
+          avatar: avatar,
+          age: new Date().getFullYear() - new Date(dateOfBirth).getFullYear(),
+          gender: gender.charAt(0).toUpperCase() + gender.slice(1),
+          email: email,
+          phone: phone,
+          address: "123 Main St, New York, NY 10001", // Default address, could be made configurable
+          bloodType: "O+", // Default blood type, could be made configurable
+          deviceId: `DEV-${patientId}`,
+          preferredHospital: preferredHospital || "City General Hospital",
+          emergencyContact: {
+            name: emergencyContact.split(" ")[0] || "Emergency Contact",
+            relationship: "Emergency Contact",
+            phone: emergencyContact.split(" ").slice(1).join(" ") || phone,
+          },
+          currentVitals: {
+            systolic: 120,
+            diastolic: 80,
+            heartRate: 72,
+            temperature: 98.6,
+            bloodSugar: 95,
+            oxygenSaturation: 98,
+            lastUpdated: new Date().toISOString(),
+          },
+          recentReadings: [
+            {
+              date: new Date().toISOString().split("T")[0],
+              time: new Date().toLocaleTimeString(),
+              heartRate: 72,
+              bloodPressure: "120/80",
+              temperature: 98.6,
+              status: "normal",
+            },
+          ],
+          lastReading: "Just now",
+          status: "normal" as const,
+          vitals: {
+            heartRate: 72,
+            bloodPressure: "120/80",
+            temperature: 98.6,
+          },
+        };
+
         setUser({
           name: firstName + " " + lastName,
-          patientId: "#P-2024-001247",
+          patientId: `#${patientId}`,
           hospital: preferredHospital || "City General Hospital",
           doctor: "Dr. Sarah Johnson",
           avatar: avatar,
@@ -66,6 +114,9 @@ const SignUp = () => {
           preferredHospital: preferredHospital,
           emergencyContact: emergencyContact,
         });
+
+        // Add patient to patients context so doctors can see them
+        addPatient(patientData);
       } else {
         setUser({
           patientId: "",
