@@ -7,7 +7,7 @@ import { Button } from "../../../ui/button";
 import { Input } from "../../../ui/input";
 import { RiRobot2Fill } from "react-icons/ri";
 
-import { getGeminiResponse, saveVitals } from "../../../../services/gemini";
+import { getGeminiResponse } from "../../../../services/gemini";
 
 interface Message {
   id: string;
@@ -21,6 +21,7 @@ const ChatUI = () => {
   const location = useLocation();
   const isBot = location.pathname.includes("/bot/");
   const [newMessage, setNewMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -31,16 +32,6 @@ const ChatUI = () => {
       type: "text",
     },
   ]);
-
-  // ✅ Add vitals to localStorage (you can update dynamically)
-  const handleUpdateVitals = () => {
-    saveVitals({
-      heartRate: 76,
-      bloodPressure: "118/79",
-      bmi: 23.1,
-    });
-    alert("Vitals updated! The bot will now consider them in replies.");
-  };
 
   const handleSendMessage = async () => {
     if (newMessage.trim()) {
@@ -57,9 +48,9 @@ const ChatUI = () => {
 
       setMessages((prev) => [...prev, patientMessage]);
       setNewMessage("");
+      setLoading(true); // ✅ Start loader
 
       try {
-        // ✅ Get AI response (includes vitals context)
         const botReply = await getGeminiResponse(newMessage);
 
         const botMessage: Message = {
@@ -76,6 +67,8 @@ const ChatUI = () => {
         setMessages((prev) => [...prev, botMessage]);
       } catch (error) {
         console.error("Error fetching bot response:", error);
+      } finally {
+        setLoading(false); // ✅ Stop loader
       }
     }
   };
@@ -118,7 +111,7 @@ const ChatUI = () => {
                   <Button variant="outline">New Conversation</Button>
                   {/* ✅ Update vitals manually */}
                   <Button
-                    onClick={handleUpdateVitals}
+                    // onClick={handleUpdateVitals}
                     variant="secondary"
                     className="bg-green-600 text-white hover:bg-green-700"
                   >
@@ -127,6 +120,7 @@ const ChatUI = () => {
                 </div>
               </div>
 
+              {/* Messages */}
               {/* Messages */}
               <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {messages.map((message) => (
@@ -165,6 +159,19 @@ const ChatUI = () => {
                     </div>
                   </div>
                 ))}
+
+                {/* ✅ Bot Typing Indicator */}
+                {loading && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <RiRobot2Fill size={20} className="text-blue-600" />
+                    <div className="flex space-x-1">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                      <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                      <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></span>
+                    </div>
+                    {/* <span>typing...</span> */}
+                  </div>
+                )}
               </div>
 
               {/* Message Input */}

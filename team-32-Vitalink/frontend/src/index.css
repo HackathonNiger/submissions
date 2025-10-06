@@ -92,6 +92,31 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.loader {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 32px 0 #fff, -32px 0 #fff;
+  position: relative;
+  animation: flash 0.5s ease-out infinite alternate;
+}
+
+@keyframes flash {
+  0% {
+    background-color: #fff2;
+    box-shadow: 32px 0 #fff2, -32px 0 #fff;
+  }
+  50% {
+    background-color: #fff;
+    box-shadow: 32px 0 #fff2, -32px 0 #fff2;
+  }
+  100% {
+    background-color: #fff2;
+    box-shadow: 32px 0 #fff, -32px 0 #fff2;
+  }
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -227,10 +252,22 @@ button:focus-visible {
     --ring: 213 100% 58%;
 
     /* Modern Healthcare gradients - Very subtle */
-    --gradient-primary: linear-gradient(135deg, hsl(213 100% 58%), hsl(195 100% 65%));
-    --gradient-hero: linear-gradient(135deg, hsl(213 100% 96%), hsl(195 100% 94%));
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(213 100% 58%),
+      hsl(195 100% 65%)
+    );
+    --gradient-hero: linear-gradient(
+      135deg,
+      hsl(213 100% 96%),
+      hsl(195 100% 94%)
+    );
     --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(210 100% 98%));
-    --gradient-light: linear-gradient(135deg, hsl(213 100% 98%), hsl(195 100% 96%));
+    --gradient-light: linear-gradient(
+      135deg,
+      hsl(213 100% 98%),
+      hsl(195 100% 96%)
+    );
 
     /* Soft shadows - Very subtle */
     --shadow-soft: 0 1px 3px hsl(213 50% 50% / 0.05);
