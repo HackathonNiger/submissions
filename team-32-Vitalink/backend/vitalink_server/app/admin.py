@@ -3,7 +3,7 @@ from .models import *
 
 
 # Register your models here.
-admin.site.site_header = 'Vitalink Admin'                    # default: "Django Administration"
+admin.site.site_header = 'Vitalink Database'                    # default: "Django Administration"
 admin.site.index_title = 'Monitor Prev Data'                 # default: "Site administration"
 admin.site.site_title = 'Vitalink history data monitor'                  # default: "Django site admin"
 

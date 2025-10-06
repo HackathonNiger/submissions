@@ -13,6 +13,6 @@ class VitalinkRecord(models.Model):
     spo2 = models.IntegerField("Oxygen Saturation")
     temp = models.FloatField("Body Temperature")
     bpm = models.IntegerField("Heartbeat Rate")
-    alert = models.CharField("AI Alert message", max_length=300)
+    alert = models.CharField("AI Alert message", max_length=10000)
     sbp = models.IntegerField("Systolic Blood Pressure")
     dbp = models.IntegerField("Diastolic Blood Pressure")
