@@ -87,17 +87,11 @@ export default function RecentVitals() {
     <div>
       <div className="">
         <div className="w-full flex justify-between items-center mb-3">
-          <h3 className="text-xl font-semibold text-foreground">
-            Recent Vitals
-          </h3>
+          <h3 className="text-xl font-semibold text-foreground">Recent Vitals</h3>
 
           <div className="flex items-center space-x-4">
-            <p>Check vitals :</p>
-            <Button
-              variant="outline"
-              size="sm"
-              className="text-red-700 hover:text-red-600"
-            >
+            <p className="md:block hidden">Check vitals :</p>
+            <Button variant="outline" size="sm" className="text-red-700 hover:text-red-600">
               <span className="md:block hidden text-3xl">•</span>
               Device not connected
             </Button>
@@ -106,10 +100,7 @@ export default function RecentVitals() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {recentVitals.map((vital, index) => (
-            <Card
-              key={index}
-              className="shadow-soft hover:shadow-medium transition-all duration-300"
-            >
+            <Card key={index} className="shadow-soft hover:shadow-medium transition-all duration-300">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <vital.icon
@@ -125,28 +116,18 @@ export default function RecentVitals() {
                         : "text-green-500"
                     }`}
                   />
-                  <div
-                    className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(
-                      vital.status
-                    )}`}
-                  >
+                  <div className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(vital.status)}`}>
                     {getStatusLabel(vital.status)}
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <h4 className="font-medium text-foreground mb-1">
-                  {vital.name}
-                </h4>
+                <h4 className="font-medium text-foreground mb-1">{vital.name}</h4>
                 <div className="text-2xl font-bold text-foreground">
                   {vital.value}
-                  <span className="text-sm text-muted-foreground ml-1">
-                    {vital.unit}
-                  </span>
+                  <span className="text-sm text-muted-foreground ml-1">{vital.unit}</span>
                 </div>
-                <p className="text-xs text-muted-foreground mt-2">
-                  Updated {vital.lastUpdated}
-                </p>
+                <p className="text-xs text-muted-foreground mt-2">Updated {vital.lastUpdated}</p>
               </CardContent>
             </Card>
           ))}
