@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Send, Paperclip, User, User2Icon } from "lucide-react";
+import { Send, Paperclip } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { PatientSidebar } from "../../../sidebars/PatientSidebar";
 import { SidebarProvider, SidebarTrigger } from "../../../ui/sidebar";
 import { Button } from "../../../ui/button";
 import { Input } from "../../../ui/input";
 import { RiRobot2Fill } from "react-icons/ri";
+
+import { getGeminiResponse, saveVitals } from "../../../../services/gemini";
 
 interface Message {
   id: string;
@@ -23,23 +25,58 @@ const ChatUI = () => {
     {
       id: "1",
       sender: "bot",
-      content: "Hello John! How are you feeling today? I've reviewed your latest vitals and they look good.",
+      content:
+        "Hello John! How are you feeling today? I've reviewed your latest vitals and they look good.",
       timestamp: "10:30 AM",
       type: "text",
     },
   ]);
 
-  const handleSendMessage = () => {
+  // ✅ Add vitals to localStorage (you can update dynamically)
+  const handleUpdateVitals = () => {
+    saveVitals({
+      heartRate: 76,
+      bloodPressure: "118/79",
+      bmi: 23.1,
+    });
+    alert("Vitals updated! The bot will now consider them in replies.");
+  };
+
+  const handleSendMessage = async () => {
     if (newMessage.trim()) {
-      const message: Message = {
+      const patientMessage: Message = {
         id: Date.now().toString(),
-        sender: isBot ? "bot" : "patient",
+        sender: "patient",
         content: newMessage,
-        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
         type: "text",
       };
-      setMessages([...messages, message]);
+
+      setMessages((prev) => [...prev, patientMessage]);
       setNewMessage("");
+
+      try {
+        // ✅ Get AI response (includes vitals context)
+        const botReply = await getGeminiResponse(newMessage);
+
+        const botMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          sender: "bot",
+          content: botReply,
+          timestamp: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          type: "text",
+        };
+
+        setMessages((prev) => [...prev, botMessage]);
+      } catch (error) {
+        console.error("Error fetching bot response:", error);
+      }
     }
   };
 
@@ -55,7 +92,9 @@ const ChatUI = () => {
             <SidebarTrigger className="mr-4" />
             <div className="flex-1">
               <h1 className="text-2xl font-bold text-foreground">Chat</h1>
-              <p className="text-sm text-muted-foreground">Secure messaging with your mental health chatbot</p>
+              <p className="text-sm text-muted-foreground">
+                Secure messaging with your mental health chatbot
+              </p>
             </div>
           </header>
 
@@ -74,7 +113,18 @@ const ChatUI = () => {
                     <p className="text-sm text-success">online</p>
                   </div>
                 </div>
-                <Button variant="outline">New Conversation</Button>
+
+                <div className="flex gap-2">
+                  <Button variant="outline">New Conversation</Button>
+                  {/* ✅ Update vitals manually */}
+                  <Button
+                    onClick={handleUpdateVitals}
+                    variant="secondary"
+                    className="bg-green-600 text-white hover:bg-green-700"
+                  >
+                    Update Vitals
+                  </Button>
+                </div>
               </div>
 
               {/* Messages */}
@@ -83,19 +133,20 @@ const ChatUI = () => {
                   <div
                     key={message.id}
                     className={`flex gap-1 ${
-                      (isBot && message.sender === "bot") || (!isBot && message.sender === "patient") ? "justify-end" : "justify-start"
+                      (isBot && message.sender === "bot") ||
+                      (!isBot && message.sender === "patient")
+                        ? "justify-end"
+                        : "justify-start"
                     }`}
                   >
-                    {message.sender === "bot" ? (
-                      <>
-                        <RiRobot2Fill size={20} className="text-blue-600" />
-                      </>
-                    ) : (
-                      <></>
+                    {message.sender === "bot" && (
+                      <RiRobot2Fill size={20} className="text-blue-600 mt-1" />
                     )}
+
                     <div
                       className={`max-w-xs lg:max-w-md px-4 py-3 rounded-lg ${
-                        (isBot && message.sender === "bot") || (!isBot && message.sender === "patient")
+                        (isBot && message.sender === "bot") ||
+                        (!isBot && message.sender === "patient")
                           ? "bg-primary text-primary-foreground"
                           : "bg-accent text-accent-foreground"
                       }`}
@@ -103,7 +154,8 @@ const ChatUI = () => {
                       <p className="text-sm">{message.content}</p>
                       <p
                         className={`text-xs mt-1 ${
-                          (isBot && message.sender === "bot") || (!isBot && message.sender === "patient")
+                          (isBot && message.sender === "bot") ||
+                          (!isBot && message.sender === "patient")
                             ? "text-primary-foreground/70"
                             : "text-accent-foreground/70"
                         }`}
@@ -125,14 +177,19 @@ const ChatUI = () => {
                     placeholder="Type your message..."
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                    onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
                     className="flex-1"
                   />
-                  <Button onClick={handleSendMessage} disabled={!newMessage.trim()}>
+                  <Button
+                    onClick={handleSendMessage}
+                    disabled={!newMessage.trim()}
+                  >
                     <Send className="h-4 w-4" />
                   </Button>
                 </div>
-                <p className="text-xs text-muted-foreground mt-2 px-2">All messages are encrypted and HIPAA compliant</p>
+                <p className="text-xs text-muted-foreground mt-2 px-2">
+                  All messages are encrypted and HIPAA compliant
+                </p>
               </div>
             </div>
           </div>
