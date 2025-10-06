@@ -82,16 +82,16 @@ const PatientSettingsPage = () => {
   };
 
   return (
-    <SidebarProvider>
-      <div className="flex w-full max-w-screen bg-background">
+    <SidebarProvider className="w-screen min-h-screen overflow-hidden h-full">
+      <div className="flex w-full">
         <PatientSidebar />
-        <div className="w-full">
+        <div className="flex-1">
           <header className="h-16 border-b bg-card flex items-center px-4 sm:px-6">
             <SidebarTrigger />
             <h1 className="text-xl sm:text-2xl font-bold ml-4">Settings</h1>
           </header>
 
-          <main className="p-4 sm:p-6 lg:p-8 w-full">
+          <main className="p-6 sm:pr-0 pr-10 max-w-4xl mx-auto">
             <div className="w-full mx-auto space-y-8">
               {/* Profile Settings */}
               <Card className="shadow-sm border border-border">

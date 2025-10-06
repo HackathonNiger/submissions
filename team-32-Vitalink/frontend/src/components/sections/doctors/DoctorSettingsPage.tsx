@@ -78,8 +78,8 @@ const DoctorSettingsPage = () => {
   };
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full">
+    <SidebarProvider className="w-screen min-h-screen overflow-hidden h-full">
+      <div className="flex w-full">
         <DoctorSidebar />
         <div className="flex-1">
           <header className="h-16 border-b bg-card flex items-center px-6">
@@ -87,7 +87,7 @@ const DoctorSettingsPage = () => {
             <h1 className="text-2xl font-bold ml-4">Settings</h1>
           </header>
 
-          <main className="p-6 max-w-4xl mx-auto">
+          <main className="p-6 sm:pr-0 pr-10 max-w-4xl mx-auto">
             <Card>
               <CardHeader>
                 <CardTitle>Profile Settings</CardTitle>
