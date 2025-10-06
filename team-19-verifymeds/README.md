@@ -1,11 +1,11 @@
 # VerifyMeds – QR-powered Drug Authentication  
 
-## 👥 Team Nexploy
+## 👥 Team 19 - VerifyMeds
 
-* **AbdulMuiz Jimoh** – Frontend Developer & Team Lead
-* **Promise Ighedosa** – Frontend Developer & Medical Researcher
-* **Udu Mercy** – Content & Presentation
-* **Sonia Amarachi** – Backend Developer
+* **AbdulMuiz Jimoh** – Frontend Developer & Team Lead - 📧 muayyad822@gmail.com
+* **Promise Ighedosa** – Frontend Developer & Medical Researcher 📧 ighedosapromisei@gmail.com
+* **Udu Mercy** – Content & Presentation - 📧 nonyeroya100l@gmail.com
+* **Sonia Amarachi** – Backend Developer - 📧 soniaamarach24@gmail.com
 
 ---
 ## 🚀 Project Overview  
@@ -30,17 +30,30 @@ Our solution makes it easy for:
 
 ---
 
-## 🛠️ Tech Stack  
-- **Frontend Framework:** [Vite](https://vitejs.dev/) + [React](https://react.dev/)  
-- **Styling:** [Tailwind CSS](https://tailwindcss.com/)  
-- **QR Scanner Library:** [html5-qrcode](https://github.com/mebjas/html5-qrcode)  
-- **Data:** Mock NAFDAC dataset (JSON-based, extendable to live API)  
-- **Version Control:** Git + GitHub  
+## 🛠️ Tech Stack
+- **Frontend Framework:** [Vite](https://vitejs.dev/) + [React](https://react.dev/) (v19.1.1)
+- **Build Tool:** [Vite](https://vitejs.dev/) (v7.1.6)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/) (v4.1.13)
+- **Icons:** [Lucide React](https://lucide.dev/) (v0.544.0)
+- **QR Code Processing:** [jsQR](https://github.com/cozmo/jsQR) (v1.4.0)
+- **OCR (Optical Character Recognition):** [Tesseract.js](https://tesseract.projectnaptha.com/) (v6.0.1)
+- **Camera Access:** Native Web APIs (getUserMedia)
+- **PWA Support:** [Vite PWA Plugin](https://vite-pwa-org.github.io/) + Workbox
+- **Analytics:** [Vercel Analytics](https://vercel.com/docs/analytics)
+- **Data:** NAFDAC dataset (JSON-based, extendable to live API)
+- **Version Control:** Git + GitHub
+- **Code Quality:** ESLint + Prettier
+
+### Progressive Web App (PWA) Features
+- **Offline Support:** Service workers cache app resources for offline functionality
+- **Installable:** Can be installed on mobile devices and desktops as a native app
+- **Camera Integration:** Native camera access for scanning QR codes and images
+- **Responsive Design:** Optimized for mobile, tablet, and desktop devices
+- **Fast Loading:** Vite-optimized build for quick startup and performance
 
 ---
 
-
-## ⚡ Getting Started  
+## ⚡ Getting Started
 
 ### 1. Clone the Repository  
 
@@ -60,16 +73,47 @@ npm install
 npm run dev
 
 
-## 📊 Usage Flow
+## 📊 How the App Works
 
-1. **Open the app** on your phone or desktop.
-2. **Scan the QR code** on the drug packaging.
-3. The app checks the QR code against the **mock NAFDAC dataset**.
-4. **Result displayed:**
+### Verification Methods
 
-   * ✅ Green → Authentic drug.
-   * ❌ Red → Fake or expired drug.
-5. **Extra options:** View expiry alerts, side effects, dosage, or report suspicious drugs.
+**1. QR Code Scanning**
+- User opens camera modal and captures photo of QR code on drug packaging
+- App uses **jsQR** library to decode the QR code data
+- Decoded data is verified against NAFDAC database
+- Results show authenticity, expiry status, and drug details
+
+**2. Image Scanning (OCR)**
+- User opens camera modal and captures photo of drug packaging text
+- App uses **Tesseract.js** for optical character recognition to extract text
+- Extracted text is searched for NAFDAC registration numbers or batch numbers
+- Matching drugs are verified against the database
+
+**3. Manual Input**
+- User enters NAFDAC registration number (format: XX-XXXX or AXX-XXXXXX) or batch number (format: XXX-XXXXXXXX)
+- Direct lookup in NAFDAC database for verification
+
+**4. Search**
+- User searches by drug name, manufacturer, or NAFDAC number
+- Real-time search through NAFDAC dataset with fuzzy matching
+- Click to select and view detailed drug information
+
+### Technical Flow
+
+1. **Camera Access:** Uses WebRTC `getUserMedia` API with mobile-optimized constraints
+2. **Image Processing:** Canvas API for image capture and processing
+3. **QR Decoding:** jsQR processes image data to extract QR code content
+4. **OCR Processing:** Tesseract.js analyzes images to extract readable text
+5. **Data Verification:** Searches JSON-based NAFDAC dataset for matches
+6. **Expiry Calculation:** Compares current date with drug expiry dates
+7. **PWA Features:** Service workers for offline functionality, install prompts
+
+### Result Display
+
+- ✅ **Verified:** Green interface showing authentic drug details
+- ❌ **Counterfeit:** Red interface with reporting options
+- ⚠️ **Warnings:** Yellow alerts for expired or expiring drugs
+- 📊 **Details:** Product name, manufacturer, NAFDAC number, batch number, expiry date, active ingredients
 
 ---
 

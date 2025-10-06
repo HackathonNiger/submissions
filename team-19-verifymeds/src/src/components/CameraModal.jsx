@@ -15,24 +15,19 @@ const CameraModal = ({ isOpen, onClose, onCapture, title = "Take Photo" }) => {
   const [facingMode, setFacingMode] = useState('environment');
   const [hasPermission, setHasPermission] = useState(null);
 
-  // Initialize camera when modal opens
+  // Initialize camera when modal opens or facing mode changes
   useEffect(() => {
     if (isOpen) {
       initializeCamera();
-    } else {
-      // Clean up when modal closes
-      if (stream) {
-        stopCameraStream(stream);
-        setStream(null);
-      }
     }
 
     return () => {
       if (stream) {
         stopCameraStream(stream);
+        setStream(null);
       }
     };
-  }, [isOpen, stream]);
+  }, [isOpen, facingMode]);
 
   const initializeCamera = useCallback(async () => {
     setIsLoading(true);
