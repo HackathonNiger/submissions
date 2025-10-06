@@ -129,7 +129,7 @@ npm run dev
 
 ## 🙏 Acknowledgments
 
-* [Codefest Africa](https://twitter.com/codefestafrica) for organizing this hackathon.
+* [Codefest Africa](https://twitter.com/codefestng) for organizing this hackathon.
 * [NAFDAC](https://www.nafdac.gov.ng/) for inspiring the vision of safer medications.
 * Open-source contributors powering our tech stack.
 
