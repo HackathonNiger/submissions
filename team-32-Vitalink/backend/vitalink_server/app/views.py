@@ -2,7 +2,6 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from app.models import *
 import tensorflow as tf
-from tensorflow.keras.models import load_model
 import os
 import datetime
 import tensorflow as tf
@@ -21,7 +20,7 @@ file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), "model.kera
 # # model.compile(loss = 'mse', optimizer = Adam(learning_rate=0.1), metrics=[RootMeanSquaredError()])
 # model.load_weights(file_path)
 
-model = load_model(file_path)
+model = tf.keras.models.load_model(file_path)
 
 
 # Create your views here.
