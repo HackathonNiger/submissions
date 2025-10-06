@@ -15,20 +15,6 @@ const CameraModal = ({ isOpen, onClose, onCapture, title = "Take Photo" }) => {
   const [facingMode, setFacingMode] = useState('environment');
   const [hasPermission, setHasPermission] = useState(null);
 
-  // Initialize camera when modal opens or facing mode changes
-  useEffect(() => {
-    if (isOpen) {
-      initializeCamera();
-    }
-
-    return () => {
-      if (stream) {
-        stopCameraStream(stream);
-        setStream(null);
-      }
-    };
-  }, [isOpen, facingMode]);
-
   const initializeCamera = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -70,6 +56,20 @@ const CameraModal = ({ isOpen, onClose, onCapture, title = "Take Photo" }) => {
       setIsLoading(false);
     }
   }, [facingMode]);
+
+  // Initialize camera when modal opens or facing mode changes
+  useEffect(() => {
+    if (isOpen) {
+      initializeCamera();
+    }
+
+    return () => {
+      if (stream) {
+        stopCameraStream(stream);
+        setStream(null);
+      }
+    };
+  }, [isOpen, facingMode, initializeCamera, stream]);
 
   const handleCapture = async () => {
     if (!videoRef.current) {
@@ -171,6 +171,7 @@ const CameraModal = ({ isOpen, onClose, onCapture, title = "Take Photo" }) => {
                 playsInline
                 muted
                 className="w-full h-full object-cover"
+                aria-label="Camera preview for scanning"
               />
 
               {/* Camera controls overlay */}

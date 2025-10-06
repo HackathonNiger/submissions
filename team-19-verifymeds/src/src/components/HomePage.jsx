@@ -92,6 +92,10 @@ const HomePage = ({
           <div
             onClick={() => setVerificationMethod('qr')}
             className="bg-white rounded-xl shadow-lg p-3 md:p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500 sm:h-28 md:h-60 flex flex-col"
+            role="button"
+            tabIndex={0}
+            aria-label="Scan QR code on medicine package"
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setVerificationMethod('qr'); } }}
           >
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto">
               <QrCode className="text-green-600" size={32} />
@@ -106,6 +110,10 @@ const HomePage = ({
           <div
             onClick={() => setVerificationMethod('image')}
             className="bg-white rounded-xl shadow-lg p-3 md:p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500 sm:h-28 md:h-60 flex flex-col justify-between"
+            role="button"
+            tabIndex={0}
+            aria-label="Scan image of medicine package"
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setVerificationMethod('image'); } }}
           >
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto">
               <Image className="text-green-600" size={32} />
@@ -120,6 +128,10 @@ const HomePage = ({
           <div
             onClick={() => setVerificationMethod('manual')}
             className="bg-white rounded-xl shadow-lg p-3 md:p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500 sm:h-28 md:h-60 flex flex-col justify-between"
+            role="button"
+            tabIndex={0}
+            aria-label="Enter NAFDAC or batch number manually"
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setVerificationMethod('manual'); } }}
           >
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto">
               <FileText className="text-green-600" size={32} />
@@ -134,6 +146,10 @@ const HomePage = ({
           <div
             onClick={() => setVerificationMethod('search')}
             className="bg-white rounded-xl shadow-lg p-3 md:p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500 sm:h-28 md:h-60 flex flex-col justify-between"
+            role="button"
+            tabIndex={0}
+            aria-label="Search for medicines by name or manufacturer"
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setVerificationMethod('search'); } }}
           >
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto">
               <Search className="text-green-600" size={32} />
@@ -210,6 +226,10 @@ const HomePage = ({
                     key={index}
                     onClick={() => selectProduct(product)}
                     className="p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0"
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Select ${product['Product Name']} by ${product.Manufacturer}`}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectProduct(product); } }}
                   >
                     <div className="font-semibold text-gray-800">{product.productName}</div>
                     <div className="text-sm text-gray-600">{product.manufacturer}</div>
@@ -457,6 +477,27 @@ const HomePage = ({
                 </h2>
                 <p className="text-yellow-600">No readable text found in the image. Please try with a clearer image containing medicine details.</p>
               </>
+            ) : verificationResult.status === 'ocr_low_confidence' ? (
+              <>
+                <AlertTriangle className="mx-auto text-orange-600 mb-4" size={64} />
+                <h2 className="text-3xl font-bold text-orange-700 mb-2">
+                  OCR Result May Be Inaccurate
+                </h2>
+                <p className="text-orange-600 mb-4">{verificationResult.message}</p>
+                <div className="bg-orange-50 p-4 rounded-lg mb-4">
+                  <p className="text-sm text-gray-700">
+                    <strong>Extracted Text:</strong> {verificationResult.extractedText}
+                  </p>
+                </div>
+              </>
+            ) : verificationResult.status === 'ocr_failed' ? (
+              <>
+                <AlertTriangle className="mx-auto text-red-600 mb-4" size={64} />
+                <h2 className="text-3xl font-bold text-red-700 mb-2">
+                  OCR Failed
+                </h2>
+                <p className="text-red-600">{verificationResult.message}</p>
+              </>
             ) : verificationResult.status === 'ocr_error' ? (
               <>
                 <AlertTriangle className="mx-auto text-red-600 mb-4" size={64} />
@@ -584,7 +625,30 @@ const HomePage = ({
           )}
 
           <div className="space-y-3">
-            {(verificationResult.status === 'counterfeit' || verificationResult.status === 'qr_not_found' || verificationResult.status === 'scan_error' || verificationResult.status === 'ocr_no_text' || verificationResult.status === 'ocr_error' || verificationResult.status === 'verification_error' || verificationResult.status === 'system_error') && (
+            {verificationResult.status === 'ocr_low_confidence' && (
+              <button
+                onClick={() => {
+                  setManualInput({ nafdacNo: verificationResult.extractedText, batchNo: '' });
+                  setVerificationMethod('manual');
+                }}
+                className="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+              >
+                Use Extracted Text for Manual Verification
+              </button>
+            )}
+
+            {(verificationResult.status === 'ocr_low_confidence' ||
+              verificationResult.status === 'ocr_failed' ||
+              verificationResult.status === 'ocr_no_text') && (
+              <button
+                onClick={() => setVerificationMethod('manual')}
+                className="w-full bg-green-600 text-white py-4 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+              >
+                Enter Details Manually
+              </button>
+            )}
+
+            {verificationResult.status !== 'verified' && (
               <a
                 href="https://greenbook.nafdac.gov.ng/report/sf"
                 target="_blank"

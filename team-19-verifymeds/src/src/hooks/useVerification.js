@@ -44,51 +44,57 @@ const useVerification = () => {
     try {
       setIsProcessing(true);
 
-      setTimeout(() => {
-        try {
-          let result = null;
+      try {
+        let result = null;
 
-          if (searchType === 'qrCode') {
-            // QR codes are not available in the real data
-            setVerificationResult({ status: 'qr_not_found' });
-            setIsProcessing(false);
-            return;
-          } else if (searchType === 'nafdac') {
-            result = nafdacData.find(item =>
-              item['Nafdac Reg. Number'].toLowerCase() === searchTerm.toLowerCase()
-            );
-          } else if (searchType === 'batch') {
-            // Batch numbers are not available in the real data
-            setVerificationResult({ status: 'batch_not_found' });
-            setIsProcessing(false);
-            return;
-          } else if (searchType === 'ocr') {
-            // Simulate OCR extraction - search for NAFDAC number in text
-            const found = nafdacData.find(item =>
-              searchTerm.includes(item['Nafdac Reg. Number'])
-            );
-            result = found;
-          }
-
-          if (result) {
-            // Since we don't have expiry dates in the real data, mark as valid
-            result = {
-              ...result,
-              expiryStatus: { status: 'valid', daysUntilExpiry: null },
-              isExpiringSoon: false,
-              isExpired: false,
-              status: 'verified'
-            };
-          }
-
-          setVerificationResult(result || { status: 'not_found' });
-        } catch (error) {
-          console.error('Verification error:', error);
-          setVerificationResult({ status: 'verification_error' });
-        } finally {
+        if (searchType === 'qrCode') {
+          // QR codes are not available in the real data
+          setVerificationResult({ status: 'qr_not_found' });
           setIsProcessing(false);
+          return;
+        } else if (searchType === 'nafdac') {
+          result = nafdacData.find(item =>
+            item['Nafdac Reg. Number'].toLowerCase() === searchTerm.toLowerCase()
+          );
+        } else if (searchType === 'batch') {
+          // Batch numbers are not available in the real data
+          setVerificationResult({ status: 'batch_not_found' });
+          setIsProcessing(false);
+          return;
+        } else if (searchType === 'ocr') {
+          // Simulate OCR extraction - search for NAFDAC number in text
+          const found = nafdacData.find(item =>
+            searchTerm.includes(item['Nafdac Reg. Number'])
+          );
+          result = found;
         }
-      }, 1500);
+
+        if (result) {
+          // Since we don't have expiry dates in the real data, mark as valid
+          result = {
+            ...result,
+            status: 'verified',
+            productName: result['Product Name'],
+            nafdacNo: result['Nafdac Reg. Number'],
+            manufacturer: result.Manufacturer,
+            activeIngredients: result['Active Ingredients'],
+            approvalDate: result['Approval Date'],
+            productStatus: result.Status,
+            batchNo: 'N/A', // Add default batch number since not available in data
+            expiryDate: 'N/A', // Add default expiry date since not available in data
+            expiryStatus: { status: 'valid', daysUntilExpiry: null },
+            isExpiringSoon: false,
+            isExpired: false
+          };
+        }
+
+        setVerificationResult(result || { status: 'not_found' });
+      } catch (error) {
+        console.error('Verification error:', error);
+        setVerificationResult({ status: 'verification_error' });
+      } finally {
+        setIsProcessing(false);
+      }
     } catch (error) {
       console.error('Error starting verification:', error);
       setVerificationResult({ status: 'system_error' });
@@ -165,6 +171,35 @@ const useVerification = () => {
     });
   };
 
+  // Preprocess image for better OCR accuracy
+  const preprocessImage = (file) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        // Apply preprocessing: increase contrast, convert to grayscale
+        ctx.filter = 'contrast(1.5) brightness(1.1)';
+        ctx.drawImage(img, 0, 0);
+
+        // Convert to grayscale for better OCR
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        for (let i = 0; i < data.length; i += 4) {
+          const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+          data[i] = data[i + 1] = data[i + 2] = gray;
+        }
+        ctx.putImageData(imageData, 0, 0);
+
+        canvas.toBlob(resolve, 'image/jpeg', 0.9);
+      };
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
   // Handle Image scan (OCR)
   const handleImageScan = async (file) => {
     if (!file) return;
@@ -183,14 +218,28 @@ const useVerification = () => {
     setIsProcessing(true);
 
     try {
+      const processedFile = await preprocessImage(file);
       const worker = await createWorker('eng');
-      const { data: { text } } = await worker.recognize(file);
+      const { data: { text, confidence } } = await worker.recognize(processedFile);
       await worker.terminate();
 
-      if (text.trim()) {
+      if (text.trim() && confidence > 60) {
+        // High confidence: proceed with verification
         verifyMedicine(text, 'ocr');
+      } else if (text.trim() && confidence > 30) {
+        // Medium confidence: show result with warning
+        setVerificationResult({
+          status: 'ocr_low_confidence',
+          extractedText: text.trim(),
+          message: 'OCR result may be inaccurate. Please verify the extracted text and try manual verification if needed.'
+        });
+        setIsProcessing(false);
       } else {
-        setVerificationResult({ status: 'ocr_no_text' });
+        // Low confidence: suggest manual input
+        setVerificationResult({
+          status: 'ocr_failed',
+          message: 'Could not read text clearly from the image. Please try taking a clearer photo or use manual input.'
+        });
         setIsProcessing(false);
       }
     } catch (error) {
@@ -223,7 +272,6 @@ const useVerification = () => {
   // Select a product from search results
   const selectProduct = (product) => {
     setVerificationResult({
-      ...product,
       status: 'verified',
       // Map field names to match expected format
       productName: product['Product Name'],
@@ -231,7 +279,9 @@ const useVerification = () => {
       manufacturer: product.Manufacturer,
       activeIngredients: product['Active Ingredients'],
       approvalDate: product['Approval Date'],
-      productStatus: product.Status
+      productStatus: product.Status,
+      batchNo: 'N/A', // Add default batch number since not available in data
+      expiryDate: 'N/A' // Add default expiry date since not available in data
     });
     setSearchTerm('');
     setSearchResults([]);

@@ -103,6 +103,14 @@ export const capturePhoto = async (videoElement) => {
 
           // Create file from blob
           const file = new File([blob], 'camera-capture.jpg', { type: 'image/jpeg' });
+
+          // Check file size limit (5MB)
+          const maxSize = 5 * 1024 * 1024; // 5MB
+          if (file.size > maxSize) {
+            reject(new Error('Captured image is too large (over 5MB). Please try again with a smaller image.'));
+            return;
+          }
+
           resolve(file);
         } else {
           reject(new Error('Failed to capture image - canvas blob creation failed'));

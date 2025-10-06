@@ -6,6 +6,11 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/test/setup.js',
+  },
   plugins: [
     react(),
     tailwindcss(),
@@ -80,7 +85,20 @@ export default defineConfig({
         prefer_related_applications: false
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg}']
+        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        runtimeCaching: [
+          {
+            urlPattern: /\/data\/.*\.json$/,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'nafdac-data-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 24 * 60 * 60 // 24 hours
+              }
+            }
+          }
+        ]
       },
       devOptions: {
         enabled: true
