@@ -6,6 +6,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import PWAInstallPrompt from './components/PWAInstallPrompt';
 import useVerification from './hooks/useVerification';
 import usePWAInstall from './hooks/usePWAInstall';
+import { Analytics } from "@vercel/analytics/react"
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
@@ -41,6 +42,7 @@ const App = () => {
           />
         )}
         <Footer />
+        <Analytics/>
       </div>
     </ErrorBoundary>
   );

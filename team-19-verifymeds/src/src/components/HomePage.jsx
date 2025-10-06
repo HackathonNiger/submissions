@@ -91,7 +91,7 @@ const HomePage = ({
           {/* QR Code Method */}
           <div
             onClick={() => setVerificationMethod('qr')}
-            className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-transparent hover:border-green-500"
+            className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500"
           >
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto">
               <QrCode className="text-green-600" size={32} />
@@ -105,7 +105,7 @@ const HomePage = ({
           {/* Image Scan Method */}
           <div
             onClick={() => setVerificationMethod('image')}
-            className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-transparent hover:border-green-500"
+            className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500"
           >
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto">
               <Image className="text-green-600" size={32} />
@@ -119,7 +119,7 @@ const HomePage = ({
           {/* Manual Input Method */}
           <div
             onClick={() => setVerificationMethod('manual')}
-            className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-transparent hover:border-green-500"
+            className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500"
           >
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto">
               <FileText className="text-green-600" size={32} />
@@ -133,7 +133,7 @@ const HomePage = ({
           {/* Search Method */}
           <div
             onClick={() => setVerificationMethod('search')}
-            className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-transparent hover:border-green-500"
+            className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500"
           >
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto">
               <Search className="text-green-600" size={32} />
