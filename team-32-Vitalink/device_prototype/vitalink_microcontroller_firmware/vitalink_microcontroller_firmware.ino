@@ -1,4 +1,7 @@
+// C++ firmware that get values such as temp, spo2 and bpm for two sensors max10102 spo2 sensor and ds18b20 temperature sensor
+// it uses the values to make a get request to the python backend at vitalink.pythonanywhere.com with the values and server stores it.
 
+#include <Wire.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <DFRobot_MAX30102.h>
@@ -6,7 +9,16 @@
 #include <HTTPClient.h>
 
 
-#define ONE_WIRE_BUS 2
+
+
+
+#define ONE_WIRE_BUS 4
+#define LED_R 5
+#define LED_G 6
+#define LED_B 7
+#define BUZZER 10
+#define SCL 22
+#define SDA 20
 
 
 
@@ -15,7 +27,9 @@ using namespace std;
 
 
 
-const char *ssid     = "KHS_Engineering_2.4"; // default wifi network the device connects to
+// const char *ssid     = "CavistaHackathon2025";
+// const char *password = "Cavista2025";
+const char *ssid     = "KHS_Engineering_2.4";
 const char *password = "K@dAv0110";
 
 
@@ -35,7 +49,9 @@ int8_t SPO2Valid; //Flag to display if SPO2 calculation is valid
 int32_t heartRate; //Heart-rate
 int8_t heartRateValid; //Flag to display if heart-rate calculation is valid 
 
-int indicator = 15;
+int indicator = 7;
+
+unsigned long pushDataCounter;
 
 
 
@@ -44,6 +60,9 @@ void setup(void)
 {
   // start serial port
   Serial.begin(9600);
+  Wire.begin(SDA, SCL);
+  // Serial2.begin(115200, SERIAL_8N1, 16, 17);
+
   Serial.println("Vitalink Device Boot...");
 
   WiFi.begin(ssid, password);
@@ -66,7 +85,7 @@ void setup(void)
 
   
   while (!particleSensor.begin()) {
-    Serial.println("MAX30102 was not found");
+    // Serial.println("MAX30102 was not found");
     delay(1000);
   }
 
@@ -75,12 +94,36 @@ void setup(void)
                         /*ledMode=*/MODE_MULTILED, /*sampleRate=*/SAMPLERATE_100, \
                         /*pulseWidth=*/PULSEWIDTH_411, /*adcRange=*/ADCRANGE_16384);
 
+
+  pushDataCounter = millis();
 }
 
+
+void updateSerial() {
+  delay(500);
+  while (Serial2.available()) {
+    Serial.write(Serial2.read());
+  }
+  while (Serial.available()) {
+    Serial2.write(Serial.read());
+  }
+}
+
+void sendCMD(String cmd) {
+  Serial2.println(cmd);
+  updateSerial();
+}
 
 
 void loop(void)
 {
+
+  // if (Serial.available()){
+  //   Serial.write(Serial.read());
+  // }
+  // if (Serial2.available()) {
+  //   Serial.write(Serial2.read());
+  // }
 
   temp_sensor.requestTemperatures(); // Send the command to get temperatures
   
@@ -89,9 +132,6 @@ void loop(void)
   // Check if reading was successful
   if (tempC != DEVICE_DISCONNECTED_C) {
     temp = tempC;
-  }
-  else {
-    temp = 35 + random(0, 5000) / 1000.0;
   }
 
   
@@ -108,80 +148,57 @@ void loop(void)
   WiFiClient client;
   HTTPClient http;
 
-  
+  if (WiFi.status() == WL_CONNECTED) {
+    digitalWrite(indicator, HIGH);
 
+    if (millis() - pushDataCounter > 1000) {
+
+      Serial.println("[HTTP] begin..");
+      String url = "http://vitalink.pythonanywhere.com/push?spo2=" + String(spo2) + "&temp=" + String(temp, 2) + "&bpm=" + String(bpm); 
+      Serial.println(url);
+
+      if (http.begin(client, url)) {
+        int httpCode = http.GET();
+
+        if (httpCode > 0) {
+          Serial.println(http.getString());
+        }
+        else {
+          Serial.println("failed");
+        }
+        http.end();
+      }else {
+        Serial.println("Couldn't Connect");
+      }
+
+      pushDataCounter = millis();
+    }
+  } else digitalWrite(indicator, LOW);
+
+  String message = "";
+
+  if (bpm> 90) {
+    message = "Heartbeat rate is too high seek medical attention";
+  }
+  else if (bpm< 60) {
+    message = "Signs of BradyCardia, seek medical attention";
+  }
+  if (temp > 38) {
+    message += ". High temperature, Fever!";
+  }
+  else if (temp <= 35.1) {
+    message += ". Signs of hypothermia";
+  }
+  if (spo2 < 90) {
+    message += ". Hypoxemia signs. seek doctors help quickly.";
+  }
+
+  if (bpm> 90 || bpm < 60 || temp > 38 || temp < 35.1 || spo2 > 90) {
+    // sendCMD("AT");
+    // sendCMD("AT+CMGF=1");
+    // sendCMD("AT+CMGS=\"" + phone_number + "\"");
+    // sendCMD(message);
+    // Serial2.write(26);
+    // sendCMD("");
+  }
 }
-
-// void setup() {
-//   Serial.begin(9600);
-
-//   timeClient.begin();
-//   timeClient.update();
-
-//   for (Road *road : roads) road->init();
-
-// }
-
-
-// void loop() {
-//   if (Serial.available()) {
-//     JsonDocument data;
-//     String data_str = Serial.readStringUntil('\n');
-
-//     deserializeJson(data, data_str);
-
-//     for (int i = 0; i < 3; i++) {
-//       Road* road = roads[i];
-//       road->state = data["states"][i];
-//     }
-//   }
-
-//   for (Road *road : roads) road->update();
-  
-  
-//   if (millis() - sendDataCounter > 1000) {
-//     JsonDocument dense_road; // {"densities": [0, 1, 1]} bools
-//     String dense_road_str;
-//     JsonArray dense_road_arr = dense_road["densities"].to<JsonArray>();
-
-//     for (Road* road : roads) dense_road_arr.add(uint(road->density == 3));
-
-//     serializeJson(dense_road, dense_road_str);
-//     Serial.println("~"+dense_road_str);
-//     sendDataCounter = millis();
-//   }
-
-//   if (WiFi.status() == WL_CONNECTED) {
-//     digitalWrite(LED_BUILTIN, LOW);
-
-//     if (millis() - pushDataCounter > 500) {
-//       JsonDocument data; // data={states:[1,2,3],densities:[3,3,1],count:[1,2,5]}
-//       String data_str;
-
-//       JsonArray states = data["states"].to<JsonArray>();
-//       JsonArray densities = data["densities"].to<JsonArray>();
-//       JsonArray count = data["count"].to<JsonArray>();
-    
-//       for (Road *road : roads) {
-//         states.add(road->state);
-//         densities.add(road->density);
-//         count.add(road->count);
-//       }
-
-//       serializeJson(data, data_str);
-
-//       Serial.println(data_str);
-//       Serial.println("[HTTP] begin..");
-//       if (http.begin(client, "http://tcsmonitor.pythonanywhere.com/push?data=" + data_str)) {
-//         int httpCode = http.GET();
-//         if (httpCode > 0) Serial.println(http.getString());
-//         else Serial.println("failed");
-//         http.end();
-//       }else Serial.println("Couldn't Connect");
-
-//       pushDataCounter = millis();
-//     }
-//   } else digitalWrite(LED_BUILTIN, HIGH);
-
-// }
-
