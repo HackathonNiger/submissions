@@ -6,11 +6,11 @@ import Home from './pages/Home'
 import Auth from './pages/Auth'
 import Dashboard from './pages/Dashboard'
 import Groups from './pages/Groups'
-import GroupDetail from './pages/GroupDetail'
 import Payment from './pages/Payment'
 import Wallet from './pages/Wallet'
 import CreateGroup from './components/groups/CreateGroup'
 import JoinGroup from './components/groups/JoinGroup'
+import Withdraw from './components/wallet/Withdraw'
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -74,14 +74,6 @@ function App() {
               } 
             />
             <Route 
-              path="/groups/:id" 
-              element={
-                <ProtectedRoute>
-                  <GroupDetail />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
               path="/groups/create" 
               element={
                 <ProtectedRoute>
@@ -110,6 +102,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Wallet />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/wallet/withdraw" 
+              element={
+                <ProtectedRoute>
+                  <Withdraw />
                 </ProtectedRoute>
               } 
             />

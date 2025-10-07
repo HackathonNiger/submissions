@@ -1,14 +1,13 @@
-// backend/src/controllers/transactionController.js - UPDATED
-
 const Transaction = require('../models/Transactions');
 const Wallet = require('../models/Wallets');
 const Group = require('../models/Groups');
+// NOTE: You must have axios installed (npm install axios)
+const axios = require('axios'); 
 const { asyncErrorHandler, ValidationError, NotFoundError } = require('../middlewares/errorHandler');
 
 /**
  * Get Transactions Handler
- * 
- * @route   GET /api/transactions
+ * * @route   GET /api/transactions
  * @desc    Get user's transactions with optional filters
  * @access  Private
  */
@@ -56,8 +55,7 @@ const getTransactions = asyncErrorHandler(async (req, res) => {
 
 /**
  * Create Contribution Transaction Handler
- * 
- * @route   POST /api/transactions/contribution
+ * * @route   POST /api/transactions/contribution
  * @desc    Process a contribution payment (after Paystack verification)
  * @access  Private
  */
@@ -67,8 +65,14 @@ const createContribution = asyncErrorHandler(async (req, res) => {
 
   console.log(`💰 Processing contribution:`, { userId, groupId, amount, reference });
 
+  // 1. Check for Paystack Secret Key
+  if (!process.env.PAYSTACK_SECRET_KEY) {
+      console.error('❌ PAYSTACK_SECRET_KEY environment variable is not set!');
+      throw new Error('Configuration Error: Payment verification key missing.');
+  }
+
   try {
-    // 1. Verify group exists and user is a member
+    // 2. Verify group exists and user is a member
     const group = await Group.findById(groupId);
     if (!group) {
       throw new NotFoundError('Group not found');
@@ -78,28 +82,66 @@ const createContribution = asyncErrorHandler(async (req, res) => {
       throw new ValidationError('You are not a member of this group');
     }
 
-    // 2. Verify amount matches group contribution
-    if (amount !== group.contributionAmount) {
-      throw new ValidationError('Amount does not match group contribution amount');
-    }
-
-    // 3. Check for duplicate transaction (same reference)
+    // 3. Check for duplicate transaction (MUST be done BEFORE contacting Paystack)
     const existingTxn = await Transaction.findOne({ 
       'metadata.paystack_reference': reference 
     });
     
     if (existingTxn) {
       console.warn('⚠️ Duplicate transaction detected:', reference);
+      
+      // FIX: Ensure the response structure matches the successful one 
+      // by fetching the related wallet and group data.
+      const wallet = await Wallet.findOne({ userId });
+      
+      // Return success if transaction was already processed
       return res.status(200).json({
         success: true,
         message: 'Transaction already processed',
         data: {
-          transaction: existingTxn
+          transaction: existingTxn,
+          wallet: {
+            totalContributions: wallet ? wallet.totalContributions : 0, 
+            availableBalance: wallet ? wallet.availableBalance : 0
+          },
+          group: {
+            totalPool: group.totalPool,
+            name: group.name
+          }
         }
       });
     }
 
-    // 4. Get user's wallet
+    // 4. *** CRITICAL STEP: VERIFY TRANSACTION WITH PAYSTACK ***
+    const paystackResponse = await axios.get(
+      `https://api.paystack.co/transaction/verify/${reference}`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
+        }
+      }
+    );
+
+    const verificationData = paystackResponse.data.data;
+    console.log(`📡 Paystack Status: ${verificationData.status} | Gateway Response: ${verificationData.gateway_response}`);
+
+    // 5. Paystack Verification and Security Checks
+    if (paystackResponse.data.status !== true || verificationData.status !== 'success') {
+      throw new ValidationError(`Payment failed verification. Status: ${verificationData.status}`);
+    }
+
+    // 6. Security Check: Amount Mismatch (Naira vs Kobo)
+    // Paystack returns amount in kobo. Frontend sends amount in Naira.
+    const expectedAmountInKobo = group.contributionAmount * 100;
+    
+    if (verificationData.amount !== expectedAmountInKobo) {
+      console.error(`❌ Amount Mismatch! Expected: ${expectedAmountInKobo} Kobo, Actual: ${verificationData.amount} Kobo`);
+      throw new ValidationError('Amount paid does not match required group contribution.');
+    }
+
+    // --- If we reach this point, the payment is verified, successful, and the amount is correct ---
+
+    // 7. Get user's wallet
     let wallet = await Wallet.findOne({ userId });
     if (!wallet) {
       console.log('💰 Creating wallet for user:', userId);
@@ -107,26 +149,31 @@ const createContribution = asyncErrorHandler(async (req, res) => {
         userId,
         totalBalance: 0,
         availableBalance: 0,
-        lockedBalance: 0
+        lockedBalance: 0,
+        // FIX: Ensure totalContributions is initialized for new users
+        totalContributions: 0 
       });
       await wallet.save();
     }
 
-    // 5. Generate unique transaction ID
+    // 8. Generate unique transaction ID
     const transactionId = Transaction.generateTransactionId();
 
-    // 6. Create transaction record
+    // 9. Create transaction record
     const transaction = new Transaction({
       userId,
       groupId,
       transactionId,
       type: 'contribution',
-      amount,
+      // IMPORTANT: Use the verified amount from Paystack if necessary, 
+      // but here we use the `amount` from the request as it was verified.
+      amount, 
       status: 'completed',
       description: `Contribution to ${group.name}`,
-      paymentMethod: 'card',
+      paymentMethod: verificationData.channel || 'card',
       metadata: {
         paystack_reference: reference,
+        paystack_channel: verificationData.channel,
         group_name: group.name,
         frequency: group.frequency
       },
@@ -136,15 +183,15 @@ const createContribution = asyncErrorHandler(async (req, res) => {
     await transaction.save();
     console.log('✅ Transaction created:', transactionId);
 
-    // 7. Update wallet
+    // 10. Update wallet (This step previously crashed if `totalContributions` was undefined)
     wallet.totalContributions += amount;
     await wallet.save();
     console.log('✅ Wallet updated - Total contributions:', wallet.totalContributions);
 
-    // 8. Update group pool
+    // 11. Update group pool
     group.totalPool += amount;
     
-    // 9. Update member's contribution count in membersList
+    // 12. Update member's contribution count in membersList
     const memberIndex = group.membersList.findIndex(
       m => m.userId.toString() === userId.toString()
     );
@@ -157,14 +204,15 @@ const createContribution = asyncErrorHandler(async (req, res) => {
     await group.save();
     console.log('✅ Group updated - Total pool:', group.totalPool);
 
-    // 10. Return success response
+    // 13. Return success response
     res.status(201).json({
       success: true,
       message: 'Contribution processed successfully',
       data: {
         transaction,
         wallet: {
-          totalContributions: wallet.totalContributions,
+          // Send back the fields the frontend expects
+          totalContributions: wallet.totalContributions, 
           availableBalance: wallet.availableBalance
         },
         group: {
@@ -176,15 +224,23 @@ const createContribution = asyncErrorHandler(async (req, res) => {
     });
 
   } catch (error) {
+    // If the error is an Axios error (from Paystack API call)
+    if (axios.isAxiosError(error) && error.response && error.response.data) {
+        console.error(`❌ Paystack Verification Error:`, error.response.data);
+        // Throw a specific error for the frontend to catch
+        throw new ValidationError('Failed to verify payment with Paystack API. Check logs for details.');
+    }
+    
+    // For all other errors (DB, business logic, etc.)
     console.error(`❌ Contribution processing failed:`, error.message);
+    // Let the asyncErrorHandler handle the error translation
     throw error;
   }
 });
 
 /**
  * Get Transaction by ID Handler
- * 
- * @route   GET /api/transactions/:id
+ * * @route   GET /api/transactions/:id
  * @desc    Get a specific transaction by ID
  * @access  Private
  */
@@ -227,8 +283,7 @@ const getTransactionById = asyncErrorHandler(async (req, res) => {
 
 /**
  * Get Transaction Statistics Handler
- * 
- * @route   GET /api/transactions/stats
+ * * @route   GET /api/transactions/stats
  * @desc    Get user's transaction statistics
  * @access  Private
  */

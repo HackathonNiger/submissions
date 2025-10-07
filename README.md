@@ -16,12 +16,12 @@ To submit your hackathon project:
 2. Create a new folder using your **team name**  
    Folder format:  
 
-submissions/team-yourteamname/
+   submissions/team-yourteamname/
 
 3. Inside your folder, add:
-- `README.md` describing your project
-- Your source code
-- Optional screenshots or demo files
+   - `README.md` describing your project  
+   - Your source code  
+   - Optional screenshots or demo files  
 
 4. Commit your changes and **open a Pull Request** to this repo's `main` branch
 
@@ -34,6 +34,8 @@ submissions/team-phoenix/
 ├── src/
 └── demo.gif
 
+yaml
+Copy code
 
 ---
 
@@ -57,18 +59,17 @@ Use one of our ready-made starter kits to get up and running quickly:
 
 ## 🧠 Tips
 
-- You can work as a team 
-- Make sure your folder name is unique
-- Submissions will be reviewed directly from your PR
+- You can work as a team  
+- Make sure your folder name is unique  
+- Submissions will be reviewed directly from your PR  
 
 ---
 
 ## 🤝 Questions?
 
 Need help or stuck?  
-Reach out in the [official Codefest Hackathon group](#) or contact us at [codefestnigeriahackathon@gmail.com]
+Reach out in the [official Codefest Hackathon group](#) or contact us at [codefestnigeriahackathon@gmail.com]  
 
 ---
 
 Let’s build for Nigeria and break a world record 🌍🔥
-
