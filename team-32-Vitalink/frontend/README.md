@@ -221,6 +221,7 @@ The application is configured for deployment on Vercel with SPA routing:
 
 ### Development Guidelines
 
+- Use Lovable AI for UI inspiration
 - Use TypeScript for type safety
 - Follow ESLint configuration
 - Write descriptive commit messages
