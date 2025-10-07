@@ -52,7 +52,7 @@ Try the live application at: [verifymeds.vercel.app](https://verifymeds.vercel.a
 ### Progressive Web App (PWA) Features
 - **Offline Support:** Service workers cache app resources for offline functionality
 - **Installable:** Can be installed on mobile devices and desktops as a native app
-- **Camera Integration:** Native camera access for scanning QR codes and images
+- **Camera Integration:** Native camera access for scanning QR codes
 - **Responsive Design:** Optimized for mobile, tablet, and desktop devices
 - **Fast Loading:** Vite-optimized build for quick startup and performance
 
@@ -88,17 +88,11 @@ npm run dev
 - Decoded data is verified against NAFDAC database
 - Results show authenticity, expiry status, and drug details
 
-**2. Image Scanning (OCR)**
-- User opens camera modal and captures photo of drug packaging text
-- App uses **Tesseract.js** for optical character recognition to extract text
-- Extracted text is searched for NAFDAC registration numbers or batch numbers
-- Matching drugs are verified against the database
-
-**3. Manual Input**
+**2. Manual Input**
 - User enters NAFDAC registration number (format: XX-XXXX or AXX-XXXXXX) or batch number (format: XXX-XXXXXXXX)
 - Direct lookup in NAFDAC database for verification
 
-**4. Search**
+**3. Search**
 - User searches by drug name, manufacturer, or NAFDAC number
 - Real-time search through NAFDAC dataset with fuzzy matching
 - Click to select and view detailed drug information
@@ -106,12 +100,10 @@ npm run dev
 ### Technical Flow
 
 1. **Camera Access:** Uses WebRTC `getUserMedia` API with mobile-optimized constraints
-2. **Image Processing:** Canvas API for image capture and processing
-3. **QR Decoding:** jsQR processes image data to extract QR code content
-4. **OCR Processing:** Tesseract.js analyzes images to extract readable text
-5. **Data Verification:** Searches JSON-based NAFDAC dataset for matches
-6. **Expiry Calculation:** Compares current date with drug expiry dates
-7. **PWA Features:** Service workers for offline functionality, install prompts
+2. **QR Decoding:** jsQR processes image data to extract QR code content
+3. **Data Verification:** Searches JSON-based NAFDAC dataset for matches
+4. **Expiry Calculation:** Compares current date with drug expiry dates
+5. **PWA Features:** Service workers for offline functionality, install prompts
 
 ### Result Display
 

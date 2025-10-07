@@ -91,7 +91,7 @@ const HomePage = ({
           {/* QR Code Method */}
           <div
             onClick={() => setVerificationMethod('qr')}
-            className="bg-white rounded-xl shadow-lg p-2 md:p-8 w-28 md:w-60 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500 h-50 md:h-60 flex flex-col justify-between"
+            className="bg-white rounded-xl shadow-lg p-6 md:p-8 w-40 md:w-60 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500 h-50 md:h-60 flex flex-col justify-between"
             role="button"
             tabIndex={0}
             aria-label="Scan QR code on medicine package"
@@ -127,7 +127,7 @@ const HomePage = ({
           {/* Manual Input Method */}
           <div
             onClick={() => setVerificationMethod('manual')}
-            className="bg-white rounded-xl shadow-lg p-2 md:p-8 w-28 md:w-60 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500 h-50 md:h-60 flex flex-col justify-between"
+            className="bg-white rounded-xl shadow-lg p-6 md:p-8 w-40 md:w-60 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500 h-50 md:h-60 flex flex-col justify-between"
             role="button"
             tabIndex={0}
             aria-label="Enter NAFDAC or batch number manually"
@@ -145,7 +145,7 @@ const HomePage = ({
           {/* Search Method */}
           <div
             onClick={() => setVerificationMethod('search')}
-            className="bg-white rounded-xl shadow-lg p-2 md:p-8 w-28 md:w-60 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500 h-50 md:h-60 flex flex-col items-center justify-between"
+            className="bg-white rounded-xl shadow-lg p-6 md:p-8 w-40 md:w-60 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500 h-50 md:h-60 flex flex-col items-center justify-between"
             role="button"
             tabIndex={0}
             aria-label="Search for medicines by name or manufacturer"
