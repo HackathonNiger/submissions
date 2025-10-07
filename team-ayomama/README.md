@@ -23,9 +23,6 @@ cd submissions/Backend-Ayomama
 # Install backend dependencies
 npm install
 
-# Create a .env file based on .env.example (see Environment Variables section below)
-cp .env.example .env
-
 # Start the backend server in development mode
 npm run dev
 # Or in production mode
