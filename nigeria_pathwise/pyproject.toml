@@ -1,0 +1,18 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools >= 64"]
+
+[project]
+name = "nigeria_pathwise"
+version = "0.1.0"
+dependencies = [
+  "nvidia-nat[langchain]",
+]
+requires-python = ">=3.11,<3.13"
+description = "Custom NeMo Agent Toolkit Workflow"
+classifiers = ["Programming Language :: Python"]
+
+
+
+[project.entry-points.'nat.components']
+nigeria_pathwise = "nigeria_pathwise.register"

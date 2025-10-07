@@ -1,0 +1,2 @@
+[nat.components]
+nigeria_pathwise = nigeria_pathwise.register

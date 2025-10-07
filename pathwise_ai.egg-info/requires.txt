@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+nvidia-nat>=1.2.0
+
+[dev]
+pytest
+black
+isort
+flake8
