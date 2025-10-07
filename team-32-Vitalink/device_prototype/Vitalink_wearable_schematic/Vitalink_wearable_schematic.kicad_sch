@@ -6,7 +6,7 @@
 	(paper "A4")
 	(title_block
 		(title "VITALINK WEARABLE DEVICE SCHEMATIC DESIGN")
-		(date "2025-10-05")
+		(date "2025-10-04")
 		(rev "first revision")
 		(company "TEAM VITALINK")
 		(comment 1 "The schematic of the wearble device by Team Vitalink for the Codefest Hackathon 2025")
