@@ -103,4 +103,4 @@ Feel free to open issues or submit pull requests. Any contributions are welcome!
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+This project is not yet licensed.
