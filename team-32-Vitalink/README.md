@@ -9,7 +9,7 @@ The Vitalink link solution provides mental health support through a specialized 
 ## System Architecture:
 The entire system architecture can be summarised with this diagram.
 
-![](/images/Vitalink_System_Achitecture.drawio.png)
+![](images/Vitalink_System_Achitecture.drawio.png)
 
 
 ## 
