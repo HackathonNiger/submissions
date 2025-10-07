@@ -1,6 +1,12 @@
 import React, { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
 
+interface VitalData {
+  name: string;
+  value: number | string;
+  unit?: string;
+}
+
 interface UserData {
   name: string;
   patientId: string;
@@ -25,18 +31,13 @@ interface UserData {
   hospitalAddress?: string;
   specialization?: string;
   licenseNumber?: string;
-
-  // ✅ Add this
-  vitals?: {
-    name: string;
-    value: number | string;
-    unit?: string;
-  }[];
+  vitals?: VitalData[];
 }
 
 interface UserContextType {
   user: UserData | null;
   setUser: (user: UserData | null) => void;
+  updateVitals: (vitals: VitalData[]) => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -58,8 +59,18 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
+  // ✅ Update vitals in context and persist them
+  const updateVitals = (vitals: VitalData[]) => {
+    setUserState((prev) => {
+      if (!prev) return prev; // no user yet
+      const updated = { ...prev, vitals };
+      localStorage.setItem("user", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, updateVitals }}>
       {children}
     </UserContext.Provider>
   );

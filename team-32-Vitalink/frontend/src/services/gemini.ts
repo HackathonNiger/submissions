@@ -1,4 +1,3 @@
-// getGeminiResponse.ts
 import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({
@@ -7,17 +6,15 @@ const ai = new GoogleGenAI({
 
 let conversationHistory: { role: string; text: string }[] = [];
 
-// 🧩 Mental Health Assistant — multilingual (English, Pidgin, Hausa)
 export const getGeminiResponse = async (
   message: string,
   mode: "simple" | "detailed" = "detailed"
 ) => {
   try {
-    // 🧠 Context prompt for Gemini
     const prompt = `
 You are "Minda", a compassionate mental health chatbot that offers first aid emotional support 
 especially for youth and Internally Displaced Persons (IDPs) in Nigeria. 
-You can speak fluently in English, Nigerian Pidgin, and Hausa — 
+You can speak fluently in English, Nigerian Pidgin, Igbo, Yoruba and Hausa — 
 respond in the language the user uses.
 
 Your style:
@@ -54,7 +51,7 @@ Guidelines:
 User: ${message}
 `;
 
-    // 🧩 Maintain short memory
+    // Maintain short memory
     conversationHistory.push({ role: "user", text: message });
     if (conversationHistory.length > 10)
       conversationHistory = conversationHistory.slice(-10);
@@ -63,7 +60,7 @@ User: ${message}
       .map((msg) => `${msg.role === "user" ? "User" : "Minda"}: ${msg.text}`)
       .join("\n");
 
-    // 🪄 Generate Gemini response
+    // Generate Gemini response
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash",
       contents: [

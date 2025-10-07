@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader } from "../../../ui/card";
 import { Button } from "../../../ui/button";
 import { useEffect, useState } from "react";
 import { pullVitals } from "../../../../services/vitalService";
+import { useUser } from "../../../../contexts/UserContext";
 
 type VitalStatus = "normal" | "low" | "slightly-high" | "high" | "critical";
 
@@ -33,6 +34,7 @@ interface RecentVitalsProps {
 export default function RecentVitals({ onVitalsUpdate }: RecentVitalsProps) {
   const [vitals, setVitals] = useState<RecentVitalsProps | null>(null);
   const [loading, setLoading] = useState(true);
+  const { updateVitals } = useUser();
 
   useEffect(() => {
     const fetchVitals = async () => {
@@ -77,6 +79,7 @@ export default function RecentVitals({ onVitalsUpdate }: RecentVitalsProps) {
             },
           ];
           onVitalsUpdate?.(formatted); // 👈 send vitals up to Dashboard
+          updateVitals(formatted);
         }
       } catch (err) {
         console.error("Error fetching vitals:", err);
