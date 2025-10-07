@@ -1,0 +1,10 @@
+pyproject.toml
+src/nigeria_pathwise/__init__.py
+src/nigeria_pathwise/nigeria_pathwise_function.py
+src/nigeria_pathwise/register.py
+src/nigeria_pathwise.egg-info/PKG-INFO
+src/nigeria_pathwise.egg-info/SOURCES.txt
+src/nigeria_pathwise.egg-info/dependency_links.txt
+src/nigeria_pathwise.egg-info/entry_points.txt
+src/nigeria_pathwise.egg-info/requires.txt
+src/nigeria_pathwise.egg-info/top_level.txt

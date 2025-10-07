@@ -1,0 +1,44 @@
+general:
+  use_uvloop: true
+  logging:
+    console:
+      _type: console
+      level: INFO
+
+  front_end:
+    _type: fastapi
+
+functions:
+  current_datetime:
+    _type: current_datetime
+
+  # Use Tavily for web search (available in AIQ)
+  tavily_search:
+    _type: tavily_internet_search
+    max_results: 50
+
+llms:
+  nim_llm:
+    _type: nim
+    model_name: nvidia/llama-3.3-nemotron-super-49b-v1.5
+    temperature: 0.7
+    max_tokens: 4096
+    api_key: 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
+
+embedders:
+  nim_embedder:
+    _type: nim
+    model_name: nvidia/nv-embedqa-e5-v5
+
+workflow:
+  _type: nigeria_pathwise
+  tool_names:
+    - current_datetime
+    - tavily_search
+  llm_name: nim_llm
+  embedder_name: nim_embedder
+  max_history: 30
+  personality: "mentor"
+  ingest_glob: "data/career_resources/*.{pdf,txt,docx,csv,xlsx}"
+  description: "AI-Powered Career Guidance and Path Planning Assistant for Nigeria"
+  chunk_size: 4096
