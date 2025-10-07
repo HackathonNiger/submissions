@@ -15,7 +15,7 @@ The schematice design which we made during the day 4 of the hackathon using an o
 ![](Vitalink_wearable_schematic/schematic.jpg)
 
 ## Materials Used & Costs
-The materials used were of-the-shelf components which got most of them on the day 4 of the hackathon.
+The materials used were off-the-shelf components which got most of them on the day 4 of the hackathon.
 
 | Material | Qty | Cost (N) |
 |---|---|---|
