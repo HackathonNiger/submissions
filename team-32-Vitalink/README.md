@@ -38,6 +38,10 @@ The entire system architecture can be summarised with this diagram.
 
 This illustrates how the entire system works together.
 
+## Relevant Links:
+- Hosted Frontend dashboard on Vercel [click here](https://vitalink-indol.vercel.app/)
+- Hosted Backend Admin panel on Python Anywhere (Data records) [click here](https://vitalink.pythonanywhere.com/)
+
 ## Vision & Future Improvements
 Our Vision is to make an ecosystem where medical data can be easily acquired, stored and utilized to solve health challenges through ML/AI. We are passionate about making medical tech accessible and cheap so people in remote areas can use it. In doing that we make our Mental Health chatbot muiltilingual so there is no barrier.
 

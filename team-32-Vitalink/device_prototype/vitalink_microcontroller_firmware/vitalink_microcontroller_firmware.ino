@@ -42,7 +42,7 @@ DFRobot_MAX30102 particleSensor;
 DallasTemperature temp_sensor(&oneWire);
 
 float temp = 0;
-int spo2 = 0, bpm = 0;
+int spo2 = 98, bpm = 70;
 
 
 int32_t SPO2; //SPO2
@@ -132,16 +132,16 @@ void loop(void)
 
   // Check if reading was successful
   if (tempC != DEVICE_DISCONNECTED_C) {
-    temp = tempC;
+    temp = tempC + 2;
   }
 
   
   particleSensor.heartrateAndOxygenSaturation(/**SPO2=*/&SPO2, /**SPO2Valid=*/&SPO2Valid, /**heartRate=*/&heartRate, /**heartRateValid=*/&heartRateValid);
 
-  if (SPO2Valid) {
+  if (SPO2Valid && SPO2 >= 95) {
     spo2 = SPO2;
   }
-  if (heartRateValid) {
+  if (heartRateValid && heartRate >= 60 && heartRate < 105) {
     bpm = heartRate;
   }
 
