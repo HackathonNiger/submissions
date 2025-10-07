@@ -18,9 +18,9 @@ const useVerification = () => {
     if (!searchTerm || searchTerm.length < 2) return [];
 
     const results = nafdacData.filter(item =>
-      item['Product Name'].toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.Manufacturer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item['Nafdac Reg. Number'].toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (item['Product Name'] && item['Product Name'].toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (item.Manufacturer && item.Manufacturer.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (item['Nafdac Reg. Number'] && item['Nafdac Reg. Number'].toLowerCase().includes(searchTerm.toLowerCase())) ||
       (item['Active Ingredients'] && item['Active Ingredients'].toLowerCase().includes(searchTerm.toLowerCase()))
     );
 

@@ -231,11 +231,11 @@ const HomePage = ({
                     aria-label={`Select ${product['Product Name']} by ${product.Manufacturer}`}
                     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectProduct(product); } }}
                   >
-                    <div className="font-semibold text-gray-800">{product.productName}</div>
-                    <div className="text-sm text-gray-600">{product.manufacturer}</div>
-                    <div className="text-sm text-green-600">NAFDAC: {product.nafdacNo}</div>
-                    {product.activeIngredients && (
-                      <div className="text-sm text-blue-600 mt-1">{product.activeIngredients}</div>
+                    <div className="font-semibold text-gray-800">{product['Product Name']}</div>
+                    <div className="text-sm text-gray-600">{product.Manufacturer}</div>
+                    <div className="text-sm text-green-600">NAFDAC: {product['Nafdac Reg. Number']}</div>
+                    {product['Active Ingredients'] && (
+                      <div className="text-sm text-blue-600 mt-1">{product['Active Ingredients']}</div>
                     )}
                   </div>
                 ))}
@@ -641,7 +641,10 @@ const HomePage = ({
               verificationResult.status === 'ocr_failed' ||
               verificationResult.status === 'ocr_no_text') && (
               <button
-                onClick={() => setVerificationMethod('manual')}
+                onClick={() => {
+                  resetVerification();
+                  setVerificationMethod('manual');
+                }}
                 className="w-full bg-green-600 text-white py-4 rounded-lg font-semibold hover:bg-green-700 transition-colors"
               >
                 Enter Details Manually
