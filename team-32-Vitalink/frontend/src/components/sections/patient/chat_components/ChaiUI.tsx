@@ -104,13 +104,13 @@ const ChatUI = () => {
 
     const utterance = new SpeechSynthesisUtterance(text);
 
-    if (isHausa) {
-      utterance.lang = "ha-NG";
-    } else if (isPigin) {
-      utterance.lang = "en-NG"; // closest available accent for Nigerian Pidgin
-    } else {
-      utterance.lang = "en-US";
-    }
+    // if (isHausa) {
+    //   utterance.lang = "ha-NG";
+    // } else if (isPigin) {
+    utterance.lang = "en-NG"; // closest available accent for Nigerian Pidgin
+    // } else {
+    //   utterance.lang = "en-US";
+    // }
 
     utterance.onend = () => setSpeakingMessageId(null);
 
