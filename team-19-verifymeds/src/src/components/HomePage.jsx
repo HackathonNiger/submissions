@@ -441,7 +441,7 @@ const HomePage = ({
               <>
                 <CheckCircle className="mx-auto text-green-600 mb-4" size={64} />
                 <h2 className="text-3xl font-bold text-green-700 mb-2">
-                  ✅ VERIFIED: Original Product
+                  VERIFIED: Original Product
                 </h2>
                 <p className="text-green-600">This medicine is registered with NAFDAC</p>
               </>
@@ -449,7 +449,7 @@ const HomePage = ({
               <>
                 <AlertTriangle className="mx-auto text-red-600 mb-4" size={64} />
                 <h2 className="text-3xl font-bold text-red-700 mb-2">
-                  ⚠️ WARNING: Suspected Counterfeit
+                  WARNING: Suspected Counterfeit
                 </h2>
                 <p className="text-red-600">This medicine may be fake or unregistered</p>
               </>
