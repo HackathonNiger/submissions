@@ -10,6 +10,8 @@ import { RiRobot2Fill } from "react-icons/ri";
 import { getGeminiResponse } from "../../../../services/gemini";
 import { useUser } from "../../../../contexts/UserContext";
 
+import speaker from "../../../../assets/images/volume_up.svg";
+
 interface Message {
   id: string;
   sender: "bot" | "patient";
@@ -24,11 +26,14 @@ const ChatUI = () => {
   const isBot = location.pathname.includes("/bot/");
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [speakingMessageId, setSpeakingMessageId] = useState<string | null>(
+    null
+  );
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
       sender: "bot",
-      content: `Hello ${user?.username} How are you feeling today?`,
+      content: `Hello, ${user?.username}, How are you feeling today?`,
       timestamp: new Date().toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit",
@@ -77,6 +82,61 @@ const ChatUI = () => {
     }
   };
 
+  const handleReadAloud = (messageId: string, text: string) => {
+    // Stop any current speech first
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+
+    // --- Detect Language ---
+    const lowerText = text.toLowerCase();
+
+    // Hausa detection: common Hausa words
+    const hausaWords = [
+      "ka",
+      "ki",
+      "kana",
+      "kina",
+      "zaka",
+      "za ki",
+      "lafiya",
+      "ba",
+      "ne",
+      "ce",
+      "ni",
+      "na",
+    ];
+    const isHausa = hausaWords.some((w) => lowerText.includes(w));
+
+    // Pidgin detection: common Pidgin words
+    const pidginWords = [
+      "dey",
+      "no worry",
+      "go",
+      "fit",
+      "wahala",
+      "wetin",
+      "abi",
+      "una",
+      "make",
+      "na",
+    ];
+    const isPidgin = pidginWords.some((w) => lowerText.includes(w));
+
+    if (isHausa) {
+      utterance.lang = "ha-NG"; // Hausa (Nigeria)
+    } else if (isPidgin) {
+      utterance.lang = "en-NG"; // Nigerian English (for Pidgin)
+    } else {
+      utterance.lang = "en-US"; // Default
+    }
+
+    // --- Playback ---
+    utterance.onend = () => setSpeakingMessageId(null);
+    setSpeakingMessageId(messageId);
+    window.speechSynthesis.speak(utterance);
+  };
+
   const SidebarComponent = PatientSidebar;
 
   return (
@@ -113,9 +173,7 @@ const ChatUI = () => {
 
                 <div className="flex gap-2">
                   <Button variant="outline">New Conversation</Button>
-                  {/* ✅ Update vitals manually */}
                   <Button
-                    // onClick={handleUpdateVitals}
                     variant="secondary"
                     className="bg-green-600 text-white hover:bg-green-700 hidden md:block"
                   >
@@ -137,33 +195,63 @@ const ChatUI = () => {
                     }`}
                   >
                     {message.sender === "bot" && (
-                      <RiRobot2Fill size={20} className="text-blue-600 mt-1" />
+                      <div className="">
+                        <RiRobot2Fill
+                          size={20}
+                          className="text-blue-600 mt-1"
+                        />
+                      </div>
                     )}
 
-                    <div
-                      className={`max-w-xs lg:max-w-md px-4 py-3 rounded-lg ${
-                        (isBot && message.sender === "bot") ||
-                        (!isBot && message.sender === "patient")
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-accent text-accent-foreground"
-                      }`}
-                    >
-                      <p className="text-sm">{message.content}</p>
-                      <p
-                        className={`text-xs mt-1 ${
+                    <div className="flex flex-col gap-2  items-start">
+                      <div
+                        className={`max-w-xs lg:max-w-md px-4 py-3 rounded-lg ${
                           (isBot && message.sender === "bot") ||
                           (!isBot && message.sender === "patient")
-                            ? "text-primary-foreground/70"
-                            : "text-accent-foreground/70"
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-accent text-accent-foreground"
                         }`}
                       >
-                        {message.timestamp}
-                      </p>
+                        <p className="text-sm">{message.content}</p>
+                        <p
+                          className={`text-xs mt-1 ${
+                            (isBot && message.sender === "bot") ||
+                            (!isBot && message.sender === "patient")
+                              ? "text-primary-foreground/70"
+                              : "text-accent-foreground/70"
+                          }`}
+                        >
+                          {message.timestamp}
+                        </p>
+                      </div>
+
+                      {message.sender === "bot" && (
+                        <button
+                          onClick={() =>
+                            handleReadAloud(message.id, message.content)
+                          }
+                          className={`px-2 py-1 border-none rounded-md flex items-center gap-1 transition-all 
+    focus:outline-none focus:ring-0
+    ${
+      speakingMessageId === message.id
+        ? "bg-red-100 hover:bg-red-200"
+        : "bg-gray-100 hover:bg-gray-200"
+    }`}
+                        >
+                          <img
+                            src={speaker}
+                            alt="Speak out"
+                            className="w-4 h-4"
+                          />
+                          <span className="text-xs text-gray-700">
+                            {speakingMessageId === message.id && "Stop"}
+                          </span>
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}
 
-                {/* ✅ Bot Typing Indicator */}
                 {loading && (
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <RiRobot2Fill size={20} className="text-blue-600" />
