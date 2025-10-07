@@ -69,7 +69,7 @@ const CameraModal = ({ isOpen, onClose, onCapture, title = "Take Photo" }) => {
         setStream(null);
       }
     };
-  }, [isOpen, facingMode, initializeCamera, stream]);
+  }, [isOpen, facingMode, initializeCamera]);
 
   const handleCapture = async () => {
     if (!videoRef.current) {
