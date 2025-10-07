@@ -145,7 +145,7 @@ Then visit **[http://localhost:5173](http://localhost:5173)** in your browser.
 ---
 
 ## Team 16 — Members
-**Beebay** - Backend Developer / Team Lead
+**Habeebullahi Abdulrahaman** - Backend Developer / Team Lead
 **Oyeyipo Emmanuel** - Frontend Engineer
 **Mariam** - Product Manager
 
