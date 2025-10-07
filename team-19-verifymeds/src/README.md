@@ -20,7 +20,12 @@ Our solution makes it easy for:
 
 ---
 
-## ✨ Key Features  
+## 🌐 Live Demo
+Try the live application at: [verifymeds.vercel.app](https://verifymeds.vercel.app)
+
+---
+
+## ✨ Key Features
 - 📷 **QR Code Scanning** – Verify drugs instantly using your camera.  
 - ✅ **Drug Authentication** – Check drug ID, manufacturer, and batch against dataset.  
 - ⏰ **Expiry Alerts** – Warns if a drug is expired or nearing expiry.  
@@ -129,7 +134,7 @@ npm run dev
 
 ## 🙏 Acknowledgments
 
-* [Codefest Africa](https://twitter.com/codefestng) for organizing this hackathon.
+* [Codefest Africa](https://x.com/codefestng) for organizing this hackathon.
 * [NAFDAC](https://www.nafdac.gov.ng/) for inspiring the vision of safer medications.
 * Open-source contributors powering our tech stack.
 
