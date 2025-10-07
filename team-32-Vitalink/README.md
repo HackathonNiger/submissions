@@ -26,10 +26,10 @@ The Vitalink link solution provides mental health support through a specialized 
 
 ## Contents
 The documentation of the full project will be broken down into their subcomponents each giving details.
-- [ML Pipeline](/ML_pipeline/README.md)
-- [Backend](/backend/vitalink_server/README.md)
-- [Vitaband Device](/device_prototype/README.md)
-- [Frontend](/frontend/README.md)
+- [ML Pipeline](ML_pipeline/README.md)
+- [Backend](backend/vitalink_server/README.md)
+- [Vitaband Device](device_prototype/README.md)
+- [Frontend](frontend/README.md)
 
 ## System Architecture:
 The entire system architecture can be summarised with this diagram.

@@ -12,7 +12,7 @@ This was the first attempt at this which turn out to be success. Though it benef
 
 ## SCHEMATIC DESIGN
 The schematice design which we made during the day 4 of the hackathon using an open source electronic CAD software KiCAD. It shows the connection and plan which was followed in the construction of the device.
-![](/device_prototype/Vitalink_wearable_schematic/schematic.jpg)
+![](Vitalink_wearable_schematic/schematic.jpg)
 
 ## Materials Used & Costs
 The materials used were of-the-shelf components which got most of them on the day 4 of the hackathon.
