@@ -26,10 +26,10 @@ The Vitalink link solution provides mental health support through a specialized 
 
 ## Contents
 The documentation of the full project will be broken down into their subcomponents each giving details.
-- [ML Pipeline]()
-- [Backend]()
-- [Vitaband Device]()
-- [Frontend]()
+- [ML Pipeline](/ML_pipeline/README.md)
+- [Backend](/backend/vitalink_server/README.md)
+- [Vitaband Device](/device_prototype/README.md)
+- [Frontend](/frontend/README.md)
 
 ## System Architecture:
 The entire system architecture can be summarised with this diagram.
@@ -39,7 +39,9 @@ The entire system architecture can be summarised with this diagram.
 This illustrates how the entire system works together.
 
 ## Vision & Future Improvements
+Our Vision is to make an ecosystem where medical data can be easily acquired, store and utilized to solve health challenges through ML/AI. We are passionate about making medical tech accessible and cheap so people even in remote areas can use it. In doing that we make our Mental chat assistant muiltilingual so there is no barrier.
 
+In the light of future improvement we look forward to adding more sensory data such as ECG, EMG, Glycometer sensors etc so the system has a more robust understanding of ones health and can make better inferences and advice. We also want to reduce the size of device by designing and protyping a single motherboard for the wearable and a better enclosure.
 
 ## Special Thanks
-
+To CodeFestNG for Organizing this hackathon and providing opportunity for us to showcase ourselves to the world. To ba a part of the GWR edition. Also thanks to all members of the vitalink to the contribution and development of the Project, Involving Brainstorming, documentations, pitches, development, prototyping and deployment together this has been fun. Finally to our friends, family, wellwishers and supporters we appreciate. And above all Almighty God for making this a possibility.

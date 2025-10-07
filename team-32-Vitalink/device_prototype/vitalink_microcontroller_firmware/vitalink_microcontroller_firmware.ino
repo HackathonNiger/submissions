@@ -1,5 +1,6 @@
 // C++ firmware that get values such as temp, spo2 and bpm for two sensors max10102 spo2 sensor and ds18b20 temperature sensor
 // it uses the values to make a get request to the python backend at vitalink.pythonanywhere.com with the values and server stores it.
+// Author: Ohieku Eneji Peacemaker
 
 #include <Wire.h>
 #include <OneWire.h>
@@ -174,31 +175,4 @@ void loop(void)
       pushDataCounter = millis();
     }
   } else digitalWrite(indicator, LOW);
-
-  String message = "";
-
-  if (bpm> 90) {
-    message = "Heartbeat rate is too high seek medical attention";
-  }
-  else if (bpm< 60) {
-    message = "Signs of BradyCardia, seek medical attention";
-  }
-  if (temp > 38) {
-    message += ". High temperature, Fever!";
-  }
-  else if (temp <= 35.1) {
-    message += ". Signs of hypothermia";
-  }
-  if (spo2 < 90) {
-    message += ". Hypoxemia signs. seek doctors help quickly.";
-  }
-
-  if (bpm> 90 || bpm < 60 || temp > 38 || temp < 35.1 || spo2 > 90) {
-    // sendCMD("AT");
-    // sendCMD("AT+CMGF=1");
-    // sendCMD("AT+CMGS=\"" + phone_number + "\"");
-    // sendCMD(message);
-    // Serial2.write(26);
-    // sendCMD("");
-  }
 }
