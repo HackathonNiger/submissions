@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Reminder - Aidora</title>
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+        background-color: #f4f4f9;
+      }
+
+      .email-container {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 30px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e5e5e5;
+      }
+
+      .header {
+        text-align: center;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #e5e5e5;
+        margin-bottom: 20px;
+      }
+
+      .header img {
+        max-width: 60px;
+      }
+
+      .content {
+        padding: 20px 0;
+        color: #333333;
+      }
+
+      .content h1 {
+        font-size: 24px;
+        color: #1a1a1a;
+        margin-bottom: 15px;
+        font-weight: 700;
+        text-align: center;
+      }
+
+      .content p {
+        font-size: 16px;
+        color: #4a4a4a;
+        line-height: 1.7;
+        margin-bottom: 20px;
+      }
+
+      .task-details {
+        background-color: #f9f9f9;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+      }
+
+      .task-details h2 {
+        font-size: 18px;
+        color: #0066cc;
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+
+      .task-details ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .task-details li {
+        font-size: 15px;
+        color: #333333;
+        margin-bottom: 8px;
+      }
+
+      .task-details li strong {
+        color: #1a1a1a;
+      }
+
+      .task-details .medication-info {
+        margin-top: 10px;
+        padding-left: 10px;
+        border-left: 3px solid #0066cc;
+      }
+
+      .action-button {
+        text-align: center;
+        margin: 20px 0;
+      }
+
+      .action-button a {
+        display: inline-block;
+        padding: 12px 30px;
+        background-color: #0066cc;
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: 500;
+        border-radius: 6px;
+        font-size: 16px;
+      }
+
+      .action-button a:hover {
+        background-color: #0055aa;
+      }
+
+      .footer {
+        text-align: center;
+        padding: 20px 0;
+        font-size: 12px;
+        color: #666666;
+        margin-top: 25px;
+        border-top: 1px solid #e5e5e5;
+      }
+
+      .footer a {
+        color: #0066cc;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .footer a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="email-container">
+      <div class="header">
+        <img
+          src="https://firebasestorage.googleapis.com/v0/b/uconnect-1d569.appspot.com/o/app_logo.png?alt=media&token=a6c12e4b-b526-4217-a2c4-36d1b13a7e94"
+          alt="Aidora Logo"
+        />
+      </div>
+
+      <div class="content">
+        <h1>Your Aidora Task Reminder</h1>
+        <p>Dear {{userName}},</p>
+        <p>
+          This is a reminder for your upcoming task scheduled in Aidora. Please
+          find the details below:
+        </p>
+
+        <div class="task-details">
+          <h2>Task Details</h2>
+          <ul>
+            <li><strong>Title:</strong> {{taskTitle}}</li>
+            <li><strong>Due Time:</strong> {{dueTime}}</li>
+            <li><strong>Recurring:</strong> {{isRecurring ? 'Yes' : 'No'}}</li>
+            {{#if isRecurring}}
+            <li><strong>Recurrence End Date:</strong> {{recurrenceEndDate}}</li>
+            {{/if}}
+            <li><strong>Content:</strong></li>
+            <ul class="medication-info">
+              {{#each content}} {{#if isMedication}}
+              <li>
+                <strong>Medication:</strong> {{medicationName}} ({{dosage}},
+                {{administrationRoute}})
+              </li>
+              {{else}}
+              <li>{{content}}</li>
+              {{/if}} {{/each}}
+            </ul>
+          </ul>
+        </div>
+
+        <p>
+          Please ensure to complete this task on time. You can mark it as
+          completed or manage it directly in the Aidora app.
+        </p>
+
+        <div class="action-button">
+          <a href="{{appLink}}">View Task in Aidora</a>
+        </div>
+
+        <p>
+          If you did not create this task or believe this is an error, please
+          <a href="">contact our support team</a> immediately.
+        </p>
+      </div>
+
+      <div class="footer">
+        <p>Need help? <a href="">Contact our support team</a>.</p>
+        <p>&copy; 2025 Aidora. All rights reserved.</p>
+      </div>
+    </div>
+  </body>
+</html>
