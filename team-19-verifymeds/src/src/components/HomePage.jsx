@@ -87,27 +87,27 @@ const HomePage = ({
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="flex flex-wrap justify-center gap-6 mb-8">
           {/* QR Code Method */}
           <div
             onClick={() => setVerificationMethod('qr')}
-            className="bg-white rounded-xl shadow-lg p-3 md:p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500 sm:h-28 md:h-60 flex flex-col"
+            className="bg-white rounded-xl shadow-lg p-2 md:p-8 w-28 md:w-60 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500 h-50 md:h-60 flex flex-col justify-between"
             role="button"
             tabIndex={0}
             aria-label="Scan QR code on medicine package"
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setVerificationMethod('qr'); } }}
           >
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto">
-              <QrCode className="text-green-600" size={32} />
+            <div className="w-12 h-12 md:w-16 md:h-16 bg-green-100 rounded-full flex items-center justify-center mb-2 md:mb-4 mx-auto">
+              <QrCode className="text-green-600" size={20} />
             </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2 text-center">QR Code Scan</h3>
-            <p className="text-gray-600 text-center">
-              Scan or upload the QR code on your medicine package using your camera
+            <h3 className="text-base md:text-xl font-bold text-gray-800 mb-2 text-center">QR Code Scan</h3>
+            <p className="text-xs md:text-sm text-gray-600 text-center">
+              Scan or upload the QR code on your medicine package
             </p>
           </div>
 
           {/* Image Scan Method */}
-          <div
+          {/* <div
             onClick={() => setVerificationMethod('image')}
             className="bg-white rounded-xl shadow-lg p-3 md:p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500 sm:h-28 md:h-60 flex flex-col justify-between"
             role="button"
@@ -122,22 +122,22 @@ const HomePage = ({
             <p className="text-gray-600 text-center">
               Take or upload a photo of your medicine package for analysis
             </p>
-          </div>
+          </div> */}
 
           {/* Manual Input Method */}
           <div
             onClick={() => setVerificationMethod('manual')}
-            className="bg-white rounded-xl shadow-lg p-3 md:p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500 sm:h-28 md:h-60 flex flex-col justify-between"
+            className="bg-white rounded-xl shadow-lg p-2 md:p-8 w-28 md:w-60 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500 h-50 md:h-60 flex flex-col justify-between"
             role="button"
             tabIndex={0}
             aria-label="Enter NAFDAC or batch number manually"
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setVerificationMethod('manual'); } }}
           >
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto">
-              <FileText className="text-green-600" size={32} />
+            <div className="w-12 h-12 md:w-16 md:h-16 bg-green-100 rounded-full flex items-center justify-center mb-2 md:mb-4 mx-auto">
+              <FileText className="text-green-600" size={20} />
             </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2 text-center">Manual Input</h3>
-            <p className="text-gray-600 text-center">
+            <h3 className="text-base md:text-xl font-bold text-gray-800 mb-2 text-center">Manual Input</h3>
+            <p className="text-xs md:text-sm text-gray-600 text-center">
               Enter NAFDAC or Batch number manually from your package
             </p>
           </div>
@@ -145,18 +145,18 @@ const HomePage = ({
           {/* Search Method */}
           <div
             onClick={() => setVerificationMethod('search')}
-            className="bg-white rounded-xl shadow-lg p-3 md:p-8 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500 sm:h-28 md:h-60 flex flex-col justify-between"
+            className="bg-white rounded-xl shadow-lg p-2 md:p-8 w-28 md:w-60 hover:shadow-xl transition-all cursor-pointer border-2 border-green-300 hover:border-green-500 h-50 md:h-60 flex flex-col items-center justify-between"
             role="button"
             tabIndex={0}
             aria-label="Search for medicines by name or manufacturer"
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setVerificationMethod('search'); } }}
           >
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto">
-              <Search className="text-green-600" size={32} />
+            <div className="w-12 h-12 md:w-16 md:h-16 bg-green-100 rounded-full flex items-center justify-center mb-2 md:mb-4 mx-auto">
+              <Search className="text-green-600" size={20} />
             </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2 text-center">Search</h3>
-            <p className="text-gray-600 text-center">
-              Search for medicines by name, manufacturer, or NAFDAC number
+            <h3 className="text-base md:text-xl font-bold text-gray-800 mb-2 text-center">Search Database</h3>
+            <p className="text-xs md:text-sm text-gray-600 text-center">
+              Search for medicines by name or manufacturer
             </p>
           </div>
         </div>
@@ -481,22 +481,34 @@ const HomePage = ({
               <>
                 <AlertTriangle className="mx-auto text-orange-600 mb-4" size={64} />
                 <h2 className="text-3xl font-bold text-orange-700 mb-2">
-                  OCR Result May Be Inaccurate
+                  Text Partially Recognized
                 </h2>
                 <p className="text-orange-600 mb-4">{verificationResult.message}</p>
-                <div className="bg-orange-50 p-4 rounded-lg mb-4">
-                  <p className="text-sm text-gray-700">
-                    <strong>Extracted Text:</strong> {verificationResult.extractedText}
-                  </p>
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-green-800 mb-2">✅ What you can do:</h4>
+                  <ul className="text-sm text-green-700 space-y-1">
+                    <li>• Review the suggested NAFDAC numbers below</li>
+                    <li>• Enter the number manually if you can read it clearly</li>
+                    <li>• Take a new photo if the current one isn't clear enough</li>
+                  </ul>
                 </div>
               </>
             ) : verificationResult.status === 'ocr_failed' ? (
               <>
                 <AlertTriangle className="mx-auto text-red-600 mb-4" size={64} />
                 <h2 className="text-3xl font-bold text-red-700 mb-2">
-                  OCR Failed
+                  Text Recognition Failed
                 </h2>
-                <p className="text-red-600">{verificationResult.message}</p>
+                <p className="text-red-600 mb-4">{verificationResult.message}</p>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-blue-800 mb-2">📸 Tips for better results:</h4>
+                  <ul className="text-sm text-blue-700 space-y-1">
+                    <li>• Ensure good lighting (natural light works best)</li>
+                    <li>• Hold camera steady and parallel to the text</li>
+                    <li>• Make sure the NAFDAC number is clearly visible</li>
+                    <li>• Avoid glare, shadows, or blurry images</li>
+                  </ul>
+                </div>
               </>
             ) : verificationResult.status === 'ocr_error' ? (
               <>
@@ -538,6 +550,14 @@ const HomePage = ({
                 </h2>
                 <p className="text-red-600">A system error occurred. Please try again later.</p>
               </>
+            ) : verificationResult.status === 'not_found' || verificationResult.status === 'batch_not_found' ? (
+              <>
+                <AlertTriangle className="mx-auto text-yellow-600 mb-4" size={64} />
+                <h2 className="text-3xl font-bold text-yellow-700 mb-2">
+                  NAFDAC Number Not Found
+                </h2>
+                <p className="text-yellow-600">The provided NAFDAC number or details were not found in our database</p>
+              </>
             ) : (
               <>
                 <AlertTriangle className="mx-auto text-yellow-600 mb-4" size={64} />
@@ -550,62 +570,74 @@ const HomePage = ({
           </div>
 
           {verificationResult.status === 'verified' && (
-            <div className="bg-white rounded-lg p-6 mb-6">
-              <h3 className="font-bold text-gray-800 mb-4 text-lg">Product Details</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Product Name:</span>
-                  <span className="font-semibold text-gray-800">{verificationResult.productName}</span>
+            <div className="bg-white rounded-lg p-4 md:p-6 mb-6">
+              <h3 className="font-bold text-gray-800 mb-4 text-lg md:text-xl">Product Details</h3>
+              <div className="space-y-4 md:space-y-3">
+                <div className="bg-gray-50 rounded-lg p-3 md:p-4">
+                  <div className="text-sm md:text-base font-medium text-green-700 mb-1">Product Name</div>
+                  <div className="text-sm md:text-base font-semibold text-gray-800 break-words">{verificationResult.productName}</div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">NAFDAC No:</span>
-                  <span className="font-semibold text-gray-800">{verificationResult.nafdacNo}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Batch No:</span>
-                  <span className="font-semibold text-gray-800">{verificationResult.batchNo}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Manufacturer:</span>
-                  <span className="font-semibold text-gray-800">{verificationResult.manufacturer}</span>
-                </div>
-                {verificationResult.activeIngredients && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Active Ingredients:</span>
-                    <span className="font-semibold text-gray-800">{verificationResult.activeIngredients}</span>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                  <div className="bg-gray-50 rounded-lg p-3 md:p-4">
+                    <div className="text-xs md:text-sm font-medium text-gray-600 mb-1">NAFDAC No.</div>
+                    <div className="text-sm md:text-base font-semibold text-gray-800">{verificationResult.nafdacNo}</div>
                   </div>
-                )}
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Approval Date:</span>
-                  <span className="font-semibold text-gray-800">{verificationResult.approvalDate}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Expiry Date:</span>
-                  <span className={`font-semibold ${verificationResult.isExpired ? 'text-red-600' : verificationResult.isExpiringSoon ? 'text-orange-600' : 'text-gray-800'}`}>
-                    {verificationResult.expiryDate}
-                  </span>
+
+                  <div className="bg-gray-50 rounded-lg p-3 md:p-4">
+                    <div className="text-xs md:text-sm font-medium text-gray-600 mb-1">Batch No.</div>
+                    <div className="text-sm md:text-base font-semibold text-gray-800">{verificationResult.batchNo}</div>
+                  </div>
+
+                  <div className="bg-gray-50 rounded-lg p-3 md:p-4 md:col-span-2">
+                    <div className="text-xs md:text-sm font-medium text-gray-600 mb-1">Manufacturer</div>
+                    <div className="text-sm md:text-base font-semibold text-gray-800 break-words">{verificationResult.manufacturer}</div>
+                  </div>
+
+                  {verificationResult.activeIngredients && (
+                    <div className="bg-gray-50 rounded-lg p-3 md:p-4 md:col-span-2">
+                      <div className="text-xs md:text-sm font-medium text-gray-600 mb-1">Active Ingredients</div>
+                      <div className="text-sm md:text-base font-semibold text-gray-800 break-words">{verificationResult.activeIngredients}</div>
+                    </div>
+                  )}
+
+                  <div className="bg-gray-50 rounded-lg p-3 md:p-4">
+                    <div className="text-xs md:text-sm font-medium text-gray-600 mb-1">Approval Date</div>
+                    <div className="text-sm md:text-base font-semibold text-gray-800">{verificationResult.approvalDate}</div>
+                  </div>
+
+                  <div className="bg-gray-50 rounded-lg p-3 md:p-4">
+                    <div className="text-xs md:text-sm font-medium text-gray-600 mb-1">Expiry Date</div>
+                    <div className={`text-sm md:text-base font-semibold ${verificationResult.isExpired ? 'text-red-600' : verificationResult.isExpiringSoon ? 'text-orange-600' : 'text-gray-800'}`}>
+                      {verificationResult.expiryDate}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Expiry Alert */}
                 {verificationResult.isExpired && (
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-3 mt-4">
-                    <div className="flex items-center">
-                      <AlertTriangle className="text-red-600 mr-2" size={20} />
-                      <span className="text-red-700 font-semibold">This product has expired!</span>
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3 md:p-4 mt-4">
+                    <div className="flex items-start">
+                      <AlertTriangle className="text-red-600 mr-2 flex-shrink-0 mt-0.5" size={20} />
+                      <div>
+                        <span className="text-red-700 font-semibold text-sm md:text-base">This product has expired!</span>
+                        <p className="text-red-600 text-xs md:text-sm mt-1">Do not use this medicine. It may be unsafe.</p>
+                      </div>
                     </div>
-                    <p className="text-red-600 text-sm mt-1">Do not use this medicine. It may be unsafe.</p>
                   </div>
                 )}
 
                 {verificationResult.isExpiringSoon && !verificationResult.isExpired && (
-                  <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mt-4">
-                    <div className="flex items-center">
-                      <AlertTriangle className="text-orange-600 mr-2" size={20} />
-                      <span className="text-orange-700 font-semibold">Expiring Soon</span>
+                  <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 md:p-4 mt-4">
+                    <div className="flex items-start">
+                      <AlertTriangle className="text-orange-600 mr-2 flex-shrink-0 mt-0.5" size={20} />
+                      <div>
+                        <span className="text-orange-700 font-semibold text-sm md:text-base">Expiring Soon</span>
+                        <p className="text-orange-600 text-xs md:text-sm mt-1">
+                          This product expires in {verificationResult.expiryStatus.daysUntilExpiry} days.
+                        </p>
+                      </div>
                     </div>
-                    <p className="text-orange-600 text-sm mt-1">
-                      This product expires in {verificationResult.expiryStatus.daysUntilExpiry} days.
-                    </p>
                   </div>
                 )}
               </div>
@@ -625,16 +657,16 @@ const HomePage = ({
           )}
 
           <div className="space-y-3">
-            {verificationResult.status === 'ocr_low_confidence' && (
+            {verificationResult.status === 'ocr_low_confidence' && verificationResult.extractedNAFDAC && (
               <button
                 onClick={() => {
                   resetVerification();
-                  setManualInput({ nafdacNo: verificationResult.extractedText, batchNo: '' });
+                  setManualInput({ nafdacNo: verificationResult.extractedNAFDAC, batchNo: '' });
                   setVerificationMethod('manual');
                 }}
                 className="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
               >
-                Use Extracted Text for Manual Verification
+                ✅ Use Suggested NAFDAC Number
               </button>
             )}
 
@@ -648,7 +680,7 @@ const HomePage = ({
                 }}
                 className="w-full bg-green-600 text-white py-4 rounded-lg font-semibold hover:bg-green-700 transition-colors"
               >
-                Enter Details Manually
+                🔍 Enter NAFDAC Number Manually
               </button>
             )}
 
