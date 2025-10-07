@@ -8,7 +8,7 @@ A comprehensive healthcare management platform built with React, TypeScript, and
 
 - **Personal Dashboard**: View vital signs, health metrics, and recent readings
 - **AI Health Suggestions**: Receive personalized health recommendations powered by Google Gemini AI
-- **Mental Health Chatbot**: Access 24/7 mental health support through an integrated chatbot
+- **Mental Health Chatbot**: Access 24/7 mental health support through an integrated chatbot in English, Pidgin, or Hausa
 - **Vital Monitoring**: Track heart rate, blood pressure, temperature, and blood sugar levels
 - **Profile Management**: Update personal information and preferences
 - **Emergency Contacts**: Manage emergency contact information
@@ -26,6 +26,7 @@ A comprehensive healthcare management platform built with React, TypeScript, and
 
 - **Role-Based Authentication**: Secure login system with role-based access (Patient/Doctor)
 - **Responsive Design**: Fully responsive interface that works on all devices
+- **Mental Health Support**: Culturally aware, multilingual AI companion that offers empathetic emotional support and gentle wellness guidance in English, Pidgin or Hausa.
 - **Real-time Data**: Live vital sign monitoring and updates
 - **Data Persistence**: User data stored in localStorage for offline access
 - **Modern UI**: Built with Radix UI components and Tailwind CSS for a professional look
@@ -49,7 +50,7 @@ A comprehensive healthcare management platform built with React, TypeScript, and
 
 ### AI & Services
 
-- **Google Gemini AI** - AI-powered health suggestions and chatbot
+- **Google Gemini AI** - AI-powered Mental health awareness/suggestions and chatbot
 - **Vital Service** - Simulated vital sign data service
 
 ### Development Tools
@@ -159,7 +160,7 @@ vitalink-frontend/
 
 ### Getting Started
 
-1. Visit the landing page at `http://localhost:5173`
+1. Visit the landing page at `https://vitalink-indol.vercel.app/`
 2. Choose to sign up as either a Patient or Doctor
 3. Complete the registration form
 4. Log in with your credentials
@@ -198,14 +199,6 @@ The application is configured for deployment on Vercel with SPA routing:
 }
 ```
 
-### Environment Variables
-
-Create a `.env` file for sensitive configurations:
-
-```env
-VITE_GEMINI_API_KEY=your_gemini_api_key_here
-```
-
 ## 🎨 Design System
 
 ### Colors
@@ -226,37 +219,15 @@ VITE_GEMINI_API_KEY=your_gemini_api_key_here
 - **Tailwind CSS**: Utility classes for rapid styling
 - **Responsive**: Mobile-first design approach
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
 ### Development Guidelines
 
 - Use TypeScript for type safety
 - Follow ESLint configuration
 - Write descriptive commit messages
+- Used comments for code readability
 - Test components thoroughly
 - Maintain responsive design principles
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **Radix UI** for the excellent component library
-- **Tailwind CSS** for the utility-first CSS framework
-- **Google Gemini AI** for AI-powered health insights
-- **React Community** for the amazing ecosystem
-
-## 📞 Support
-
-For support, email support@vitalink.com or create an issue in the repository.
-
 ---
 
-**Built with ❤️ for better healthcare management**
+**Built with ❤️ by team VITALINK for better healthcare management**
