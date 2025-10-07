@@ -1,0 +1,7 @@
+RewriteEngine On
+
+# Handle /notifications/{id}/read endpoint
+RewriteRule ^([0-9]+)/read$ read.php [L,QSA]
+
+# Handle /notifications (GET requests)
+RewriteRule ^$ index.php [L,QSA]

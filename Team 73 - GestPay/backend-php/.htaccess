@@ -1,0 +1,20 @@
+RewriteEngine On
+
+DirectoryIndex index.php
+
+
+# Handle directories with index.php
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^(.*/)?$ %{REQUEST_URI}/index.php [L]
+
+# Rewrite clean URLs to .php files
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
+
+# Redirect .php URLs to clean versions
+RewriteCond %{THE_REQUEST} \s/([^.]+)\.php[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+# Custom 404 page
+ErrorDocument 404 /404.php

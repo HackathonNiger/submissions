@@ -1,0 +1,43 @@
+RewriteEngine On
+
+# Allow CORS for all origins
+Header always set Access-Control-Allow-Origin "*"
+Header always set Access-Control-Allow-Methods "GET, POST, OPTIONS, PUT, DELETE"
+Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+
+# Handle preflight OPTIONS requests
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ $1 [R=200,L]
+
+# Security headers
+Header always set X-Content-Type-Options nosniff
+Header always set X-Frame-Options DENY
+Header always set X-XSS-Protection "1; mode=block"
+
+# Remove .php extension from URLs
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
+
+# Specific routes for WhatsApp endpoints
+RewriteRule ^webhook/?$ webhook.php [NC,L]
+RewriteRule ^setup/?$ setup-bot.php [NC,L]
+RewriteRule ^disconnect/?$ disconnect-whatsapp.php [NC,L]
+RewriteRule ^details/?$ details.php [NC,L]
+RewriteRule ^toggle-payments/?$ toggle-payments.php [NC,L]
+
+# Block access to sensitive files
+<Files "*.sql">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "*.log">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Set proper content type for PHP files
+<FilesMatch "\.php$">
+    Header set Content-Type "application/json; charset=utf-8"
+</FilesMatch>

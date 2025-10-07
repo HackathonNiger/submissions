@@ -1,0 +1,5 @@
+.env
+\.venv
+Pipfile
+Pipfile.lock
+gestpay.db
