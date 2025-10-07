@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_1156ac5552218998216b0d0e2881e492 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_1156ac5552218998216b0d0e2881e492" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_1156ac5552218998216b0d0e2881e492 = L.map(
+                "map_1156ac5552218998216b0d0e2881e492",
+                {
+                    center: [40.7744, -73.96340000000001],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 13,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_d09cb6192566da81c22cc8673fbb1823 = L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 20,
+  "maxNativeZoom": 20,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"https://carto.com/attributions\"\u003eCARTO\u003c/a\u003e",
+  "subdomains": "abcd",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_d09cb6192566da81c22cc8673fbb1823.addTo(map_1156ac5552218998216b0d0e2881e492);
+        
+    
+            var tile_layer_4f2db98075b8b832d4b9e09fb203cc6c = L.tileLayer(
+                "https://earthengine.googleapis.com/v1/projects/agro-karfi/maps/cb4f8f7ce2fc596c14297f32564e1607-0a6b47d82d492f3c032515f9c681b59a/tiles/{z}/{x}/{y}",
+                {
+  "minZoom": 0,
+  "maxZoom": 18,
+  "maxNativeZoom": 18,
+  "noWrap": false,
+  "attribution": "Google Earth Engine Satellite",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1.0,
+}
+
+            );
+        
+    
+            tile_layer_4f2db98075b8b832d4b9e09fb203cc6c.addTo(map_1156ac5552218998216b0d0e2881e492);
+        
+    
+        function geo_json_5553453863411504cab338acb7dd98f3_styler(feature) {
+            switch(feature.id) {
+                default:
+                    return {"color": "red", "fillColor": "none"};
+            }
+        }
+
+        function geo_json_5553453863411504cab338acb7dd98f3_onEachFeature(feature, layer) {
+
+            layer.on({
+            });
+        };
+        var geo_json_5553453863411504cab338acb7dd98f3 = L.geoJson(null, {
+                onEachFeature: geo_json_5553453863411504cab338acb7dd98f3_onEachFeature,
+            
+                style: geo_json_5553453863411504cab338acb7dd98f3_styler,
+            ...{
+}
+        });
+
+        function geo_json_5553453863411504cab338acb7dd98f3_add (data) {
+            geo_json_5553453863411504cab338acb7dd98f3
+                .addData(data);
+        }
+            geo_json_5553453863411504cab338acb7dd98f3_add({"features": [{"geometry": {"coordinates": [[[-73.973, 40.764], [-73.949, 40.764], [-73.949, 40.79], [-73.973, 40.79], [-73.973, 40.764]]], "type": "Polygon"}, "id": "0", "type": "Feature"}], "type": "FeatureCollection"});
+
+        
+    
+            geo_json_5553453863411504cab338acb7dd98f3.addTo(map_1156ac5552218998216b0d0e2881e492);
+        
+    
+            var layer_control_9f18d09dbb9a40c187c6bd8d3927d028_layers = {
+                base_layers : {
+                    "cartodbpositron" : tile_layer_d09cb6192566da81c22cc8673fbb1823,
+                },
+                overlays :  {
+                    "Landsat 9 Image" : tile_layer_4f2db98075b8b832d4b9e09fb203cc6c,
+                    "Drawn Polygon" : geo_json_5553453863411504cab338acb7dd98f3,
+                },
+            };
+            let layer_control_9f18d09dbb9a40c187c6bd8d3927d028 = L.control.layers(
+                layer_control_9f18d09dbb9a40c187c6bd8d3927d028_layers.base_layers,
+                layer_control_9f18d09dbb9a40c187c6bd8d3927d028_layers.overlays,
+                {
+  "position": "topright",
+  "collapsed": true,
+  "autoZIndex": true,
+}
+            ).addTo(map_1156ac5552218998216b0d0e2881e492);
+
+        
+</script>
+</html>
