@@ -46,12 +46,16 @@ This is the program that runs on the microcontroller that manages all the activi
 This are just images showing the build process.
 - [Preassembly video](https://youtube.com/shorts/O5p0sgUI60w?si=YELc-EaVzkug4Nf-)
 - After assemsbly. 
+
 ![](images/electronics_assembly.jpeg)
 - Sensors making contact.
+
 ![](images/electronics_assembly_back.jpeg)
 - Fitted device and uploaded initial firmware (it connect to internet hence the indicator is blue).
+
 ![](images/completed.jpeg)
 - Device on the arm.
+
 ![](images/arm1.jpeg)
 ![](images/arm2.jpeg)
 
