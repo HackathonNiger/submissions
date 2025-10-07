@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FinXchange</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    primary: "#16C15B", // OPay's vibrant green
+                    "background-light": "#F5F7FA",
+                    "background-dark": "#101c22", // Kept for potential dark mode
+                    "card-light": "#ffffff",
+                    "card-dark": "#1a2831",
+                    "text-light": "#222222", // Darker text for better contrast
+                    "text-dark": "#f6f7f8",
+                    "text-muted-light": "#8F92A1", // Softer muted text
+                    "text-muted-dark": "#94a3b8",
+                },
+                fontFamily: {
+                    display: ["Manrope", "sans-serif"],
+                },
+                borderRadius: {
+                    DEFAULT: "0.75rem", // 12px
+                    lg: "1rem", // 16px
+                    xl: "1.5rem",
+                    full: "9999px",
+                },
+            },
+        },
+    };
+    </script>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <style>
+        .opay-gradient {
+            background: linear-gradient(135deg, #16C15B, #12D06E);
+        }
+        /* Basic scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark">
+    <div id="root"></div>
+    <script src="/env.js"></script>
+    <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.2.0",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+    "react-router-dom": "https://esm.sh/react-router-dom@6.23.0?deps=react@18.2.0",
+    "react/": "https://esm.sh/react@18.2.0/",
+    "react-dom/": "https://esm.sh/react-dom@18.2.0/",
+    "@google/genai": "https://esm.sh/@google/genai",
+    "jspdf": "https://esm.sh/jspdf@2.5.1",
+    "html2canvas": "https://esm.sh/html2canvas@1.4.1"
+  }
+}
+</script>
+    <script type="module" src="/index.tsx"></script>
+</body>
+</html>

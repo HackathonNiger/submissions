@@ -1,0 +1,8 @@
+{
+  "name": "FinXchange",
+  "description": "A modern, professional financial application for managing services, transactions, and support, with a clean and intuitive user interface.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
