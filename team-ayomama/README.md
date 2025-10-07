@@ -223,6 +223,12 @@ Feel free to connect with the team behind this project:
 - **Instagram**: [Ayomama Instagram](https://www.instagram.com/ayomama_ng/)
 - **YouTube**: [Ayomama YouTube](https://www.youtube.com/@Ayomamahealth)
 
+## Additional Resources
+
+- **Demo Video**: [Watch the Ayomama Demo](https://drive.google.com/file/d/1ZOFWRE7vblLyQAfUfJ12KZrRWKJKQ3W6/view?usp=drive_link)
+
+- **Project Documentation**: [Ayomama Reference Document](https://docs.google.com/document/d/1jQESUe1WIV9f-qyKiA3Otlog_5Csbl8F6MsBHsOR9cM/edit?tab=t.0)
+
 ## Badges
 
 [![Backend: Node.js](https://img.shields.io/badge/Backend-Node.js-339933?style=flat&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
