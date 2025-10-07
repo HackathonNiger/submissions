@@ -628,6 +628,7 @@ const HomePage = ({
             {verificationResult.status === 'ocr_low_confidence' && (
               <button
                 onClick={() => {
+                  resetVerification();
                   setManualInput({ nafdacNo: verificationResult.extractedText, batchNo: '' });
                   setVerificationMethod('manual');
                 }}
