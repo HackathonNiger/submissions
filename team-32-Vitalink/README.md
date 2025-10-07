@@ -1,7 +1,7 @@
 # Official Technical Documentation Of the CODEFEST HACKATHON 2025 TEAM VITALINK Project
 
 ## Team Members
-- [**Ohieku Eneji Peacemaker**](https://github.com/EnejiOhieku)
+- **Ohieku Eneji Peacemaker**
 - **Makanjuola Emmanuel Iseoluwa**
 - **Onyeka Joshua Ituma**
 - **Ituma Chidi Mathayas**
