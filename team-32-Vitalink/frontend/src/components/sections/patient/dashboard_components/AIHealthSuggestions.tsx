@@ -21,11 +21,93 @@ interface VitalData {
   online: boolean;
 }
 
+//  basic status category
+function getVitalStatus(type: string, value: number) {
+  switch (type) {
+    case "spo2":
+      return value < 90 ? "critical" : value < 95 ? "low" : "normal";
+    case "bpm":
+      return value < 60 ? "low" : value > 100 ? "high" : "normal";
+    case "temp":
+      return value > 37.5 ? "high" : "normal";
+    case "bp":
+      return value > 140 ? "high" : value < 90 ? "low" : "normal";
+    default:
+      return "normal";
+  }
+}
+
+// Color tag helper
+function getPriorityColor(priority: string) {
+  switch (priority) {
+    case "high":
+      return "bg-red-100 text-red-600";
+    case "medium":
+      return "bg-yellow-100 text-yellow-700";
+    default:
+      return "bg-green-100 text-green-700";
+  }
+}
+
+// Basic rule-based local suggestions
+function generateSuggestions(vitals: VitalData) {
+  const suggestions = [];
+
+  if (vitals.temp > 37.5) {
+    suggestions.push({
+      title: "High Temperature Detected",
+      description: "You may be running a fever. Stay hydrated and rest well.",
+      priority: "high",
+      icon: Activity,
+    });
+  }
+
+  if (vitals.spo2 < 95) {
+    suggestions.push({
+      title: "Low Oxygen Level",
+      description: "Consider breathing exercises or consulting a doctor.",
+      priority: "high",
+      icon: HeartPulse,
+    });
+  }
+
+  if (vitals.bpm > 100) {
+    suggestions.push({
+      title: "High Heart Rate",
+      description:
+        "Try to relax and monitor your pulse. Avoid caffeine and stress.",
+      priority: "medium",
+      icon: Brain,
+    });
+  }
+
+  if (vitals.current_step_count < 1000) {
+    suggestions.push({
+      title: "Low Activity Level",
+      description: "Take a short walk or stretch to improve circulation.",
+      priority: "medium",
+      icon: Activity,
+    });
+  }
+
+  if (suggestions.length === 0) {
+    suggestions.push({
+      title: "All Good!",
+      description:
+        "Your vitals look stable. Keep maintaining your healthy routine.",
+      priority: "low",
+      icon: Droplets,
+    });
+  }
+
+  return suggestions;
+}
+
 export default function AIHealthSuggestions() {
   const [vitals, setVitals] = useState<VitalData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [aiMessage, setAiMessage] = useState(""); // 👈 Store Gemini response
-  const [thinking, setThinking] = useState(false); // 👈 Loading state for AI
+  const [aiMessage, setAiMessage] = useState("");
+  const [thinking, setThinking] = useState(false);
 
   useEffect(() => {
     async function fetchVitals() {
@@ -41,7 +123,7 @@ export default function AIHealthSuggestions() {
     }
 
     fetchVitals();
-    const interval = setInterval(fetchVitals, 15000); // auto-refresh every 15s
+    const interval = setInterval(fetchVitals, 15000);
     return () => clearInterval(interval);
   }, []);
 
@@ -190,86 +272,4 @@ export default function AIHealthSuggestions() {
       </Card>
     </div>
   );
-}
-
-// Helper: determine basic status category
-function getVitalStatus(type: string, value: number) {
-  switch (type) {
-    case "spo2":
-      return value < 90 ? "critical" : value < 95 ? "low" : "normal";
-    case "bpm":
-      return value < 60 ? "low" : value > 100 ? "high" : "normal";
-    case "temp":
-      return value > 37.5 ? "high" : "normal";
-    case "bp":
-      return value > 140 ? "high" : value < 90 ? "low" : "normal";
-    default:
-      return "normal";
-  }
-}
-
-// Color tag helper
-function getPriorityColor(priority: string) {
-  switch (priority) {
-    case "high":
-      return "bg-red-100 text-red-600";
-    case "medium":
-      return "bg-yellow-100 text-yellow-700";
-    default:
-      return "bg-green-100 text-green-700";
-  }
-}
-
-// Basic rule-based local suggestions
-function generateSuggestions(vitals: VitalData) {
-  const suggestions = [];
-
-  if (vitals.temp > 37.5) {
-    suggestions.push({
-      title: "High Temperature Detected",
-      description: "You may be running a fever. Stay hydrated and rest well.",
-      priority: "high",
-      icon: Activity,
-    });
-  }
-
-  if (vitals.spo2 < 95) {
-    suggestions.push({
-      title: "Low Oxygen Level",
-      description: "Consider breathing exercises or consulting a doctor.",
-      priority: "high",
-      icon: HeartPulse,
-    });
-  }
-
-  if (vitals.bpm > 100) {
-    suggestions.push({
-      title: "High Heart Rate",
-      description:
-        "Try to relax and monitor your pulse. Avoid caffeine and stress.",
-      priority: "medium",
-      icon: Brain,
-    });
-  }
-
-  if (vitals.current_step_count < 1000) {
-    suggestions.push({
-      title: "Low Activity Level",
-      description: "Take a short walk or stretch to improve circulation.",
-      priority: "medium",
-      icon: Activity,
-    });
-  }
-
-  if (suggestions.length === 0) {
-    suggestions.push({
-      title: "All Good!",
-      description:
-        "Your vitals look stable. Keep maintaining your healthy routine.",
-      priority: "low",
-      icon: Droplets,
-    });
-  }
-
-  return suggestions;
 }

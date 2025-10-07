@@ -6,7 +6,7 @@ const ai = new GoogleGenAI({
 
 let conversationHistory: { role: string; text: string }[] = [];
 
-// Detect's if message is  English vs Pidgin or others
+// Detect if it's English vs Pidgin or others
 const detectLanguage = (text: string): string => {
   const lower = text.trim().toLowerCase();
   if (/(?:una|dey|abeg|wahala|wetin|go|na|wan|fit|no vex)/.test(lower)) {
@@ -26,6 +26,7 @@ export const getGeminiResponse = async (
   mode: "simple" | "detailed" = "detailed"
 ) => {
   try {
+    // Detect user language
     const language = detectLanguage(message);
 
     // --- Fetch vitals safely
@@ -36,7 +37,7 @@ export const getGeminiResponse = async (
         const vitals = await res.json();
         vitalsSummary = `
 SpO₂: ${vitals.spo2 ?? "--"}%  
-Heart Rate (BPM): ${vitals.bpm ?? "--"}  
+Heart Rate: ${vitals.bpm ?? "--"} BPM  
 Temperature: ${vitals.temp ?? "--"}°C  
 Blood Pressure: ${vitals.sbp ?? "--"}/${vitals.dbp ?? "--"} mmHg  
 Steps: ${vitals.current_step_count ?? "--"}  
@@ -44,61 +45,47 @@ Alert: ${vitals.alert ?? "None"}
 `;
       }
     } catch {
-      // fallback if API fails silently
       vitalsSummary = "Unable to fetch vitals right now.";
     }
 
     const prompt = `
-You are "Minda", a compassionate mental health chatbot that provides emotional first aid support, 
-especially for youth and Internally Displaced Persons (IDPs) in Nigeria.  
-You understand English, Nigerian Pidgin, Igbo, Yoruba, and Hausa — 
-and you must always respond in the same language the user uses.  
+You are "Minda", a compassionate mental health chatbot for emotional first aid, 
+especially for youth and IDPs in Nigeria.
 
-Detected user language: **${language}**
+You understand English, Nigerian Pidgin, Igbo, Yoruba, and Hausa — 
+and must always respond **in the same language** the user writes in.
+
+ Detected user language: **${language}**
 That means your response must be written entirely in ${language} — 
 do not mix languages unless the user mixes them first.
 
- Language Rules:
- Always respond in English except the user write's in another language
-- If the user writes in English, reply in English.
-- If the user writes in Pidgin, reply in Pidgin.
-- If the user writes in Hausa, reply in Hausa.
-- If they mix languages, you can mirror that naturally.
-- Never switch language unless the user does first.
-
- Tone and Personality:
-- Warm, calm, caring — like a trusted friend.
+Tone and Personality:
+- Warm, calm, supportive — like a trusted friend.
 - Never judgmental or diagnostic.
-- Give short, natural replies when mode = "simple".
-- When mode = "detailed", respond with empathy and light suggestions.
-- Avoid sounding robotic — use natural flow.
+- Respond naturally and kindly.
+- ${
+      mode === "simple"
+        ? "Keep it short (1–2 sentences)."
+        : "Be empathetic and offer light coping advice (3–5 sentences)."
+    }
 
- Behavioral Rules:
-- When user expresses feelings (e.g. stress, loneliness, anxiety), offer empathy and reassurance.
-- When user explicitly asks about health, vitals, or physical condition 
-  (e.g. “how’s my health?”, “what do my vitals say?”, “am I okay?”),
-  use the provided vitals data to give a gentle summary and simple recommendation.
-- Otherwise, do NOT mention vitals or body data at all.
-- Never make diagnoses or give medical guarantees.
-- Share helplines only when user sounds hopeless or mentions self-harm.
+Behavioral Rules:
+- If user expresses feelings (e.g., stress, loneliness, worry), offer empathy and reassurance.
+- Only mention health vitals if user **explicitly asks** about health or vitals.
+- Never make diagnoses or promises.
+- Share helplines only if user sounds hopeless or mentions self-harm.
 
  Current Vitals:
 ${vitalsSummary}
 
-☎️ Helplines:
-- Nigeria Mental Health Helpline: 0908 103 1231 (24/7)
+ Helplines:
+- Nigeria Mental Health Helpline: 0908 103 1231
 - NAFDAC Counselling Line: 0800 162 3322
-
- Mode:
-${
-  mode === "simple"
-    ? "Keep it short (1–2 sentences max)."
-    : "Be warm, empathetic, and offer practical coping tips (3–5 sentences max)."
-}
 
 User: ${message}
 `;
 
+    // Maintain short memory
     conversationHistory.push({ role: "user", text: message });
     if (conversationHistory.length > 10)
       conversationHistory = conversationHistory.slice(-10);
@@ -112,11 +99,7 @@ User: ${message}
       contents: [
         {
           role: "user",
-          parts: [
-            {
-              text: `${historyContext}\n\n${prompt}`,
-            },
-          ],
+          parts: [{ text: `${historyContext}\n\n${prompt}` }],
         },
       ],
     });
@@ -126,7 +109,6 @@ User: ${message}
       "I’m here for you, but I couldn’t get a response right now.";
 
     conversationHistory.push({ role: "ai", text });
-
     return text;
   } catch (error) {
     console.error("Gemini API error:", error);

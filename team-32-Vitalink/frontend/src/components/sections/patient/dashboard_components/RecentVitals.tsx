@@ -143,7 +143,7 @@ export default function RecentVitals({ onVitalsUpdate }: RecentVitalsProps) {
     {
       name: "Temperature",
       value: vitals?.temp ?? "--",
-      unit: "°F",
+      unit: "°C",
       status: vitals ? getStatus("Temperature", vitals.temp || 0) : "normal",
       icon: Thermometer,
       lastUpdated: vitals ? "Just now" : "Loading...",
