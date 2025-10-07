@@ -6,6 +6,7 @@ import { SidebarProvider, SidebarTrigger } from "../../../ui/sidebar";
 import { Button } from "../../../ui/button";
 import { Input } from "../../../ui/input";
 import { RiRobot2Fill } from "react-icons/ri";
+import { SiGoogledisplayandvideo360 } from "react-icons/si";
 
 import { getGeminiResponse } from "../../../../services/gemini";
 import { useUser } from "../../../../contexts/UserContext";
@@ -83,56 +84,36 @@ const ChatUI = () => {
   };
 
   const handleReadAloud = (messageId: string, text: string) => {
-    // Stop any current speech first
+    // If the clicked message is already speaking, stop it
+    if (speakingMessageId === messageId) {
+      window.speechSynthesis.cancel(); // stop ongoing speech
+      setSpeakingMessageId(null);
+      return;
+    }
+
+    // Stop any ongoing speech before starting new one
     window.speechSynthesis.cancel();
+
+    // Detect language
+    const isHausa = /(?:\b(?:ina|ka|ki|zaka|zaki|yaya|gani|akwai)\b)/i.test(
+      text
+    );
+    const isPigin = /(?:\b(?:dey|abeg|na|wahala|omo|wetin|no vex|sha)\b)/i.test(
+      text
+    );
 
     const utterance = new SpeechSynthesisUtterance(text);
 
-    // --- Detect Language ---
-    const lowerText = text.toLowerCase();
-
-    // Hausa detection: common Hausa words
-    const hausaWords = [
-      "ka",
-      "ki",
-      "kana",
-      "kina",
-      "zaka",
-      "za ki",
-      "lafiya",
-      "ba",
-      "ne",
-      "ce",
-      "ni",
-      "na",
-    ];
-    const isHausa = hausaWords.some((w) => lowerText.includes(w));
-
-    // Pidgin detection: common Pidgin words
-    const pidginWords = [
-      "dey",
-      "no worry",
-      "go",
-      "fit",
-      "wahala",
-      "wetin",
-      "abi",
-      "una",
-      "make",
-      "na",
-    ];
-    const isPidgin = pidginWords.some((w) => lowerText.includes(w));
-
     if (isHausa) {
-      utterance.lang = "ha-NG"; // Hausa (Nigeria)
-    } else if (isPidgin) {
-      utterance.lang = "en-NG"; // Nigerian English (for Pidgin)
+      utterance.lang = "ha-NG";
+    } else if (isPigin) {
+      utterance.lang = "en-NG"; // closest available accent for Nigerian Pidgin
     } else {
-      utterance.lang = "en-US"; // Default
+      utterance.lang = "en-US";
     }
 
-    // --- Playback ---
     utterance.onend = () => setSpeakingMessageId(null);
+
     setSpeakingMessageId(messageId);
     window.speechSynthesis.speak(utterance);
   };
@@ -195,8 +176,8 @@ const ChatUI = () => {
                     }`}
                   >
                     {message.sender === "bot" && (
-                      <div className="">
-                        <RiRobot2Fill
+                      <div className="hidden md:block">
+                        <SiGoogledisplayandvideo360
                           size={20}
                           className="text-blue-600 mt-1"
                         />
@@ -254,7 +235,6 @@ const ChatUI = () => {
 
                 {loading && (
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <RiRobot2Fill size={20} className="text-blue-600" />
                     <div className="flex space-x-1">
                       <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
                       <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
