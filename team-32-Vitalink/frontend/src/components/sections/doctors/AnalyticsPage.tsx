@@ -1,3 +1,4 @@
+// Doctor analytics - analytics page for doctors
 import { useState } from "react";
 import { SidebarProvider, SidebarTrigger } from "../../ui/sidebar";
 import { DoctorSidebar } from "../../sidebars/DoctorSidebar";

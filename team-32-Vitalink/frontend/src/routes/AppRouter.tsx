@@ -34,24 +34,26 @@ function AppContent() {
       <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <PatientsProvider>
           <Routes>
+            {/* Landing page - main entry point for the application */}
             <Route path="/" element={<LandingPage />} />
 
-            {/* Authentication Routes */}
+            {/* Authentication Routes - for user signup and login */}
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
 
-            {/* Patient Routes */}
+            {/* Patient Routes - pages accessible to patients */}
             <Route path="/patient/dashboard" element={<PatientDashboard />} />
             <Route path="/patient/chat" element={<ChatUI />} />
             <Route path="/patient/settings" element={<PatientSettingsPage />} />
 
-            {/* Doctor Routes */}
+            {/* Doctor Routes - pages accessible to doctors */}
             <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
             <Route path="/doctor/patients" element={<PatientsPage />} />
             <Route path="/doctor/patients/:id" element={<PatientDetail />} />
             <Route path="/doctor/analytics" element={<AnalyticsPage />} />
             <Route path="/doctor/settings" element={<DoctorSettingsPage />} />
 
+            {/* Catch-all route for 404 errors */}
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </PatientsProvider>

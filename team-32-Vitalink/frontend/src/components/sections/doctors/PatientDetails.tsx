@@ -1,3 +1,4 @@
+// Doctor patient detail - detailed view of a patient
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Heart, Activity, Thermometer, Droplets, Phone, Mail, MapPin, User, Calendar, AlertCircle } from "lucide-react";
 import { SidebarProvider, SidebarTrigger } from "../../ui/sidebar";

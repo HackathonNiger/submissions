@@ -1,3 +1,4 @@
+// Patient dashboard - main dashboard for patients showing vitals, suggestions, etc.
 import { MessageCircle } from "lucide-react";
 import Dashboard from "../components/sections/patient/Dashboard";
 import { PatientSidebar } from "../components/sidebars/PatientSidebar";

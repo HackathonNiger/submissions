@@ -1,3 +1,4 @@
+// Doctor settings - settings page for doctors
 import React, { useState } from "react";
 import { useToast } from "../../ui/use-toast";
 import { SidebarProvider, SidebarTrigger } from "../../ui/sidebar";

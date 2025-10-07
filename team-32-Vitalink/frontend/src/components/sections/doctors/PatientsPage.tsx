@@ -1,3 +1,4 @@
+// Doctor patients - list of patients for doctors
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, ArrowRight, Activity } from "lucide-react";
