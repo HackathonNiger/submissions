@@ -1,3 +1,4 @@
+// Signup page - for user signup
 import { useState } from "react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
@@ -105,6 +106,7 @@ const SignUp = () => {
           contact: "",
           address: "",
           license: "",
+          role: "patient",
           firstName: firstName,
           lastName: lastName,
           email: email,
@@ -129,6 +131,7 @@ const SignUp = () => {
           address: hospitalAddress,
           username: firstName,
           license: license,
+          role: "doctor",
           firstName: firstName,
           lastName: lastName,
           email: email,

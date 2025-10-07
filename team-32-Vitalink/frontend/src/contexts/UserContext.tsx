@@ -18,6 +18,7 @@ interface UserData {
   specs: string;
   address: string;
   license: string;
+  role: "doctor" | "patient";
   firstName?: string;
   lastName?: string;
   email?: string;
@@ -42,9 +43,7 @@ interface UserContextType {
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-export const UserProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUserState] = useState<UserData | null>(() => {
     const savedUser = localStorage.getItem("user");
     return savedUser ? JSON.parse(savedUser) : null;
@@ -59,7 +58,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  // ✅ Update vitals in context and persist them
+  // Update vitals in context and persist them
   const updateVitals = (vitals: VitalData[]) => {
     setUserState((prev) => {
       if (!prev) return prev; // no user yet
@@ -69,11 +68,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
     });
   };
 
-  return (
-    <UserContext.Provider value={{ user, setUser, updateVitals }}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={{ user, setUser, updateVitals }}>{children}</UserContext.Provider>;
 };
 
 export const useUser = (): UserContextType => {

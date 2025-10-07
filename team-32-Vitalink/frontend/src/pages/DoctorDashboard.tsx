@@ -1,3 +1,4 @@
+// Doctor dashboard - main dashboard for doctors
 import { SidebarProvider, SidebarTrigger } from "../components/ui/sidebar";
 import { DoctorSidebar } from "../components/sidebars/DoctorSidebar";
 import { Button } from "../components/ui/button";

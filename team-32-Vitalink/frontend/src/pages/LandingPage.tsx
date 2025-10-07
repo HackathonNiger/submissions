@@ -1,3 +1,4 @@
+// Landing page - main entry point for the application
 import { Heart, Shield, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -55,10 +56,10 @@ const LandingPage = () => {
             <span className="text-2xl font-bold text-foreground">vitaLink</span>
           </div>
           <div className="flex space-x-4">
-            <Button className="text-black shadow-none bg-gray-50 hover:bg-gray-200 hover:text-black" asChild>
+            <Button className="text-black md:block hidden shadow-none bg-gray-50 hover:bg-gray-200 hover:text-black" asChild>
               <Link to="/login">Sign In</Link>
             </Button>
-            <Button className="hover:text-white" asChild>
+            <Button className="hover:text-white cursor-pointer" asChild>
               <Link to="/signup">Get Started</Link>
             </Button>
           </div>
@@ -66,7 +67,7 @@ const LandingPage = () => {
       </nav>
 
       {/* Hero Section */}
-      <div className="relative flex min-h-[50rem] w-full items-center justify-center bg-white dark:bg-black">
+      <div className="relative flex min-h-[50rem] md:pt-0 pt-10 w-full items-center justify-center bg-white dark:bg-black">
         <div
           className={cn(
             "absolute inset-0",

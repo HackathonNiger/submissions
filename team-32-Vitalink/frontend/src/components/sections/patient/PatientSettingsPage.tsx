@@ -1,3 +1,4 @@
+// Patient settings - settings page for patients
 import { useState } from "react";
 import { Camera, Save, Link as LinkIcon } from "lucide-react";
 import { useToast } from "../../ui/use-toast";

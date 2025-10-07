@@ -1,3 +1,4 @@
+// Login page - for user login
 import { useState } from "react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
@@ -10,7 +11,7 @@ import { useUser } from "../contexts/UserContext";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { setUser } = useUser();
+  const { user } = useUser();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -20,17 +21,13 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simple demo logic - determine user type by email
-    const isDoctor = email.includes("doctor") || email.includes("dr") || email.includes("@hospital");
-
-    // Simulate fetching user data
+    // Simulate login - check if user exists in localStorage (from signup)
     setTimeout(() => {
-      if (isDoctor) {
-        setUser(null); // For doctor, can extend later
+      if (user) {
+        navigate(user.role === "doctor" ? "/doctor/dashboard" : "/patient/dashboard");
       } else {
-        setUser(null);
+        alert("No account found. Please sign up first.");
       }
-      navigate(isDoctor ? "/doctor/dashboard" : "/patient/dashboard");
       setIsLoading(false);
     }, 1000);
   };
@@ -57,6 +54,8 @@ const Login = () => {
           </CardHeader>
 
           <CardContent className="px-4 sm:px-6">
+            {/* <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6"> */}
+
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>

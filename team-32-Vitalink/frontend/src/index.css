@@ -227,22 +227,10 @@ button:focus-visible {
     --ring: 213 100% 58%;
 
     /* Modern Healthcare gradients - Very subtle */
-    --gradient-primary: linear-gradient(
-      135deg,
-      hsl(213 100% 58%),
-      hsl(195 100% 65%)
-    );
-    --gradient-hero: linear-gradient(
-      135deg,
-      hsl(213 100% 96%),
-      hsl(195 100% 94%)
-    );
+    --gradient-primary: linear-gradient(135deg, hsl(213 100% 58%), hsl(195 100% 65%));
+    --gradient-hero: linear-gradient(135deg, hsl(213 100% 96%), hsl(195 100% 94%));
     --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(210 100% 98%));
-    --gradient-light: linear-gradient(
-      135deg,
-      hsl(213 100% 98%),
-      hsl(195 100% 96%)
-    );
+    --gradient-light: linear-gradient(135deg, hsl(213 100% 98%), hsl(195 100% 96%));
 
     /* Soft shadows - Very subtle */
     --shadow-soft: 0 1px 3px hsl(213 50% 50% / 0.05);
@@ -317,5 +305,39 @@ button:focus-visible {
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+.scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background: #fff;
+  border-radius: 4px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background: #fff;
+  border-radius: 4px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* For dark mode support */
+@media (prefers-color-scheme: dark) {
+  .scrollbar::-webkit-scrollbar-track {
+    background: #2a2a2a;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: #555;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #777;
   }
 }
