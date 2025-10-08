@@ -1,0 +1,73 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: ensure user is logged in
+    function isLoggedIn() {
+      return request.auth != null;
+    }
+
+    // Helper: check role from user's Firestore doc
+    function isMother() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "mother";
+    }
+
+    function isDoctor() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "doctor";
+    }
+
+    /* ---------------- USERS ---------------- */
+    match /users/{userId} {
+      allow read, update: if isLoggedIn() && request.auth.uid == userId;
+      allow create: if isLoggedIn();
+      // Prevent deletion except by self or admin (optional)
+      allow delete: if false;
+    }
+
+    /* ---------------- APPOINTMENTS ---------------- */
+    match /appointments/{appointmentId} {
+      allow create: if isLoggedIn();
+      allow read, update, delete: if isLoggedIn() && (
+        resource.data.userId == request.auth.uid ||
+        resource.data.doctorId == request.auth.uid
+      );
+    }
+
+    /* ---------------- REMINDERS ---------------- */
+    match /reminders/{reminderId} {
+      // Mother can read/create her reminders
+      allow create, read: if isLoggedIn() && isMother() && request.resource.data.userId == request.auth.uid;
+      // Doctor can read reminders of assigned patients
+      allow read: if isLoggedIn() && isDoctor();
+      // Only Cloud Functions (server) can update sentStatus
+      allow update: if request.auth.token.admin == true;
+    }
+
+    /* ---------------- HEALTH RECORDS ---------------- */
+    match /health_records/{recordId} {
+      allow create: if isLoggedIn() && (
+        isMother() && request.resource.data.userId == request.auth.uid ||
+        isDoctor()
+      );
+      allow read: if isLoggedIn() && (
+        resource.data.userId == request.auth.uid ||
+        isDoctor()
+      );
+      allow update: if isLoggedIn() && isDoctor();
+      allow delete: if false;
+    }
+
+    /* ---------------- EMERGENCIES ---------------- */
+    match /emergencies/{emergencyId} {
+      // Mother triggers emergency
+      allow create: if isLoggedIn() && isMother() && request.resource.data.userId == request.auth.uid;
+      // Doctor can read or mark handled
+      allow read, update: if isLoggedIn() && isDoctor();
+    }
+
+    /* ---------------- DEFAULT ---------------- */
+    match /{document=**} {
+      allow read, write: if false; // deny everything else
+    }
+  }
+}
