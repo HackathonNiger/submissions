@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Login Notification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #003366;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .logo {
+            max-width: 150px;
+            margin-bottom: 10px;
+        }
+        .content {
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #777;
+            border-top: 3px solid #003366;
+        }
+        h1 {
+            color: #ffffff;
+            margin-top: 0;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #003366;
+        }
+        .login-info {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>New Login to Your RefreeG Account</h1>
+        </div>
+        <div class="content">
+            <p>Hi {{userName}},</p>
+            <p>We noticed a new login to your RefreeG account.</p>
+            <div class="login-info">
+                <p><strong>Device:</strong> {{device}}</p>
+                <p><strong>IP Address:</strong> {{ipAddress}}</p>
+                <p><strong>Time:</strong> {{loginTime}}</p>
+            </div>
+            <p>If this was you, no further action is needed. If you do not recognize this activity, please <a href="https://refreeg.com/auth/signin">log in</a> and change your password immediately. For help, email us at <a href="mailto:Support@refreeg.com">Support@refreeg.com</a>.</p>
+            <p>Your security is very important to us. If you have any questions or concerns, we're always just an email away.</p>
+            <p>With care,<br>
+                Chukwunomso Amadike-Unaogu<br>
+                Chief Product Officer<br>
+                RefreeG</p>
+        </div>
+        <div class="footer">
+            <p>This is an automated email. Please do not reply directly to this message.</p>
+            <p>© {{currentYear}} RefreeG. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

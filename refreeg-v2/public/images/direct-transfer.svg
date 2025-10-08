@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="200" cy="150" r="120" fill="#F3F4F6"/>
+  
+  <!-- Arrows -->
+  <path d="M160 120 L200 150 L160 180" stroke="#4F46E5" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M240 120 L200 150 L240 180" stroke="#4F46E5" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Circles -->
+  <circle cx="160" cy="150" r="20" fill="#4F46E5"/>
+  <circle cx="240" cy="150" r="20" fill="#4F46E5"/>
+  
+  <!-- Dots -->
+  <circle cx="160" cy="150" r="4" fill="white"/>
+  <circle cx="240" cy="150" r="4" fill="white"/>
+</svg> 

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cause is Under Review</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #003366;
+            /* Brand color (--brand: 210 100% 20%) */
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .logo {
+            max-width: 150px;
+            margin-bottom: 10px;
+        }
+
+        .content {
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #777;
+            border-top: 3px solid #003366;
+            /* Brand color (--brand: 210 100% 20%) */
+        }
+
+        h1 {
+            color: #ffffff;
+            margin-top: 0;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: #003366;
+            /* Brand color (--brand: 210 100% 20%) */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <!-- <img src="https://gfrksuuzzaczlxcswgkw.supabase.co/storage/v1/object/public/cause-images//logo.svg" alt="Refreeg Logo" class="logo"> -->
+            <h1>Your Cause is Under Review</h1>
+        </div>
+        <div class="content">
+            <p>Hello {{userName}},</p>
+
+            <p>We're writing to inform you that your cause <span class="highlight">{{causeName}}</span> has been
+                received and is currently under review by our team at Refreeg.</p>
+
+            <p>Our review process typically takes {{reviewTimeframe}} to complete. During this time, our team will
+                carefully evaluate your submission to ensure it meets our guidelines and standards.</p>
+
+            <p>Please note that you might receive additional communications if we need any clarifications or additional
+                information about your cause.</p>
+
+            <p>Thank you for your patience and for choosing to work with us. We appreciate your commitment to making a
+                positive impact.</p>
+
+            <p>Best regards,<br>
+                The Refreeg Team</p>
+        </div>
+        <div class="footer">
+            <p>This is an automated email. Please do not reply directly to this message.</p>
+            <p>© {{currentYear}} Refreeg. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="800" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Base map with dark mode colors -->
+    <path d="M400 400" fill="#1a1a1a"/>
+    <!-- Country borders with subtle contrast -->
+    <path d="M400 400" stroke="#2d2d2d" stroke-width="0.5"/>
+    <!-- Water bodies in dark blue -->
+    <path d="M400 400" fill="#0a1929"/>
+    <!-- Land masses in dark gray -->
+    <path d="M400 400" fill="#2a2a2a"/>
+    <!-- Highlight borders in muted blue -->
+    <path d="M400 400" stroke="#1e3a5f" stroke-width="0.3"/>
+</svg> 
