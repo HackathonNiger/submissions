@@ -1,0 +1,33 @@
+host = "https://vitalink.pythonanywhere.com"
+
+get: /push?spo2=90&bpm=30&temp=40&current_step_count=0
+response: {
+    success: true,
+}
+
+get: /update?age=35&gender=1
+response: {
+    success: true,
+}
+
+get: /pull
+response {
+    "spo2": 90,
+    "bpm": 20,
+    "temp": 47.4,
+    "sbp": 100,
+    "dbp": 70,
+    "current_step_count": 5,
+    "alert": "get proper rest",
+    "online": true
+}
+
+get: /start_running
+response: {
+    success: true,
+}
+
+get: /stop_running
+response: {
+    success: true,
+}
