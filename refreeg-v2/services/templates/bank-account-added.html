@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Account Added to RefreeG</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #003366;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .logo {
+            max-width: 150px;
+            margin-bottom: 10px;
+        }
+
+        .content {
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #777;
+            border-top: 3px solid #003366;
+        }
+
+        h1 {
+            color: #ffffff;
+            margin-top: 0;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: #003366;
+        }
+        
+        .bank-info {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Did You Just Add a Bank Account to RefreeG? 🏦</h1>
+        </div>
+        <div class="content">
+            <p>Hi {{userName}},</p>
+
+            <p>We noticed that a new bank account was just added to your RefreeG profile.</p>
+
+            <div class="bank-info">
+                <p><strong>Bank:</strong> {{bankName}}</p>
+                <p><strong>Account Number:</strong> {{accountNumber}}</p>
+                <p><strong>Account Name:</strong> {{accountName}}</p>
+            </div>
+
+            <p>If you made this update — awesome! 🎉 No further action is needed. You're all set to receive donations directly to your account once your cause goes live.</p>
+
+            <p>But if this wasn't you, please log in to your account and change your password immediately. If you need any help, email us at <a href="mailto:Support@refreeg.com">Support@refreeg.com</a>. Your security is incredibly important to us, and we'll act fast to investigate and secure your account.</p>
+
+            <p>We built RefreeG to be a safe, empowering space for changemakers like you — and we take that responsibility seriously. If you ever have questions or concerns, we're always just an email away.</p>
+
+            <p>With care,<br>
+                Chukwunomso Amadike-Unaogu<br>
+                Chief Product Officer<br>
+                RefreeG</p>
+        </div>
+        <div class="footer">
+            <p>This is an automated email. Please do not reply directly to this message.</p>
+            <p>© {{currentYear}} RefreeG. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+
+</html>

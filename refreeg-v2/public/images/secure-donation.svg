@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="200" cy="150" r="120" fill="#F3F4F6"/>
+  
+  <!-- Shield -->
+  <path d="M200 80 L240 100 L240 140 C240 160 220 180 200 180 C180 180 160 160 160 140 L160 100 Z" fill="#4F46E5"/>
+  
+  <!-- Lock -->
+  <rect x="180" y="120" width="40" height="30" rx="4" fill="white"/>
+  <rect x="190" y="110" width="20" height="10" rx="4" fill="white"/>
+  
+  <!-- Checkmark -->
+  <path d="M190 140 L210 160 L230 120" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg> 

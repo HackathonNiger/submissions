@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cause Edited - Under Review</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f4f4f4;
+      }
+      .container {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .logo {
+        font-size: 24px;
+        font-weight: bold;
+        color: #2563eb;
+        margin-bottom: 10px;
+      }
+      .title {
+        color: #1f2937;
+        margin-bottom: 20px;
+      }
+      .content {
+        margin-bottom: 30px;
+      }
+      .highlight {
+        background-color: #fef3c7;
+        padding: 15px;
+        border-radius: 5px;
+        border-left: 4px solid #f59e0b;
+        margin: 20px 0;
+      }
+      .button {
+        display: inline-block;
+        background-color: #2563eb;
+        color: white;
+        padding: 12px 24px;
+        text-decoration: none;
+        border-radius: 5px;
+        margin: 20px 0;
+      }
+      .footer {
+        text-align: center;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #e5e7eb;
+        color: #6b7280;
+        font-size: 14px;
+      }
+      .status-badge {
+        display: inline-block;
+        background-color: #fef3c7;
+        color: #92400e;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="logo">RefreeG</div>
+        <h1 class="title">Cause Edited - Under Review</h1>
+      </div>
+
+      <div class="content">
+        <p>Hello {{userName}},</p>
+
+        <p>
+          We've received your edited cause "<strong>{{causeName}}</strong>" and
+          it's now under review by our team.
+        </p>
+
+        <div class="highlight">
+          <strong>What happens next?</strong><br />
+          Our team will review your changes within
+          <strong>{{reviewTimeframe}}</strong>. You'll receive an email
+          notification once the review is complete.
+        </div>
+
+        <p><strong>Changes made:</strong></p>
+        <ul>
+          <li>Updated cause details and content</li>
+          <li>Modified multimedia and media files</li>
+          <li>Adjusted timeline and goals (if applicable)</li>
+        </ul>
+
+        <p>
+          While your cause is under review, it will remain in its current
+          status. Any significant changes may require additional verification.
+        </p>
+
+        <div style="text-align: center">
+          <a href="{{dashboardUrl}}" class="button">View Dashboard</a>
+        </div>
+
+        <p>
+          If you have any questions about the review process or need to make
+          additional changes, please don't hesitate to contact our support team.
+        </p>
+
+        <p>Thank you for using RefreeG to make a positive impact!</p>
+      </div>
+
+      <div class="footer">
+        <p>Best regards,<br />The RefreeG Team</p>
+        <p>This is an automated message. Please do not reply to this email.</p>
+        <p>© 2024 RefreeG. All rights reserved.</p>
+      </div>
+    </div>
+  </body>
+</html>

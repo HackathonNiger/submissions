@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KYC Verification Update</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .header {
+        background-color: #f44336;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        border-radius: 8px 8px 0 0;
+      }
+      .content {
+        background-color: #f9f9f9;
+        padding: 30px;
+        border-radius: 0 0 8px 8px;
+      }
+      .footer {
+        text-align: center;
+        margin-top: 20px;
+        color: #666;
+        font-size: 14px;
+      }
+      .highlight {
+        background-color: #ffebee;
+        padding: 15px;
+        border-radius: 5px;
+        margin: 20px 0;
+        border-left: 4px solid #f44336;
+      }
+      .reason-box {
+        background-color: #fff3e0;
+        padding: 15px;
+        border-radius: 5px;
+        margin: 15px 0;
+        border: 1px solid #ffcc02;
+      }
+      .cta-button {
+        display: inline-block;
+        background-color: #003366;
+        color: white;
+        padding: 12px 24px;
+        text-decoration: none;
+        border-radius: 5px;
+        margin: 20px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>KYC Verification Update</h1>
+    </div>
+
+    <div class="content">
+      <p>Dear {{userName}},</p>
+
+      <p>
+        We have reviewed your KYC (Know Your Customer) verification submission
+        and unfortunately, it could not be approved at this time.
+      </p>
+
+      <div class="highlight">
+        <strong>What you need to know:</strong>
+        <ul>
+          <li>❌ Your KYC verification was not approved</li>
+          <li>📝 Please review the reason below and address the issues</li>
+          <li>
+            🔄 You can resubmit your KYC verification once the issues are
+            resolved
+          </li>
+          <li>📧 Our support team is available if you need assistance</li>
+        </ul>
+      </div>
+
+      <div class="reason-box">
+        <strong>Reason for rejection:</strong><br />
+        {{rejectionReason}}
+      </div>
+
+      <p>
+        Please address the issues mentioned above and resubmit your KYC
+        verification. We're here to help you get approved!
+      </p>
+
+      <p style="text-align: center">
+        <a href="{{organizationName}}" class="cta-button"
+          >Resubmit KYC Verification</a
+        >
+      </p>
+
+      <p>
+        If you have any questions about the rejection reason or need help with
+        the resubmission process, please don't hesitate to contact our support
+        team.
+      </p>
+
+      <p>
+        Thank you for your understanding and for choosing {{organizationName}}.
+      </p>
+
+      <p>
+        With care,<br />
+        Chukwunomso Amadike-Unaogu<br />
+        Chief Product Officer<br />
+        RefreeG
+      </p>
+    </div>
+
+    <div class="footer">
+      <p>This is an automated message. Please do not reply to this email.</p>
+      <p>&copy; {{organizationName}}. All rights reserved.</p>
+    </div>
+  </body>
+</html>
