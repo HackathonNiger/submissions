@@ -40,7 +40,7 @@ npm install
 
 # The Frontend uses environment variables configured via Expo.
 # Ensure your `EXPO_PUBLIC_API_BASE_URL` is set in your environment or `app.json`
-# to point to your backend (e.g., `http://localhost:3000`)
+# to point to your backend (e.g., `http://localhost:3000`).
 
 # Start the Expo development server
 npx expo start
