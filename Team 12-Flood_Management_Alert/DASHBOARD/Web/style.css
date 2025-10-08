@@ -1,0 +1,119 @@
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(to bottom right, #c7eaff, #b6d4ff);
+  color: #1e293b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+header {
+  margin-bottom: 2rem;
+}
+
+h1 {
+  font-size: 2.2rem;
+  color: #0f172a;
+}
+
+h2 {
+  color: #1d4ed8;
+  margin-top: 0.5rem;
+}
+
+main {
+  width: 100%;
+  max-width: 1000px;
+}
+
+.gauges {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.gauge {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 250px;
+}
+
+.bg-ring {
+  fill: none;
+  stroke: #e5e7eb;
+  stroke-width: 10;
+}
+
+.fill-ring {
+  fill: none;
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-dasharray: 126;
+  stroke-dashoffset: 126;
+  transition: stroke-dashoffset 1s ease;
+}
+
+.water {
+  stroke: #2563eb;
+}
+
+.temp {
+  stroke: #f97316;
+}
+
+.humid {
+  stroke: #16a34a;
+}
+
+.value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0.5rem 0;
+}
+
+.label {
+  color: #475569;
+}
+
+.status {
+  font-weight: bold;
+  font-size: 1.2rem;
+  padding: 0.8rem 1.2rem;
+  border-radius: 50px;
+  margin-bottom: 2rem;
+  display: inline-block;
+}
+
+.status.safe {
+  background-color: #22c55e;
+  color: white;
+}
+
+.status.warning {
+  background-color: #facc15;
+  color: #1f2937;
+}
+
+.status.danger {
+  background-color: #ef4444;
+  color: white;
+}
+
+.chart {
+  background: white;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+footer {
+  margin-top: 2rem;
+  color: #334155;
+}
