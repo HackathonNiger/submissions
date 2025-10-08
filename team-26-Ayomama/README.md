@@ -25,7 +25,7 @@ npm install
 
 # Start the backend server in development mode
 npm run dev
-# Or in production mode
+# Or in production mode.
 # npm start
 ```
 
@@ -227,19 +227,19 @@ Feel free to connect with the team behind this project:
 
 Here are additional materials and resources related to the **Ayomama** project:
 
- **Documentation & Project Files**
+**Documentation & Project Files**
 
 - **Project Summary:** [View Document](https://docs.google.com/document/d/1l9OhcXAjV15V6e5QTsNUHoEDvsRrwOXy5sepsaHn2UQ/edit?usp=drive_link)
 - **Product Requirements Document (PRD):** [View PRD](https://docs.google.com/document/d/1vO0pCvpRAn2wrz_pXwkWLXXxcftnRzM-0ZMgLbQAugk/edit?usp=drive_link)
 - **Pitch/Slide Deck:** [View Slides](https://docs.google.com/presentation/d/18P62i1KGUuxjClzlbg_AinAL7gYJ1PXd/edit?usp=drive_link&ouid=107403678784985362840&rtpof=true&sd=true)
 - **Demo Video:** [Watch Demo](https://drive.google.com/file/d/1ZOFWRE7vblLyQAfUfJ12KZrRWKJKQ3W6/view?usp=drive_link)
 
- **Design Prototypes (Figma)**
+  **Design Prototypes (Figma)**
 
 - **Ayomama Patient Prototype:** [Open Figma](https://www.figma.com/proto/AIMQcTmaMor0FdMJHowwhq/Ayomama?node-id=571-2444&starting-point-node-id=450%3A240&locale=en)
--  **Ayomama CHW Prototype:** [Open Figma](https://www.figma.com/proto/AIMQcTmaMor0FdMJHowwhq/Ayomama?node-id=988-497&starting-point-node-id=959%3A551&locale=en)
+- **Ayomama CHW Prototype:** [Open Figma](https://www.figma.com/proto/AIMQcTmaMor0FdMJHowwhq/Ayomama?node-id=988-497&starting-point-node-id=959%3A551&locale=en)
 
- **Full Project Reference Document:**  
+**Full Project Reference Document:**  
 [Access Here](https://docs.google.com/document/d/1jQESUe1WIV9f-qyKiA3Otlog_5Csbl8F6MsBHsOR9cM/edit?tab=t.0)
 
 ---
