@@ -89,21 +89,27 @@ Team-14-SmartEd-Africa/
 
 ## 📷 Screenshots
 
-<!-- > *(Add 10–15 images from the `/screenshots` folder)* -->
+> *(Below are selected interface views from SmartEd Africa — more available in `/screenshots` folder)*
 
-```markdown
-![Dashboard Overview](./screenshots/dashboard.jpg)
+![Dashboard Overview](./screenshots/LandingPage-Desktop-Mode.jpg)
+
 ![AI Tutor Interface](./screenshots/CoursePage-StudentDashboard-2-Desktop-Mode-Live-Preview.jpg)
-<!-- ![Offline Mode Notification](./screenshots/offline-mode.png)
-![Teacher Analytics](./screenshots/teacher-analytics.png) -->
+
 ![Multilingual Learning Auto Detect Language Page](./screenshots/multilingual.jpg)
+
 ![Multilingual Learning Page in Hausa](./screenshots/LandingPage-Desktop-Mode-Hausa.jpg)
+
+![Student Progress Chart](./screenshots/Course-SubscriptionPage-Desktop-Mode-Live-Preview.jpg)
+
 ![Student Progress Chart](./screenshots/CoursePage-StudentDashboard-2-Desktop-Mode-Live-Preview.jpg)
-![Login Screen](./screenshots/login.png)
-<!-- ![Admin Panel](./screenshots/admin-panel.png) -->
+
+![Login Screen](./screenshots/Login.jpg)
+
+![Signup Screen](./screenshots/Signup.jpg)
+
 ![Course Selection](./screenshots/Course-SubscriptionPage-Desktop-Mode-Live-Preview.jpg)
+
 ![Mobile View](./screenshots/Course-CheckoutPage-Desktop-Mode-Live-Preview.jpg)
-```
 
 ---
 
@@ -126,7 +132,6 @@ Team-14-SmartEd-Africa/
 - Mobile (Android/iOS) support  
 
 ---
-
 
 ## 🛠️ Installation & Setup
 
@@ -214,7 +219,7 @@ This project is licensed under the **MIT License** — see [`LICENSE`](./LICENSE
 
 ## 🤝 Acknowledgment
 
-Special thanks to **Hackathon Nigeria** organizers and mentors for creating this opportunity to innovate for **Nigeria’s future in education**.
+Special thanks to **Codefest Nigeria Hackathon** organizers and mentors for creating this opportunity to innovate for **Nigeria’s future in education**.
 
 ---
 
