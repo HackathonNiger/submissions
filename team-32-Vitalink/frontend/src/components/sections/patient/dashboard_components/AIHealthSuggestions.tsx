@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
 import { Activity, Droplets, Brain, HeartPulse } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../../../ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../ui/card";
 import { Button } from "../../../ui/button";
 import { getGeminiResponse } from "../../../../services/gemini";
 
@@ -74,8 +68,7 @@ function generateSuggestions(vitals: VitalData) {
   if (vitals.bpm > 100) {
     suggestions.push({
       title: "High Heart Rate",
-      description:
-        "Try to relax and monitor your pulse. Avoid caffeine and stress.",
+      description: "Try to relax and monitor your pulse. Avoid caffeine and stress.",
       priority: "medium",
       icon: Brain,
     });
@@ -93,8 +86,7 @@ function generateSuggestions(vitals: VitalData) {
   if (suggestions.length === 0) {
     suggestions.push({
       title: "All Good!",
-      description:
-        "Your vitals look stable. Keep maintaining your healthy routine.",
+      description: "Your vitals look stable. Keep maintaining your healthy routine.",
       priority: "low",
       icon: Droplets,
     });
@@ -162,11 +154,7 @@ export default function AIHealthSuggestions() {
       },
     ];
 
-    const prompt = `How am I doing today?\nVitals:\n${JSON.stringify(
-      formattedVitals,
-      null,
-      2
-    )}`;
+    const prompt = `How am I doing today?\nVitals:\n${JSON.stringify(formattedVitals, null, 2)}`;
     const response = await getGeminiResponse(prompt);
     setAiMessage(response);
     setThinking(false);
@@ -191,9 +179,7 @@ export default function AIHealthSuggestions() {
       <Card className="shadow-soft">
         <CardHeader>
           <CardTitle>AI Health Assistant</CardTitle>
-          <CardDescription>
-            Could not load vitals. Please check your connection.
-          </CardDescription>
+          <CardDescription>Could not load vitals. Please check your connection.</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -209,18 +195,13 @@ export default function AIHealthSuggestions() {
             <Brain className="h-5 w-5 text-primary" />
             <span>AI Health Assistant</span>
           </CardTitle>
-          <CardDescription>
-            Personalized recommendations based on your latest vitals
-          </CardDescription>
+          <CardDescription>Personalized recommendations based on your latest vitals</CardDescription>
         </CardHeader>
 
         <CardContent>
           <div className="space-y-4">
             {aiSuggestions.map((suggestion, index) => (
-              <div
-                key={index}
-                className="p-4 rounded-lg border hover:bg-accent/50 transition-colors"
-              >
+              <div key={index} className="p-4 rounded-lg border hover:bg-accent/50 transition-colors">
                 <div className="flex items-start justify-between">
                   <div className="flex items-start space-x-3">
                     <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
@@ -228,44 +209,25 @@ export default function AIHealthSuggestions() {
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-1">
-                        <h4 className="font-semibold text-foreground">
-                          {suggestion.title}
-                        </h4>
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(
-                            suggestion.priority
-                          )}`}
-                        >
+                        <h4 className="font-semibold text-foreground">{suggestion.title}</h4>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(suggestion.priority)}`}>
                           {suggestion.priority}
                         </span>
                       </div>
-                      <p className="text-sm text-muted-foreground">
-                        {suggestion.description}
-                      </p>
+                      <p className="text-sm text-muted-foreground">{suggestion.description}</p>
                     </div>
                   </div>
-                  <Button size="sm" variant="secondary">
-                    View
-                  </Button>
                 </div>
               </div>
             ))}
 
             {/* Gemini AI Interaction */}
             <div className="mt-6">
-              <Button
-                onClick={handleAskAI}
-                className="w-full bg-primary text-white"
-                disabled={thinking}
-              >
+              <Button onClick={handleAskAI} className="w-full bg-primary text-white" disabled={thinking}>
                 {thinking ? "Analyzing your vitals..." : "Ask about my health"}
               </Button>
 
-              {aiMessage && (
-                <p className="mt-4 text-sm text-muted-foreground whitespace-pre-wrap">
-                  {aiMessage}
-                </p>
-              )}
+              {aiMessage && <p className="mt-4 text-sm text-muted-foreground whitespace-pre-wrap">{aiMessage}</p>}
             </div>
           </div>
         </CardContent>
