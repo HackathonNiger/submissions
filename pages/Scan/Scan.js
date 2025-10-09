@@ -19,18 +19,37 @@ export default class Scan extends Component {
     };
   }
 
-  async componentDidMount() {
+  componentDidMount() {
+    this.loadUserData();
+    this.loadScannedHistory();
+
+    // Refresh history whenever screen is focused
+    this._unsubscribe = this.props.navigation.addListener("focus", () => {
+      this.loadScannedHistory();
+    });
+  }
+
+  componentWillUnmount() {
+    this._unsubscribe?.();
+  }
+
+  loadUserData = async () => {
     try {
       const storedUser = await AsyncStorage.getItem("user");
       if (storedUser) this.setState({ user: JSON.parse(storedUser) });
+    } catch (error) {
+      console.error("Error loading user:", error);
+    }
+  };
 
-      // ✅ Load scanned history
+  loadScannedHistory = async () => {
+    try {
       const storedScans = await AsyncStorage.getItem("scannedDrugs");
       if (storedScans) this.setState({ scannedHistory: JSON.parse(storedScans) });
     } catch (error) {
-      console.error("Error loading data:", error);
+      console.error("Error loading scanned history:", error);
     }
-  }
+  };
 
   render() {
     const { iconType } = this.props.route.params || {};
@@ -79,7 +98,7 @@ export default class Scan extends Component {
             <Text style={[styles.ScaNow, fonts.bold]}>SCAN NOW</Text>
           </TouchableOpacity>
 
-          {/* ✅ Display scanned history below */}
+          {/* Scanned history */}
           <ScrollView style={styles.historyContainer}>
             <Text style={styles.historyHeader}>Previously Scanned Drugs</Text>
             {scannedHistory.length === 0 ? (
@@ -175,7 +194,6 @@ const styles = StyleSheet.create({
   },
   ScaNow: { color: "#046868ff", fontSize: scale(12) },
 
-  // ✅ History Section
   historyContainer: {
     width: "90%",
     marginTop: 10,

@@ -9,15 +9,19 @@ import {
   Easing,
   ActivityIndicator,
   Dimensions,
+  Image,
+  ScrollView,
+  SafeAreaView,
 } from "react-native";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { Camera } from "expo-camera";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fonts } from "../../Style/Theme";
 
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
+// Import your existing mockData.json
+const mockData = require("./mockData.json");
 
-// ✅ Set your backend base URL here
-const BASE_URL = "https://your-backend.com";
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 let QrReader;
 if (Platform.OS === "web") {
@@ -69,28 +73,36 @@ export default class ScanningScreen extends Component {
   verifyDrug = async (code) => {
     this.setState({ verifying: true, scanning: false });
 
-    try {
-      const response = await fetch(`${BASE_URL}/api/verify`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code }),
-      });
+    const product = mockData.find((item) => item.nafdac_reg_no === code);
 
-      const result = await response.json();
-      this.setState({ verifying: false, result });
-
-      // ✅ Send result back to Scan screen
-      this.props.navigation.navigate("Scan", { scannedResult: result });
-    } catch (error) {
-      console.error("Verification error:", error);
-      this.setState({
-        verifying: false,
-        result: { valid: false, message: "Network or server error." },
-      });
-      this.props.navigation.navigate("Scan", {
-        scannedResult: { valid: false, message: "Network or server error." },
-      });
+    let result;
+    if (product) {
+      result = {
+        valid: true,
+        product,
+        date: new Date().toISOString(),
+        productName: product.product_name,
+        manufacturer: product.manufacturer,
+      };
+    } else {
+      result = {
+        valid: false,
+        message: "Product not found in mock data.",
+        date: new Date().toISOString(),
+      };
     }
+
+    try {
+      const storedScans = await AsyncStorage.getItem("scannedDrugs");
+      const scans = storedScans ? JSON.parse(storedScans) : [];
+      scans.unshift(result); // latest scan on top
+      await AsyncStorage.setItem("scannedDrugs", JSON.stringify(scans));
+    } catch (err) {
+      console.error("Error saving scanned drug:", err);
+    }
+
+    this.setState({ verifying: false, result });
+    this.props.navigation.navigate("Scan", { scannedResult: result });
   };
 
   handleScanWeb = (data) => {
@@ -116,36 +128,51 @@ export default class ScanningScreen extends Component {
         const file = event.target.files[0];
         if (!file) return;
 
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          const imageData = e.target.result;
-
-          try {
-            const response = await fetch(`${BASE_URL}/api/decode`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ image: imageData }),
-            });
-
-            const result = await response.json();
-
-            if (result.code) {
-              this.verifyDrug(result.code);
-            } else {
-              alert("No QR code detected in the image.");
-            }
-          } catch (error) {
-            console.error(error);
-            alert("Error uploading image.");
-          }
-        };
-        reader.readAsDataURL(file);
+        // simulate QR code detection for mock demo
+        const code = prompt("Enter QR code value from mock data for demo:");
+        if (code) this.verifyDrug(code);
       };
-
       input.click();
     } else {
       alert("Image upload is currently supported only on web.");
     }
+  };
+
+  renderResult = () => {
+    const { result } = this.state;
+    if (!result) return null;
+
+    if (!result.valid) {
+      return (
+        <View style={styles.resultContainer}>
+          <Text style={{ color: "red", fontWeight: "bold", fontSize: 16 }}>
+            {result.message}
+          </Text>
+        </View>
+      );
+    }
+
+    const product = result.product;
+    const isExpired = product.verification_status === "expired";
+
+    return (
+      <View style={styles.resultContainer}>
+        <Image
+          source={{ uri: product.product_image_url }}
+          style={styles.productImage}
+        />
+        <Text style={styles.productName}>{product.product_name}</Text>
+        <Text>Manufacturer: {product.manufacturer}</Text>
+        <Text>Active Ingredient: {product.active_ingredient}</Text>
+        <Text>Dosage Form: {product.dosage_form}</Text>
+        <Text style={{ fontWeight: "bold", color: isExpired ? "red" : "green" }}>
+          Status: {product.verification_status.toUpperCase()}
+        </Text>
+        <Text>Batch No: {product.batch_no}</Text>
+        <Text>Production Date: {product.production_date}</Text>
+        <Text>Expiry Date: {product.expiry_date}</Text>
+      </View>
+    );
   };
 
   render() {
@@ -156,7 +183,7 @@ export default class ScanningScreen extends Component {
     });
 
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity
@@ -168,8 +195,8 @@ export default class ScanningScreen extends Component {
           <Text style={styles.headerTitle}>Scan QR Code</Text>
         </View>
 
-        {/* Content */}
-        <View style={styles.content}>
+        {/* Main Content */}
+        <ScrollView contentContainerStyle={styles.content}>
           <Text style={[styles.contentHeadText, fonts.bold]}>
             Position QR Code
           </Text>
@@ -220,17 +247,10 @@ export default class ScanningScreen extends Component {
             </View>
           )}
 
-          {!scanning && !verifying && (
+          {!scanning && !verifying && !this.state.result && (
             <>
-              <TouchableOpacity
-                style={styles.scanButton}
-                onPress={this.startScan}
-              >
-                <Ionicons
-                  name="scan"
-                  size={SCREEN_WIDTH * 0.04}
-                  color="#eaf7efff"
-                />
+              <TouchableOpacity style={styles.scanButton} onPress={this.startScan}>
+                <Ionicons name="scan" size={SCREEN_WIDTH * 0.04} color="#eaf7efff" />
                 <Text style={styles.scanButtonText}>Start Scan</Text>
               </TouchableOpacity>
 
@@ -251,9 +271,13 @@ export default class ScanningScreen extends Component {
               <Text style={styles.scanningText}>Verifying drug...</Text>
             </View>
           )}
-        </View>
 
-        {/* Scanning Tips */}
+          {!scanning && !verifying && this.state.result && this.renderResult()}
+
+          <View style={{ height: 140 }} /> {/* Space for bottom tips */}
+        </ScrollView>
+
+        {/* Scanning Tips pinned at bottom */}
         <View style={styles.tipsContainer}>
           <Text style={styles.tipsTitle}>📸 Scanning Tips</Text>
           <Text style={styles.tipsText}>
@@ -269,7 +293,7 @@ export default class ScanningScreen extends Component {
             • Make sure the QR code fits entirely in the frame.
           </Text>
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 }
@@ -286,7 +310,7 @@ const styles = StyleSheet.create({
   },
   backButton: { marginRight: 10 },
   headerTitle: { fontSize: 15, fontWeight: "bold", color: "#075f5f" },
-  content: { marginTop: 20, alignItems: "center", flex: 1 },
+  content: { alignItems: "center", paddingBottom: 150 },
   contentHeadText: {
     textAlign: "center",
     marginBottom: 10,
@@ -300,23 +324,10 @@ const styles = StyleSheet.create({
     color: "#046868ff",
     marginBottom: 20,
   },
-  cameraContainer: {
-    width: "100%",
-    height: 300,
-    marginBottom: 20,
-    position: "relative",
-  },
+  cameraContainer: { width: "100%", height: 300, marginBottom: 20, position: "relative" },
   camera: { flex: 1, borderRadius: 10, overflow: "hidden" },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  frameOuter: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.3)",
-    zIndex: 1,
-  },
+  overlay: { ...StyleSheet.absoluteFillObject, justifyContent: "center", alignItems: "center" },
+  frameOuter: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.3)", zIndex: 1 },
   scanFrame: {
     width: 250,
     height: 250,
@@ -338,64 +349,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
     zIndex: 3,
   },
-  scanInstruction: {
-    marginTop: 10,
-    color: "#075f5f",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  scanningText: {
-    textAlign: "center",
-    marginTop: 5,
-    fontWeight: "bold",
-    color: "#075f5f",
-  },
-  scanButton: {
-    width: "80%",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 10,
-    marginTop: 10,
-    padding: 10,
-    backgroundColor: "#0fa3a3ff",
-    borderRadius: 15,
-  },
+  scanInstruction: { marginTop: 10, color: "#075f5f", fontWeight: "bold", textAlign: "center" },
+  scanningText: { textAlign: "center", marginTop: 5, fontWeight: "bold", color: "#075f5f" },
+  scanButton: { width: "80%", flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10, marginTop: 10, padding: 10, backgroundColor: "#0fa3a3ff", borderRadius: 15 },
   scanButtonText: { color: "#eaf7efff", fontWeight: "bold" },
-  uploadButton: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "80%",
-    marginTop: 10,
-    padding: 10,
-    backgroundColor: "#f0fcfc",
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: "#bbf0f0ff",
-  },
+  uploadButton: { flexDirection: "row", justifyContent: "center", alignItems: "center", width: "80%", marginTop: 10, padding: 10, backgroundColor: "#f0fcfc", borderRadius: 15, borderWidth: 1, borderColor: "#bbf0f0ff" },
   uploadButtonText: { color: "#075f5f", fontWeight: "bold" },
   choose: { marginTop: 20 },
-  tipsContainer: {
-    backgroundColor: "#f0fcfcff",
-    borderWidth: 1,
-    borderColor: "#cceaea",
+  resultContainer: { marginTop: 20, width: "90%", padding: 15, borderRadius: 12, backgroundColor: "#f0fcfcff", borderWidth: 1, borderColor: "#cceaea", alignItems: "center" },
+  productImage: { width: 100, height: 100, marginBottom: 10 },
+  productName: { fontSize: 16, fontWeight: "bold", marginBottom: 5 },
+  tipsContainer: { 
+    position: "absolute", 
+    bottom: 15, 
+    left: 15, 
+    right: 15, 
+    backgroundColor: "#f0fcfcff", 
+    borderTopWidth: 1, 
+    borderColor: "#cceaea", 
+    padding: 15, 
     borderRadius: 12,
-    padding: 15,
-    marginHorizontal: 20,
-    marginBottom: 25,
-    marginTop: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 2,
   },
-  tipsTitle: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#075f5f",
-    marginBottom: 8,
-  },
+  tipsTitle: { fontSize: 14, fontWeight: "bold", color: "#075f5f", marginBottom: 8 },
   tipsText: { fontSize: 12, color: "#046868ff", marginBottom: 4 },
 });
