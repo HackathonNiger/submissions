@@ -198,7 +198,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## 🆘 Support
 
-- 📧 **Email**: [Your contact email]
+- 📧 **Email**: [Otakhor Peter](otakhorpeter@gmail.com)
 - 🐛 **Issues**: [GitHub Issues](https://github.com/Ip-Tec/uwe-talk/issues)
 - 💬 **Discussions**: [GitHub Discussions](https://github.com/Ip-Tec/uwe-talk/discussions)
 
