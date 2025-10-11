@@ -2,13 +2,16 @@ import os
 import time
 import tempfile
 from typing import Optional
+from datetime import datetime
 
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException, BackgroundTasks
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from services.ai_models import AIModelHandler
-from utils.file_helpers import save_upload_to_tmp, convert_to_wav
+from services.tts_service import TTSService
+from services.auto_learning import AutoLearningService
+from utils.file_helpers import save_upload_to_tmp, convert_to_wav, process_multimedia_file, get_file_type
 from utils.auth import require_key
 
 try:
@@ -20,6 +23,8 @@ WHISPER_MODEL_NAME = os.getenv("WHISPER_MODEL", "small")
 
 router = APIRouter()
 model_handler = AIModelHandler(whisper_model_name=WHISPER_MODEL_NAME)
+tts_service = TTSService()
+auto_learning = AutoLearningService()
 
 # --- Pydantic Models for Requests ---
 
@@ -27,12 +32,43 @@ class TranslateRequest(BaseModel):
     api_key: Optional[str] = None
     text: str
     source_lang: str = "en"
-    target_lang: str = "ha"
+    target_lang: str = "ha"  # Default to Hausa, but now supports yo, ig, bin
 
 class TTSRequest(BaseModel):
     api_key: Optional[str] = None
     text: str
     lang: str = os.getenv("DEFAULT_TTS_LANG", "en")
+    engine: str = "auto"  # gtts, coqui, auto
+    voice: Optional[str] = None
+
+class FeedbackRequest(BaseModel):
+    api_key: Optional[str] = None
+    input_text: str
+    translated_text: str
+    source_lang: str
+    target_lang: str
+    user_rating: Optional[int] = None  # 1-5 stars
+    user_correction: Optional[str] = None
+    user_id: Optional[str] = None
+
+class TTSFeedbackRequest(BaseModel):
+    api_key: Optional[str] = None
+    text: str
+    audio_path: str
+    language: str
+    engine: str
+    user_rating: Optional[int] = None  # 1-5 stars
+    user_comments: Optional[str] = None
+    user_id: Optional[str] = None
+
+class CorrectionRequest(BaseModel):
+    api_key: Optional[str] = None
+    original_text: str
+    corrected_text: str
+    source_lang: str
+    target_lang: str
+    correction_type: str = "translation"
+    user_id: Optional[str] = None
 
 # --- API Endpoints ---
 
@@ -63,14 +99,31 @@ def translate(req: TranslateRequest):
 
 @router.post("/tts/")
 def tts_endpoint(req: TTSRequest):
+    """Generate speech from text using advanced TTS engines."""
     require_key(req.api_key)
-    if gTTS is None:
-        raise HTTPException(500, "gTTS not installed")
-    tmp_fd, tmp_path = tempfile.mkstemp(suffix=".mp3")
-    os.close(tmp_fd)
-    tts = gTTS(text=req.text, lang=req.lang.split("-")[0])
-    tts.save(tmp_path)
-    return FileResponse(tmp_path, media_type="audio/mpeg", filename="tts.mp3")
+    
+    try:
+        # Use the new TTS service
+        audio_path = tts_service.synthesize_speech(
+            text=req.text,
+            language=req.lang,
+            engine=req.engine,
+            voice=req.voice
+        )
+        
+        return FileResponse(audio_path, media_type="audio/wav", filename="tts.wav")
+        
+    except Exception as e:
+        raise HTTPException(500, f"TTS generation failed: {str(e)}")
+
+@router.get("/tts/engines/")
+def get_tts_engines():
+    """Get available TTS engines and their capabilities."""
+    return {
+        "engines": tts_service.get_supported_languages(),
+        "voices": tts_service.get_available_voices(),
+        "default_engine": "auto"
+    }
 
 @router.post("/pipeline/")
 async def pipeline(
@@ -126,6 +179,139 @@ def _run_subprocess(cmd, cleanup_path):
         if os.path.exists(cleanup_path):
             time.sleep(1)  # ensure file is released
             os.remove(cleanup_path)
+
+@router.get("/languages/")
+def get_supported_languages():
+    """Get list of supported languages"""
+    return {
+        "supported_languages": model_handler.get_supported_languages(),
+        "default_source": "en",
+        "default_target": "ha"
+    }
+
+@router.post("/detect-language/")
+def detect_language(req: TranslateRequest):
+    """Detect the language of input text"""
+    require_key(req.api_key)
+    detected_lang = model_handler.detect_language(req.text)
+    return {
+        "text": req.text,
+        "detected_language": detected_lang,
+        "confidence": "medium"  # Placeholder - could implement actual confidence scoring
+    }
+
+@router.post("/process-multimedia/")
+async def process_multimedia_endpoint(
+    background_tasks: BackgroundTasks,
+    api_key: Optional[str] = Form(None),
+    file: UploadFile = File(...),
+    extract_audio: Optional[bool] = Form(False),
+    extract_text: Optional[bool] = Form(False)
+):
+    """Process multimedia files (video, audio, documents, spreadsheets) for training data extraction."""
+    require_key(api_key)
+    
+    try:
+        # Save uploaded file temporarily
+        tmp_path = save_upload_to_tmp(file)
+        
+        # Process the multimedia file
+        result = process_multimedia_file(tmp_path)
+        
+        # Add file metadata
+        result['original_filename'] = file.filename
+        result['file_size'] = file.size
+        result['content_type'] = file.content_type
+        
+        # Clean up temporary file
+        background_tasks.add_task(os.remove, tmp_path)
+        
+        return {
+            "status": "success",
+            "processing_result": result,
+            "message": f"Successfully processed {file.filename}"
+        }
+        
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": f"Error processing file: {str(e)}"
+        }
+
+@router.post("/feedback/translation/")
+def submit_translation_feedback(req: FeedbackRequest):
+    """Submit feedback on translation quality."""
+    require_key(req.api_key)
+    
+    result = auto_learning.record_translation_feedback(
+        input_text=req.input_text,
+        translated_text=req.translated_text,
+        source_lang=req.source_lang,
+        target_lang=req.target_lang,
+        user_rating=req.user_rating,
+        user_correction=req.user_correction,
+        user_id=req.user_id
+    )
+    
+    return result
+
+@router.post("/feedback/tts/")
+def submit_tts_feedback(req: TTSFeedbackRequest):
+    """Submit feedback on TTS quality."""
+    require_key(req.api_key)
+    
+    result = auto_learning.record_tts_feedback(
+        text=req.text,
+        audio_path=req.audio_path,
+        language=req.language,
+        engine=req.engine,
+        user_rating=req.user_rating,
+        user_comments=req.user_comments,
+        user_id=req.user_id
+    )
+    
+    return result
+
+@router.post("/feedback/correction/")
+def submit_correction(req: CorrectionRequest):
+    """Submit user corrections for model improvement."""
+    require_key(req.api_key)
+    
+    result = auto_learning.record_user_correction(
+        original_text=req.original_text,
+        corrected_text=req.corrected_text,
+        source_lang=req.source_lang,
+        target_lang=req.target_lang,
+        correction_type=req.correction_type,
+        user_id=req.user_id
+    )
+    
+    return result
+
+@router.get("/feedback/summary/")
+def get_feedback_summary():
+    """Get summary of all user feedback."""
+    return auto_learning.get_feedback_summary()
+
+@router.post("/feedback/export-training-data/")
+def export_training_data_from_feedback(background_tasks: BackgroundTasks, api_key: Optional[str] = Form(None)):
+    """Export training data generated from user feedback."""
+    require_key(api_key)
+    
+    output_file = f"./feedback_data/training_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    result = auto_learning.export_training_data(output_file)
+    
+    return result
+
+@router.get("/feedback/should-retrain/")
+def check_if_should_retrain(threshold: int = 100):
+    """Check if model should be retrained based on feedback volume."""
+    should_retrain = auto_learning.should_retrain_model(threshold)
+    return {
+        "should_retrain": should_retrain,
+        "threshold": threshold,
+        "message": "Model should be retrained" if should_retrain else "Not enough feedback for retraining"
+    }
 
 @router.post("/train/")
 async def train_endpoint(background_tasks: BackgroundTasks, api_key: Optional[str] = Form(None), training_file: UploadFile = File(...)):

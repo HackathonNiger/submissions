@@ -14,12 +14,16 @@ UweTalk is a comprehensive translation platform that enables:
 
 ## 🚀 Key Features
 
-- 🎤 **Voice Input**: Record audio and convert to text for translation
-- 🔊 **Audio Output**: Listen to translated text in native languages
-- 🌐 **Multi-language Support**: Currently supports Hausa, with plans for Yoruba, Igbo, and more
+- 🎤 **Voice Input**: Record audio and convert to text for translation using OpenAI Whisper
+- 🔊 **Advanced TTS**: Multiple TTS engines including Coqui TTS and Google TTS
+- 🌐 **Multi-language Support**: Supports Hausa, Yoruba, Igbo, Edo/Bini languages
 - 📱 **Responsive Design**: Works seamlessly on desktop and mobile devices
 - 🔌 **API Integration**: RESTful API for developers to integrate translation services
 - 🎨 **Modern UI**: Clean, intuitive interface built with shadcn/ui components
+- 📹 **Multimedia Processing**: Extract training data from videos, music, and documents
+- 📊 **Advanced Data Processing**: Sophisticated CSV/Excel parsing for training data
+- 🤖 **Auto-Learning**: Automatic model improvement from user feedback and corrections
+- 🔄 **Real Model Training**: Actual fine-tuning instead of simulation
 
 ## 🛠️ Technology Stack
 
@@ -41,9 +45,12 @@ UweTalk is a comprehensive translation platform that enables:
 ## 📦 Installation & Setup
 
 ### Prerequisites
-- **Node.js** (v18 or higher)
-- **Python** (v3.8 or higher)
+- **Docker Desktop** (4.40.0 or higher) - **Recommended**
+- **Node.js** (v18 or higher) - For local development
+- **Python** (v3.10 or higher) - For local development
 - **Git**
+
+## 🐳 **Docker Setup (Recommended)**
 
 ### 1. Clone the Repository
 
@@ -52,7 +59,49 @@ git clone https://github.com/Ip-Tec/uwe-talk.git
 cd uwe-talk
 ```
 
-### 2. Backend Setup
+### 2. Quick Start with Docker
+
+```bash
+# Make the management script executable (Linux/macOS)
+chmod +x docker-manage.sh
+
+# Start all services
+./docker-manage.sh start
+
+# Or use docker-compose directly
+docker-compose up --build -d
+```
+
+### 3. Access the Application
+
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8000
+- **API Documentation**: http://localhost:8000/docs
+
+### 4. Docker Management Commands
+
+```bash
+# View service status
+./docker-manage.sh status
+
+# View logs
+./docker-manage.sh logs
+./docker-manage.sh logs backend  # Backend only
+./docker-manage.sh logs frontend # Frontend only
+
+# Restart services
+./docker-manage.sh restart
+
+# Stop services
+./docker-manage.sh stop
+
+# Clean up (removes all containers and images)
+./docker-manage.sh clean
+```
+
+## 💻 **Local Development Setup**
+
+### 1. Backend Setup
 
 ```bash
 # Navigate to backend directory
@@ -71,14 +120,14 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # Set up environment variables
-cp .env.example .env
+cp env.example .env
 # Edit .env with your configuration
 
 # Run the backend server
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### 3. Frontend Setup
+### 2. Frontend Setup
 
 ```bash
 # Navigate to frontend directory (from project root)
@@ -95,7 +144,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-### 4. Access the Application
+### 3. Access the Application (Local)
 
 - **Frontend**: http://localhost:5173
 - **Backend API**: http://localhost:8000
@@ -176,9 +225,36 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 ## 📚 API Documentation
 
-The backend provides a RESTful API with the following endpoints:
+The backend provides a comprehensive RESTful API with the following endpoints:
 
+### Core Translation
 - `POST /translate/` - Translate text between languages
+- `POST /stt/` - Speech-to-text conversion
+- `POST /tts/` - Text-to-speech generation
+- `POST /pipeline/` - Complete audio-to-audio pipeline
+
+### Language Support
+- `GET /languages/` - Get supported languages
+- `POST /detect-language/` - Detect language of input text
+
+### TTS Engines
+- `GET /tts/engines/` - Get available TTS engines and voices
+
+### Multimedia Processing
+- `POST /process-multimedia/` - Process videos, music, documents for training data
+
+### Feedback & Learning
+- `POST /feedback/translation/` - Submit translation feedback
+- `POST /feedback/tts/` - Submit TTS feedback
+- `POST /feedback/correction/` - Submit user corrections
+- `GET /feedback/summary/` - Get feedback summary
+- `POST /feedback/export-training-data/` - Export training data from feedback
+
+### Model Training
+- `POST /train/` - Train models with uploaded data
+- `GET /feedback/should-retrain/` - Check if model should be retrained
+
+### System
 - `GET /` - Health check endpoint
 
 Visit http://localhost:8000/docs for interactive API documentation.
