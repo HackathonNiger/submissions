@@ -1,0 +1,1946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vault - Story Adventures</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2ecc71;
+            --primary-dark: #27ae60;
+            --secondary: #3498db;
+            --accent: #f1c40f;
+            --success: #2ecc71;
+            --warning: #e67e22;
+            --light: #f8f9fa;
+            --dark: #1e2a4a;
+            --card-bg: #ffffff;
+            --text-dark: #2d3436;
+            --text-light: #7f8fa6;
+            --border: #e6e9ef;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --green-gradient: linear-gradient(135deg, #2ecc71, #27ae60);
+            --nav-bg: #1a3a2a;
+            --background: #f5f7fa;
+        }
+
+        [data-theme="dark"] {
+            --light: #2d3436;
+            --dark: #f8f9fa;
+            --card-bg: #1e2a4a;
+            --text-dark: #f8f9fa;
+            --text-light: #b2bec3;
+            --border: #34495e;
+            --background: #0d1a2e;
+            --nav-bg: #0d1a0d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        body {
+            background: var(--background);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+        }
+
+        /* Vault background effect */
+        .vault-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.03;
+            background-image: 
+                radial-gradient(circle at 25% 25%, var(--primary) 2px, transparent 2px),
+                radial-gradient(circle at 75% 75%, var(--primary-dark) 2px, transparent 2px);
+            background-size: 30px 30px;
+            animation: backgroundMove 20s infinite linear;
+        }
+
+        @keyframes backgroundMove {
+            from { background-position: 0 0; }
+            to { background-position: 30px 30px; }
+        }
+        
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 260px;
+            background: var(--nav-bg);
+            color: white;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            padding: 25px 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow);
+            z-index: 10;
+        }
+        
+        .logo {
+            padding: 0 25px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 25px;
+        }
+        
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            background: var(--green-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            animation: spin 15s infinite linear;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .logo-text {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        
+        .nav-items {
+            flex: 1;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            gap: 15px;
+            border-radius: 12px;
+            margin: 0 10px;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            border-right: 4px solid var(--primary);
+            transform: translateX(5px);
+        }
+        
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-footer {
+            padding: 20px 25px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: auto;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--green-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .user-email {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .notification-bell {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .notification-bell:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
+        }
+        
+        .notification-bell::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        /* Story Grid */
+        .story-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        /* Story Card */
+        .story-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .story-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .story-card.locked {
+            opacity: 0.7;
+            filter: grayscale(0.3);
+        }
+        
+        .story-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .story-card:hover .story-image {
+            transform: scale(1.05);
+        }
+        
+        .story-content {
+            padding: 20px;
+        }
+        
+        .story-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+        
+        .story-description {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .story-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .chapters {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .savings-required {
+            background: var(--green-gradient);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+        
+        .locked-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .story-card.locked:hover .locked-overlay {
+            opacity: 1;
+        }
+        
+        .lock-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+        
+        /* Story Reader */
+        .story-reader {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .reader-container {
+            display: flex;
+            width: 95%;
+            height: 90vh;
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .chapters-sidebar {
+            width: 300px;
+            background: var(--light);
+            padding: 20px;
+            overflow-y: auto;
+            border-right: 1px solid var(--border);
+        }
+        
+        .chapter-list {
+            list-style: none;
+        }
+        
+        .chapter-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .chapter-item:hover {
+            background: rgba(46, 204, 113, 0.1);
+        }
+        
+        .chapter-item.active {
+            background: rgba(46, 204, 113, 0.15);
+            border-left-color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .chapter-item.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .chapter-number {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+        
+        .chapter-title {
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+        
+        .reader-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .reader-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+        }
+        
+        .reader-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .close-reader {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+        
+        .close-reader:hover {
+            color: var(--text-dark);
+            transform: rotate(90deg);
+        }
+        
+        .reader-body {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+        
+        .current-chapter-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+            border-left: 4px solid var(--primary);
+            padding-left: 10px;
+        }
+        
+        .chapter-content {
+            line-height: 1.8;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .financial-tip {
+            background: var(--light);
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .tip-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-dark);
+        }
+        
+        .reader-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+        }
+        
+        .chapter-nav {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .nav-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 12px;
+            background: var(--light);
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .nav-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .unlock-chapter {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--green-gradient);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        
+        .unlock-text {
+            flex: 1;
+        }
+        
+        .unlock-btn {
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .unlock-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Progress Bar */
+        .story-progress {
+            height: 6px;
+            background: var(--light);
+            border-radius: 3px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--green-gradient);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 1s ease;
+        }
+        
+        /* Mobile Navigation */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+            padding: 15px;
+            z-index: 100;
+            justify-content: space-around;
+        }
+        
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 12px;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-nav-item.active {
+            color: var(--primary);
+            transform: translateY(-5px);
+        }
+        
+        .mobile-nav-item i {
+            font-size: 20px;
+        }
+
+        /* Settings Modal */
+        .settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .settings-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .settings-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .settings-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .settings-body {
+            padding: 20px;
+        }
+
+        .setting-group {
+            margin-bottom: 25px;
+        }
+
+        .setting-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .theme-toggle {
+            display: flex;
+            gap: 10px;
+        }
+
+        .theme-option {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-option.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Mini Games */
+        .mini-games {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .game-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .game-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-dark);
+        }
+
+        .game-description {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* Game Modals */
+        .game-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .game-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .game-title-modal {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .game-body {
+            padding: 20px;
+        }
+
+        /* Coin Flip Game */
+        .coin-game {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .coin {
+            width: 100px;
+            height: 100px;
+            margin: 20px auto;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1s;
+        }
+
+        .coin.flipping {
+            animation: flip 1s ease-in-out;
+        }
+
+        @keyframes flip {
+            0% { transform: rotateY(0); }
+            50% { transform: rotateY(1800deg); }
+            100% { transform: rotateY(3600deg); }
+        }
+
+        .coin-front, .coin-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+        }
+
+        .coin-front {
+            background: var(--primary);
+        }
+
+        .coin-back {
+            background: var(--accent);
+            transform: rotateY(180deg);
+        }
+
+        .flip-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .flip-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Dice Game */
+        .dice-game {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .dice-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .dice {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .dice.rolling {
+            animation: roll 0.5s ease-in-out;
+        }
+
+        @keyframes roll {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(90deg); }
+            50% { transform: rotate(180deg); }
+            75% { transform: rotate(270deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Finance Quiz Game */
+        .quiz-game {
+            padding: 20px;
+        }
+
+        .quiz-question {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+            font-size: 18px;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-option {
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            background: var(--light);
+        }
+
+        .quiz-option.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .quiz-result {
+            margin-top: 15px;
+            font-weight: 600;
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .quiz-result.correct {
+            background: rgba(46, 204, 113, 0.2);
+            color: var(--success);
+        }
+
+        .quiz-result.incorrect {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 220px;
+            }
+            
+            .story-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+
+            .reader-container {
+                flex-direction: column;
+                height: 95vh;
+            }
+
+            .chapters-sidebar {
+                width: 100%;
+                height: 200px;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .mobile-nav {
+                display: flex;
+            }
+            
+            .main-content {
+                padding: 20px;
+                padding-bottom: 90px;
+            }
+            
+            .story-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .reader-content {
+                max-height: 85vh;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .story-card {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        .story-card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+        
+        .story-card:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <!-- Vault Background Effect -->
+    <div class="vault-background"></div>
+    
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-vault"></i>
+            </div>
+            <div class="logo-text">Vault</div>
+        </div>
+        
+        <div class="nav-items">
+            <a href="dash.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="story.html" class="nav-item active">
+                <i class="fas fa-book-open"></i>
+                <span>My Story</span>
+            </a>
+            <a href="friend.html" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Friends</span>
+            </a>
+            <a href="progress.html" class="nav-item">
+                <i class="fas fa-chart-pie"></i>
+                <span>Progress</span>
+            </a>
+            <a href="history.html" class="nav-item">
+                <i class="fas fa-piggy-bank"></i>
+                <span>Savings</span>
+            </a>
+            <a href="#" class="nav-item" id="settingsBtn">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-info">
+                    <div class="user-name">Chinedu Okoro</div>
+                    <div class="user-email">chinedu@example.com</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1 class="page-title">Story Adventures</h1>
+            <div class="header-actions">
+                <div class="notification-bell">
+                    <i class="fas fa-bell"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="story-grid" id="storyGrid">
+            <!-- Stories will be populated by JavaScript -->
+        </div>
+
+        <h2 style="margin: 30px 0 15px; color: var(--text-dark);">Mini Games</h2>
+        <div class="mini-games">
+            <div class="game-card" id="coinFlipGame">
+                <div class="game-icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="game-title">Coin Flip</div>
+                <div class="game-description">Test your luck with a coin flip</div>
+            </div>
+            <div class="game-card" id="savingsDiceGame">
+                <div class="game-icon">
+                    <i class="fas fa-dice"></i>
+                </div>
+                <div class="game-title">Savings Dice</div>
+                <div class="game-description">Roll to determine your daily savings</div>
+            </div>
+            <div class="game-card" id="financeQuizGame">
+                <div class="game-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="game-title">Finance Quiz</div>
+                <div class="game-description">Test your financial knowledge</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Story Reader -->
+    <div class="story-reader" id="storyReader">
+        <div class="reader-container">
+            <div class="chapters-sidebar">
+                <h3 style="margin-bottom: 15px; color: var(--text-dark);">Chapters</h3>
+                <ul class="chapter-list" id="chapterList">
+                    <!-- Chapters will be populated by JavaScript -->
+                </ul>
+            </div>
+            <div class="reader-content">
+                <div class="reader-header">
+                    <h2 class="reader-title" id="readerTitle">Story Title</h2>
+                    <button class="close-reader">&times;</button>
+                </div>
+                <div class="reader-body" id="readerBody">
+                    <!-- Content will be populated by JavaScript -->
+                </div>
+                <div class="reader-footer">
+                    <div class="chapter-nav">
+                        <button class="nav-btn" id="prevChapter" disabled>Previous</button>
+                        <button class="nav-btn primary" id="nextChapter">Next Chapter</button>
+                    </div>
+                    <div class="savings-required" id="savingsInfo">Total saved: ₦0 of ₦0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="settings-modal" id="settingsModal">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h2 class="settings-title">Settings</h2>
+                <button class="close-reader">&times;</button>
+            </div>
+            <div class="settings-body">
+                <div class="setting-group">
+                    <label class="setting-label">Change PIN</label>
+                    <input type="password" class="setting-input" placeholder="Enter new PIN" maxlength="4">
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">Theme</label>
+                    <div class="theme-toggle">
+                        <div class="theme-option active" data-theme="light">Light</div>
+                        <div class="theme-option" data-theme="dark">Dark</div>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">Notifications</label>
+                    <div>
+                        <input type="checkbox" id="dailyReminders" checked>
+                        <label for="dailyReminders">Daily savings reminders</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="storyUpdates" checked>
+                        <label for="storyUpdates">New story chapter notifications</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Coin Flip Game Modal -->
+    <div class="game-modal" id="coinGameModal">
+        <div class="game-content">
+            <div class="game-header">
+                <h2 class="game-title-modal">Coin Flip Game</h2>
+                <button class="close-reader">&times;</button>
+            </div>
+            <div class="coin-game">
+                <p>Flip a coin to test your luck! If it lands on heads, you'll earn a small savings bonus!</p>
+                <div class="coin" id="coin">
+                    <div class="coin-front">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="coin-back">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                </div>
+                <button class="flip-btn" id="flipCoin">Flip Coin</button>
+                <p id="coinResult" style="margin-top: 15px;"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Savings Dice Game Modal -->
+    <div class="game-modal" id="diceGameModal">
+        <div class="game-content">
+            <div class="game-header">
+                <h2 class="game-title-modal">Savings Dice Game</h2>
+                <button class="close-reader">&times;</button>
+            </div>
+            <div class="dice-game">
+                <p>Roll the dice to determine your daily savings amount! The higher the roll, the more you save!</p>
+                <div class="dice-container">
+                    <div class="dice" id="dice1">1</div>
+                    <div class="dice" id="dice2">1</div>
+                </div>
+                <button class="flip-btn" id="rollDice">Roll Dice</button>
+                <p id="diceResult" style="margin-top: 15px;"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Finance Quiz Game Modal -->
+    <div class="game-modal" id="quizGameModal">
+        <div class="game-content">
+            <div class="game-header">
+                <h2 class="game-title-modal">Finance Quiz</h2>
+                <button class="close-reader">&times;</button>
+            </div>
+            <div class="quiz-game">
+                <div class="quiz-question" id="quizQuestion">What's the best way to start saving money?</div>
+                <div class="quiz-options" id="quizOptions">
+                    <!-- Quiz options will be populated by JavaScript -->
+                </div>
+                <button class="flip-btn" id="checkQuiz" style="margin-top: 15px;">Check Answer</button>
+                <div class="quiz-result" id="quizResult"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav">
+        <a href="index.html" class="mobile-nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="story.html" class="mobile-nav-item active">
+            <i class="fas fa-book-open"></i>
+            <span>Story</span>
+        </a>
+        <a href="friend.html" class="mobile-nav-item">
+            <i class="fas fa-users"></i>
+            <span>Friends</span>
+        </a>
+        <a href="progress.html" class="mobile-nav-item">
+            <i class="fas fa-chart-pie"></i>
+            <span>Progress</span>
+        </a>
+        <a href="history.html" class="mobile-nav-item">
+            <i class="fas fa-history"></i>
+            <span>History</span>
+        </a>
+    </div>
+
+    <script>
+        // Enhanced story data with 10+ stories and actual content
+        const stories = {
+            "time-left": {
+                title: "How Much Time Is Left",
+                totalChapters: 15,
+                savingsRequired: 30000,
+                currentSavings: 2000,
+                currentChapter: 1,
+                image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                description: "A mysterious countdown appears across the city. Uncover its meaning while learning about financial planning for the future.",
+                audioUnlocked: false
+            },
+            "beginning-end": {
+                title: "The Beginning of the End",
+                totalChapters: 15,
+                savingsRequired: 45000,
+                currentSavings: 0,
+                currentChapter: 0,
+                image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                description: "When everything seems to be falling apart, discover how financial resilience can be your greatest strength.",
+                audioUnlocked: false
+            },
+            "silent-echoes": {
+                title: "Silent Echoes of Wealth",
+                totalChapters: 15,
+                savingsRequired: 60000,
+                currentSavings: 0,
+                currentChapter: 0,
+                image: "https://images.unsplash.com/photo-1546561892-65f0b6d8b0f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                description: "An ancient family secret about building generational wealth is about to be revealed.",
+                audioUnlocked: false
+            },
+            "currency-legacy": {
+                title: "The Currency of Legacy",
+                totalChapters: 15,
+                savingsRequired: 75000,
+                currentSavings: 0,
+                currentChapter: 0,
+                image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                description: "What will you leave behind? Explore how financial decisions today shape your legacy tomorrow.",
+                audioUnlocked: false
+            },
+            "digital-fortune": {
+                title: "Digital Fortune",
+                totalChapters: 15,
+                savingsRequired: 54000,
+                currentSavings: 0,
+                currentChapter: 0,
+                image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                description: "A tech entrepreneur discovers the true value of digital assets and financial security.",
+                audioUnlocked: false
+            },
+            "savings-odyssey": {
+                title: "Savings Odyssey",
+                totalChapters: 15,
+                savingsRequired: 36000,
+                currentSavings: 0,
+                currentChapter: 0,
+                image: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                description: "An epic journey through different savings strategies and financial philosophies.",
+                audioUnlocked: false
+            },
+            "phantom-investor": {
+                title: "The Phantom Investor",
+                totalChapters: 15,
+                savingsRequired: 66000,
+                currentSavings: 0,
+                currentChapter: 0,
+                image: "https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                description: "A mysterious investor changes lives with unconventional financial advice.",
+                audioUnlocked: false
+            },
+            "wealth-riddles": {
+                title: "Wealth Riddles",
+                totalChapters: 15,
+                savingsRequired: 30000,
+                currentSavings: 0,
+                currentChapter: 0,
+                image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                description: "Solve financial riddles to unlock the secrets of wealth building.",
+                audioUnlocked: false
+            },
+            "golden-compass": {
+                title: "The Golden Compass",
+                totalChapters: 15,
+                savingsRequired: 48000,
+                currentSavings: 0,
+                currentChapter: 0,
+                image: "https://images.unsplash.com/photo-1585314062340-f1a5a7c9328d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                description: "Follow a magical compass that points toward financial opportunities.",
+                audioUnlocked: false
+            },
+            "crypto-chronicles": {
+                title: "Crypto Chronicles",
+                totalChapters: 15,
+                savingsRequired: 42000,
+                currentSavings: 0,
+                currentChapter: 0,
+                image: "https://images.unsplash.com/photo-1516245834210-c4c142787335?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                description: "Navigate the volatile world of cryptocurrency with wisdom and caution.",
+                audioUnlocked: false
+            }
+        };
+
+        // User data from dashboard
+        let userData = {
+            name: "Chinedu Okoro",
+            email: "chinedu@example.com",
+            totalSavings: 1245800,
+            currentGoal: {
+                title: "New Sewing Machine",
+                targetAmount: 1250,
+                savedAmount: 810,
+                progress: 65
+            }
+        };
+
+        let currentStory = null;
+        let currentChapter = 1;
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeStories();
+            setupEventListeners();
+            checkTheme();
+        });
+
+        // Initialize stories grid
+        function initializeStories() {
+            const storyGrid = document.getElementById('storyGrid');
+            storyGrid.innerHTML = '';
+
+            Object.keys(stories).forEach(storyId => {
+                const story = stories[storyId];
+                const isLocked = story.currentSavings === 0;
+                
+                const storyCard = document.createElement('div');
+                storyCard.className = `story-card ${isLocked ? 'locked' : ''}`;
+                storyCard.setAttribute('data-story', storyId);
+                
+                storyCard.innerHTML = `
+                    <img src="${story.image}" alt="${story.title}" class="story-image">
+                    <div class="story-content">
+                        <h3 class="story-title">${story.title}</h3>
+                        <p class="story-description">${story.description}</p>
+                        <div class="story-meta">
+                            <div class="chapters">
+                                <i class="fas fa-bookmark"></i>
+                                <span>${story.totalChapters} Chapters</span>
+                            </div>
+                            <div class="savings-required">Save ₦${story.savingsRequired.toLocaleString()} to ${isLocked ? 'unlock' : 'complete'}</div>
+                        </div>
+                    </div>
+                    ${isLocked ? `
+                    <div class="locked-overlay">
+                        <i class="fas fa-lock lock-icon"></i>
+                        <p>Save ₦${story.savingsRequired.toLocaleString()} to unlock this story</p>
+                    </div>
+                    ` : ''}
+                `;
+                
+                storyGrid.appendChild(storyCard);
+            });
+
+            // Add event listeners to story cards
+            document.querySelectorAll('.story-card:not(.locked)').forEach(card => {
+                card.addEventListener('click', function() {
+                    const storyId = this.getAttribute('data-story');
+                    openStory(storyId);
+                });
+            });
+        }
+
+        // Open story reader
+        function openStory(storyId) {
+            currentStory = stories[storyId];
+            currentChapter = currentStory.currentChapter > 0 ? currentStory.currentChapter : 1;
+            
+            document.getElementById('readerTitle').textContent = currentStory.title;
+            
+            // Show the story reader
+            document.getElementById('storyReader').style.display = 'flex';
+            
+            // Update chapter list and content
+            updateChapterList();
+            updateChapterContent();
+        }
+
+        // Update chapter list in sidebar
+        function updateChapterList() {
+            const chapterList = document.getElementById('chapterList');
+            chapterList.innerHTML = '';
+            
+            for (let i = 1; i <= currentStory.totalChapters; i++) {
+                const chapterItem = document.createElement('li');
+                const isLocked = i > currentStory.currentChapter;
+                const isActive = i === currentChapter;
+                
+                chapterItem.className = `chapter-item ${isActive ? 'active' : ''} ${isLocked ? 'locked' : ''}`;
+                chapterItem.setAttribute('data-chapter', i);
+                
+                if (!isLocked) {
+                    chapterItem.addEventListener('click', function() {
+                        const chapterNum = parseInt(this.getAttribute('data-chapter'));
+                        currentChapter = chapterNum;
+                        updateChapterList();
+                        updateChapterContent();
+                    });
+                }
+                
+                chapterItem.innerHTML = `
+                    <div class="chapter-number">Chapter ${i}</div>
+                    <div class="chapter-title">${getChapterTitle(currentStory.title, i)}</div>
+                `;
+                
+                chapterList.appendChild(chapterItem);
+            }
+        }
+
+        // Update chapter content based on current chapter
+        function updateChapterContent() {
+            const readerBody = document.getElementById('readerBody');
+            readerBody.innerHTML = '';
+            
+            // Add progress bar
+            const progressBar = document.createElement('div');
+            progressBar.className = 'story-progress';
+            progressBar.innerHTML = '<div class="progress-fill" id="storyProgressBar" style="width: ' + 
+                (currentStory.currentSavings / currentStory.savingsRequired * 100) + '%"></div>';
+            readerBody.appendChild(progressBar);
+            
+            // Add current chapter content
+            const chapterContent = document.createElement('div');
+            chapterContent.id = 'currentChapter';
+            
+            // Chapter title
+            const chapterTitle = document.createElement('h3');
+            chapterTitle.className = 'current-chapter-title';
+            chapterTitle.textContent = `Chapter ${currentChapter}: ${getChapterTitle(currentStory.title, currentChapter)}`;
+            chapterContent.appendChild(chapterTitle);
+            
+            // Chapter text
+            const chapterText = document.createElement('div');
+            chapterText.className = 'chapter-content';
+            chapterText.innerHTML = getChapterContent(currentStory.title, currentChapter);
+            chapterContent.appendChild(chapterText);
+            
+            // Financial tip
+            const financialTip = document.createElement('div');
+            financialTip.className = 'financial-tip';
+            financialTip.innerHTML = `
+                <div class="tip-title">Financial Insight</div>
+                <p>${getFinancialTip(currentStory.title, currentChapter)}</p>
+            `;
+            chapterContent.appendChild(financialTip);
+            
+            readerBody.appendChild(chapterContent);
+            
+            // Add unlock section if needed for next chapter
+            if (currentChapter < currentStory.totalChapters) {
+                const requiredForNextChapter = 2000 * currentChapter;
+                if (currentStory.currentSavings < requiredForNextChapter) {
+                    const unlockSection = document.createElement('div');
+                    unlockSection.className = 'unlock-chapter';
+                    unlockSection.innerHTML = `
+                        <div class="unlock-text">
+                            <strong>Unlock Chapter ${currentChapter + 1}</strong>
+                            <p>Save an additional ₦2,000 to continue the story</p>
+                        </div>
+                        <button class="unlock-btn">Unlock for ₦2,000</button>
+                    `;
+                    readerBody.appendChild(unlockSection);
+                }
+            }
+            
+            // Update savings info
+            document.getElementById('savingsInfo').textContent = 
+                `Total saved: ₦${currentStory.currentSavings.toLocaleString()} of ₦${currentStory.savingsRequired.toLocaleString()}`;
+            
+            // Update navigation buttons
+            document.getElementById('prevChapter').disabled = currentChapter === 1;
+            
+            if (currentChapter === currentStory.totalChapters) {
+                document.getElementById('nextChapter').textContent = 'Finish Story';
+                document.getElementById('nextChapter').disabled = currentStory.currentSavings < currentStory.savingsRequired;
+            } else {
+                document.getElementById('nextChapter').textContent = 'Next Chapter';
+                document.getElementById('nextChapter').disabled = currentStory.currentSavings < (2000 * currentChapter);
+            }
+        }
+
+        // Get chapter title based on story and chapter number
+        function getChapterTitle(storyTitle, chapter) {
+            const chapterTitles = {
+                "How Much Time Is Left": [
+                    "The Mysterious Countdown",
+                    "The First Clue",
+                    "A Race Against Time",
+                    "The Hidden Pattern",
+                    "The Financial Revelation",
+                    "Time Management Secrets",
+                    "The Investment Dilemma",
+                    "Compound Interest Discovery",
+                    "Budgeting for Survival",
+                    "The Emergency Fund",
+                    "Debt-Free Journey",
+                    "Passive Income Streams",
+                    "Retirement Planning",
+                    "Legacy Building",
+                    "The Final Countdown"
+                ],
+                "The Beginning of the End": [
+                    "The Last Warning",
+                    "Fragile Foundations",
+                    "Unexpected Alliances",
+                    "The Survival Plan",
+                    "Resource Management",
+                    "Rebuilding Hope",
+                    "A New Beginning",
+                    "Financial Resilience",
+                    "Emergency Preparedness",
+                    "Community Savings",
+                    "Investment Strategies",
+                    "Wealth Preservation",
+                    "Generational Planning",
+                    "Sustainable Growth",
+                    "The New Economy"
+                ]
+                // Add more titles for other stories
+            };
+            
+            return chapterTitles[storyTitle] ? chapterTitles[storyTitle][chapter-1] : `Chapter ${chapter}`;
+        }
+
+        // Get chapter content based on story and chapter number
+        function getChapterContent(storyTitle, chapter) {
+            // Sample content for demonstration - in a real app, this would be full chapters
+            const chapterContents = {
+                "How Much Time Is Left": [
+                    `<p>It started on a Tuesday. One moment, the city was its usual chaotic self—honking cars, bustling markets, the distant hum of generators. The next, everything stopped.</p>
+                    <p>On every screen—phones, billboards, televisions—a single message appeared: <em>"87,600 hours remaining."</em></p>
+                    <p>No one knew what it meant. Was it a threat? A warning? A marketing stunt?</p>
+                    <p>Amara stared at her phone, the numbers burning into her retinas. 87,600 hours. That was exactly 10 years. What happens in 10 years?</p>`,
+                    `<p>Three days had passed since the countdown appeared. 87,597 hours remaining.</p>
+                    <p>The initial panic had subsided, replaced by a strange acceptance. Life went on, but with an underlying tension. Amara noticed something peculiar—the countdown was different for everyone.</p>
+                    <p>Her friend Tunde had 43,800 hours—exactly 5 years. Her elderly neighbor Mama Nkechi had only 8,760 hours—just 1 year.</p>
+                    <p>It wasn't a global countdown. It was personal.</p>`,
+                    `<p>Amara realized the numbers weren't random. They correlated with financial security. People with savings, investments, and financial plans had more time.</p>
+                    <p>She had to act fast. With only 10 years showing on her countdown, she needed to make every moment count financially.</p>
+                    <p>Her first step was creating a budget, tracking every naira that came in and went out.</p>`
+                ],
+                "The Beginning of the End": [
+                    `<p>The world was ending, or so it seemed. Economic collapse had hit harder than anyone predicted. Banks were failing, currencies were collapsing, and people were panicking.</p>
+                    <p>In the midst of chaos, Ada discovered an ancient financial manuscript hidden in her grandfather's attic. It contained wisdom about weathering financial storms.</p>
+                    <p>The first lesson: "In crisis, your savings become your salvation."</p>`,
+                    `<p>Ada shared the manuscript with her community. Together, they formed a savings cooperative, pooling resources to help each other survive.</p>
+                    <p>They learned that diversification wasn't just for investments—it was for survival skills, income streams, and community connections.</p>
+                    <p>Each member brought unique skills to the table, creating a resilient network of support.</p>`,
+                    `<p>As the economic situation worsened, Ada's community thrived. Their shared savings fund grew, allowing them to invest in sustainable food production.</p>
+                    <p>They discovered that financial resilience wasn't about hoarding wealth, but about creating systems that could withstand shocks.</p>
+                    <p>The community became a model for others, showing that cooperation could overcome even the greatest financial challenges.</p>`
+                ]
+            };
+            
+            // Return sample content or placeholder
+            if (chapterContents[storyTitle] && chapterContents[storyTitle][chapter-1]) {
+                return chapterContents[storyTitle][chapter-1];
+            } else {
+                return `
+                    <p>This is chapter ${chapter} of "${storyTitle}". In a complete implementation, this would be a full chapter of engaging story content with financial lessons woven throughout.</p>
+                    <p>The story would continue with suspenseful elements that keep the reader engaged while subtly teaching important financial concepts like saving, investing, and planning for the future.</p>
+                    <p>Each chapter would end with a cliffhanger that motivates the reader to save more to unlock the next chapter.</p>
+                `;
+            }
+        }
+
+        // Get financial tip based on story and chapter number
+        function getFinancialTip(storyTitle, chapter) {
+            const tips = [
+                "Start small but start now. Even saving ₦100 daily adds up to ₦36,500 in a year!",
+                "Create a budget and track your expenses. Knowing where your money goes is the first step to financial control.",
+                "Build an emergency fund that can cover 3-6 months of expenses. This is your financial safety net.",
+                "Pay yourself first. Set aside savings before spending on anything else.",
+                "Avoid debt for depreciating assets. If it loses value quickly, think twice before borrowing to buy it.",
+                "Invest in your financial education. The more you know, the better decisions you'll make.",
+                "Diversify your investments. Don't put all your eggs in one basket.",
+                "Start retirement planning early. Time is your greatest ally in building wealth.",
+                "Automate your savings. Set up automatic transfers to make saving effortless.",
+                "Review your financial goals regularly. Adjust them as your life circumstances change.",
+                "Live below your means. The gap between your income and expenses determines your wealth-building capacity.",
+                "Protect your assets with insurance. Unexpected events shouldn't derail your financial progress.",
+                "Invest in assets that generate passive income. Make your money work for you.",
+                "Avoid lifestyle inflation. As your income grows, maintain your standard of living and save the difference.",
+                "Teach financial literacy to the next generation. Wealth building is a multi-generational journey."
+            ];
+            
+            return tips[(chapter - 1) % tips.length];
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Close story reader
+            document.querySelectorAll('.close-reader').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.getElementById('storyReader').style.display = 'none';
+                    document.getElementById('coinGameModal').style.display = 'none';
+                    document.getElementById('diceGameModal').style.display = 'none';
+                    document.getElementById('quizGameModal').style.display = 'none';
+                    document.getElementById('settingsModal').style.display = 'none';
+                });
+            });
+            
+            // Next chapter button
+            document.getElementById('nextChapter').addEventListener('click', function() {
+                if (currentChapter < currentStory.totalChapters) {
+                    const requiredForNextChapter = 2000 * currentChapter;
+                    
+                    if (currentStory.currentSavings >= requiredForNextChapter) {
+                        currentChapter++;
+                        updateChapterList();
+                        updateChapterContent();
+                    } else {
+                        alert(`You need to save ₦${requiredForNextChapter - currentStory.currentSavings} more to unlock Chapter ${currentChapter + 1}`);
+                    }
+                } else if (currentChapter === currentStory.totalChapters && 
+                          currentStory.currentSavings >= currentStory.savingsRequired) {
+                    alert(`Congratulations! You've completed "${currentStory.title}" and saved ₦${currentStory.savingsRequired.toLocaleString()}!`);
+                    document.getElementById('storyReader').style.display = 'none';
+                }
+            });
+            
+            // Previous chapter button
+            document.getElementById('prevChapter').addEventListener('click', function() {
+                if (currentChapter > 1) {
+                    currentChapter--;
+                    updateChapterList();
+                    updateChapterContent();
+                }
+            });
+            
+            // Unlock buttons
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('unlock-btn')) {
+                    // Unlock next chapter
+                    const requiredForNextChapter = 2000 * currentChapter;
+                    const amountNeeded = requiredForNextChapter - currentStory.currentSavings;
+                    
+                    if (confirm(`Would you like to save ₦${amountNeeded} to unlock Chapter ${currentChapter + 1}?`)) {
+                        currentStory.currentSavings = requiredForNextChapter;
+                        currentChapter++;
+                        updateChapterList();
+                        updateChapterContent();
+                        
+                        // Update progress bar
+                        document.getElementById('storyProgressBar').style.width = 
+                            (currentStory.currentSavings / currentStory.savingsRequired * 100) + '%';
+                        
+                        alert(`Congratulations! You've saved ₦${amountNeeded} and unlocked Chapter ${currentChapter}`);
+                    }
+                }
+            });
+            
+            // Close reader when clicking outside
+            document.getElementById('storyReader').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+            
+            // Settings button
+            document.getElementById('settingsBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('settingsModal').style.display = 'flex';
+            });
+            
+            // Theme toggle
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const theme = this.getAttribute('data-theme');
+                    document.documentElement.setAttribute('data-theme', theme);
+                    localStorage.setItem('vault-theme', theme);
+                });
+            });
+            
+            // Coin flip game
+            document.getElementById('coinFlipGame').addEventListener('click', function() {
+                document.getElementById('coinGameModal').style.display = 'flex';
+            });
+            
+            document.getElementById('flipCoin').addEventListener('click', function() {
+                const coin = document.getElementById('coin');
+                const result = document.getElementById('coinResult');
+                
+                coin.classList.add('flipping');
+                result.textContent = "Flipping...";
+                
+                setTimeout(() => {
+                    coin.classList.remove('flipping');
+                    const isHeads = Math.random() > 0.5;
+                    
+                    if (isHeads) {
+                        result.innerHTML = "Heads! You've earned a ₦50 savings bonus! <i class='fas fa-coins'></i>";
+                        // In a real app, this would add to user's savings
+                    } else {
+                        result.innerHTML = "Tails! Better luck next time! <i class='fas fa-smile'></i>";
+                    }
+                }, 1000);
+            });
+            
+            // Savings dice game
+            document.getElementById('savingsDiceGame').addEventListener('click', function() {
+                document.getElementById('diceGameModal').style.display = 'flex';
+            });
+            
+            document.getElementById('rollDice').addEventListener('click', function() {
+                const dice1 = document.getElementById('dice1');
+                const dice2 = document.getElementById('dice2');
+                const result = document.getElementById('diceResult');
+                
+                dice1.classList.add('rolling');
+                dice2.classList.add('rolling');
+                result.textContent = "Rolling...";
+                
+                setTimeout(() => {
+                    dice1.classList.remove('rolling');
+                    dice2.classList.remove('rolling');
+                    
+                    const roll1 = Math.floor(Math.random() * 6) + 1;
+                    const roll2 = Math.floor(Math.random() * 6) + 1;
+                    const total = roll1 + roll2;
+                    
+                    dice1.textContent = roll1;
+                    dice2.textContent = roll2;
+                    
+                    const savingsAmount = total * 100;
+                    result.innerHTML = `You rolled ${total}! Your daily savings amount is ₦${savingsAmount}. <i class='fas fa-piggy-bank'></i>`;
+                }, 500);
+            });
+            
+            // Finance quiz game
+            document.getElementById('financeQuizGame').addEventListener('click', function() {
+                document.getElementById('quizGameModal').style.display = 'flex';
+                initializeQuiz();
+            });
+            
+            document.getElementById('checkQuiz').addEventListener('click', function() {
+                checkQuizAnswer();
+            });
+        }
+
+        // Initialize finance quiz
+        function initializeQuiz() {
+            const quizOptions = document.getElementById('quizOptions');
+            quizOptions.innerHTML = '';
+            
+            const quizQuestions = [
+                {
+                    question: "What is the 'Rule of 72' used for in finance?",
+                    options: [
+                        "Calculating loan interest",
+                        "Estimating how long it takes for an investment to double",
+                        "Determining retirement age",
+                        "Calculating tax deductions"
+                    ],
+                    correct: 1,
+                    explanation: "The Rule of 72 is a simple way to estimate how many years it will take for an investment to double at a given annual interest rate. You divide 72 by the interest rate."
+                },
+                {
+                    question: "What does 'diversification' mean in investing?",
+                    options: [
+                        "Putting all your money in one stock",
+                        "Spreading investments across different assets",
+                        "Investing only in cryptocurrency",
+                        "Buying multiple properties"
+                    ],
+                    correct: 1,
+                    explanation: "Diversification means spreading your investments across different asset classes to reduce risk. The saying 'don't put all your eggs in one basket' applies here."
+                },
+                {
+                    question: "What is compound interest?",
+                    options: [
+                        "Interest on loans only",
+                        "Interest calculated only on the principal amount",
+                        "Interest earned on both principal and accumulated interest",
+                        "Interest paid by the government"
+                    ],
+                    correct: 2,
+                    explanation: "Compound interest is interest calculated on the initial principal and also on the accumulated interest of previous periods. It's often called 'interest on interest' and can help savings grow faster."
+                },
+                {
+                    question: "What is an emergency fund typically used for?",
+                    options: [
+                        "Vacation expenses",
+                        "Unexpected job loss or medical bills",
+                        "Buying luxury items",
+                        "Investing in stocks"
+                    ],
+                    correct: 1,
+                    explanation: "An emergency fund is money set aside to cover unexpected expenses like job loss, medical emergencies, or urgent home repairs. Financial experts recommend having 3-6 months of expenses saved."
+                },
+                {
+                    question: "What does 'APR' stand for in finance?",
+                    options: [
+                        "Annual Percentage Rate",
+                        "Average Payment Requirement",
+                        "Automatic Payment Reminder",
+                        "Asset Profit Ratio"
+                    ],
+                    correct: 0,
+                    explanation: "APR stands for Annual Percentage Rate. It represents the actual yearly cost of funds over the term of a loan, including any fees or additional costs associated with the transaction."
+                }
+            ];
+            
+            const currentQuestion = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
+            
+            document.getElementById('quizQuestion').textContent = currentQuestion.question;
+            document.getElementById('quizResult').textContent = '';
+            document.getElementById('quizResult').className = 'quiz-result';
+            
+            currentQuestion.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'quiz-option';
+                optionElement.textContent = option;
+                optionElement.setAttribute('data-index', index);
+                optionElement.addEventListener('click', function() {
+                    document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+                quizOptions.appendChild(optionElement);
+            });
+            
+            // Store the correct answer and explanation for checking
+            quizOptions.setAttribute('data-correct', currentQuestion.correct);
+            quizOptions.setAttribute('data-explanation', currentQuestion.explanation);
+        }
+
+        // Check quiz answer
+        function checkQuizAnswer() {
+            const selectedOption = document.querySelector('.quiz-option.selected');
+            const result = document.getElementById('quizResult');
+            
+            if (!selectedOption) {
+                result.textContent = "Please select an answer!";
+                result.className = 'quiz-result incorrect';
+                return;
+            }
+            
+            const selectedIndex = parseInt(selectedOption.getAttribute('data-index'));
+            const correctIndex = parseInt(document.getElementById('quizOptions').getAttribute('data-correct'));
+            const explanation = document.getElementById('quizOptions').getAttribute('data-explanation');
+            
+            if (selectedIndex === correctIndex) {
+                result.innerHTML = `Correct! ${explanation}`;
+                result.className = 'quiz-result correct';
+            } else {
+                result.innerHTML = `Incorrect. ${explanation}`;
+                result.className = 'quiz-result incorrect';
+            }
+        }
+
+        // Check and apply saved theme
+        function checkTheme() {
+            const savedTheme = localStorage.getItem('vault-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            document.querySelectorAll('.theme-option').forEach(option => {
+                if (option.getAttribute('data-theme') === savedTheme) {
+                    option.classList.add('active');
+                } else {
+                    option.classList.remove('active');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
