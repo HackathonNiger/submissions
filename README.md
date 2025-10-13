@@ -42,8 +42,8 @@ Team 24 - Aharrie Strategy
 
 ## Screenshots
 
-*Add screenshots of your app here (Mobile and Web views).*  
-
+*Screenshots of your app here (Mobile and Web views).*  
+https://like-viral-18836929.figma.site
 - **Home / Scan Dashboard**  
 - **Scanning Screen**  
 - **Scan Result Screen**  
