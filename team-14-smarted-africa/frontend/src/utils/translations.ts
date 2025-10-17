@@ -19,6 +19,7 @@ export const translations = {
     solutions: "Solutions",
     successStories: "Success Stories",
     ourTeam: "Our Team",
+    courses: "Courses",
     contact: "Contact",
     whoWeServe: "Comprehensive Solutions for Every Learner",
     whyChoose: "Why Choose SmartEd?",
@@ -63,6 +64,8 @@ export const translations = {
     chatPlaceholder: "Type your message...",
     chatTitle: "SmartEd AI Assistant"
   },
+
+  // Yoruba translation
   yo: {
     heroTitle: "Ìmọ̀-ẹ̀kọ́ Tí Ó Ṣiṣẹ́ Láìsí Ìntánẹ́tì",
     heroSubtitle: "SmartEd fún àwọn akẹ́kọ̀ọ́, àwọn ọjọ́gbọ́n, àti àwọn ilé-ìwé ní àgbègbè Afíríkà ní àwọn àkọsílẹ̀ tó dára tó báṣepọ̀ pẹ̀lú àwọn èdè àti àwọn ohun èlò àwọn akẹ́kọ̀ọ́.",
@@ -72,6 +75,7 @@ export const translations = {
     solutions: "Àwọn Ìdánilẹ́kọ̀ọ́",
     successStories: "Àwọn Ìtàn Ìdàgbàsókè",
     ourTeam: "Ẹgbẹ́ Wa",
+    courses: "Àwọn Ìdánilẹ́kọ̀ọ́",
     contact: "Kòǹtákì",
     whoWeServe: "Àwọn Ìdánilẹ́kọ̀ọ́ Fún Gbogbo Eniyan",
     whyChoose: "Kí Lá Ṣe Fàráhàn SmartEd?",
@@ -116,6 +120,8 @@ export const translations = {
     chatPlaceholder: "Ṣe afikun ifiranṣẹ rẹ...",
     chatTitle: "SmartEd AI Alatunse"
   },
+
+  // Hausa translation
   ha: {
     heroTitle: "Ilmin Bincike Ta Yau Da Yau Ba Taka Launi",
     heroSubtitle: "SmartEd yana ilimi mai kyau da aka ta Africa - ta atomatik da zai iya amfani da shi a kowane na'ura.",
@@ -125,6 +131,7 @@ export const translations = {
     solutions: "Hanyoyin Magance",
     successStories: "Tarihin Nasara",
     ourTeam: "Takardunmu",
+    courses: "Hanyoyin Magance",
     contact: "Lambobin Hada",
     whoWeServe: "Hanyoyin Magance Don Duk Wanda Ya Ke",
     whyChoose: "Me Ya Za A Zaɓi SmartEd?",
@@ -169,6 +176,8 @@ export const translations = {
     chatPlaceholder: "Ƙara saƙo ku...",
     chatTitle: "SmartEd AI Mai Taimako"
   },
+
+  // Igbo translation
   ig: {
     heroTitle: "Mmụta Nke Na-eme N'ezie Naanị Ntị",
     heroSubtitle: "SmartEd na-enye mmụta dị ịrịba ama nke na-akọpụta akụkụ dị iche iche n'ụwa Afrịka - nke dị n'ime nke onye ọ bụla nwere ike iji ya.",
@@ -178,6 +187,7 @@ export const translations = {
     solutions: "Ụzọ Mmezi",
     successStories: "Akụkọ Nke Ọma",
     ourTeam: "Anyị nke ụlọ ọrụ",
+    courses: "Ụzọ Mmezi",
     contact: "Kpọtụrụ anyị",
     whoWeServe: "Ụzọ Mmezi maka onye ọ bụla",
     whyChoose: "Kedu ihe mere ị ga-echọọ SmartEd?",
