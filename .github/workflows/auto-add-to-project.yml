@@ -8,12 +8,68 @@ jobs:
   add_to_project:
     runs-on: ubuntu-latest
     steps:
-      - name: Add PR to GitHub Project
-        uses: peter-evans/add-to-project@v0.4.0
-        with:
-          project-url: https://github.com/orgs/HackathonNiger/projects/1
-          github-token: ${{ secrets.PROJECT_PAT }}
+      - name: Add PR to GitHub Project (fallback via REST API)
+        env:
+          PROJECT_PAT: ${{ secrets.PROJECT_PAT }}
+          PROJECT_URL: https://github.com/orgs/HackathonNiger/projects/1
+        run: |
+          set -euo pipefail
+          echo "Starting adding PR to project"
 
+          # PR number and repo info
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          REPO="${GITHUB_REPOSITORY}"     # owner/repo
+          REPO_OWNER="${REPO%/*}"
+          REPO_NAME="${REPO#*/}"
+
+          # Extract project id from project URL (last path component)
+          PROJECT_ID=$(python3 - <<'PY'
+import sys
+url = sys.stdin.read().strip()
+print(url.rstrip('/').split('/')[-1])
+PY
+          <<< "$PROJECT_URL")
+          echo "Project ID: $PROJECT_ID"
+
+          # List columns in the classic project and select the first column
+          COLUMNS_JSON=$(curl -s \
+            -H "Accept: application/vnd.github.inertia-preview+json" \
+            -H "Authorization: token $PROJECT_PAT" \
+            "https://api.github.com/projects/$PROJECT_ID/columns")
+
+          COLUMN_ID=$(python3 - <<'PY'
+import sys, json
+cols = json.load(sys.stdin)
+if not cols:
+  raise SystemExit("No columns found in project")
+print(cols[0]['id'])
+PY
+          <<<"$COLUMNS_JSON")
+          echo "Using column ID: $COLUMN_ID"
+
+          # Get the issue/pull request internal id for use as content_id
+          ISSUE_JSON=$(curl -s \
+            -H "Authorization: token $PROJECT_PAT" \
+            "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/issues/$PR_NUMBER")
+
+          CONTENT_ID=$(python3 - <<'PY'
+import sys, json
+obj = json.load(sys.stdin)
+if 'id' not in obj:
+  raise SystemExit("Could not read issue id")
+print(obj['id'])
+PY
+          <<<"$ISSUE_JSON")
+          echo "Content ID (issue internal id): $CONTENT_ID"
+
+          # Create the card in the selected column (content_type PullRequest)
+          RESP=$(curl -s -X POST \
+            -H "Accept: application/vnd.github.inertia-preview+json" \
+            -H "Authorization: token $PROJECT_PAT" \
+            "https://api.github.com/projects/columns/$COLUMN_ID/cards" \
+            -d "{\"content_id\": $CONTENT_ID, \"content_type\": \"PullRequest\"}")
+
+          echo "Create card response: $RESP"
       - name: Add label to PR
         uses: actions-ecosystem/action-add-labels@v1
         with:
@@ -23,4 +79,3 @@ jobs:
 
       - name: Debug echo
         run: echo "✅ Workflow ran successfully"
-
