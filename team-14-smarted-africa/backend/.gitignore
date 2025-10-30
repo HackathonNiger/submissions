@@ -1,0 +1,74 @@
+# ----------------------------
+# Node modules
+# ----------------------------
+node_modules/
+jspm_packages/
+package-lock.json
+yarn.lock
+
+# ----------------------------
+# Environment variables
+# ----------------------------
+.env
+.env.*
+!.env.example   # keep example env for reference
+
+# ----------------------------
+# Logs
+# ----------------------------
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ----------------------------
+# Backup and temporary folders
+# ----------------------------
+backUp/
+backup/
+BackUp/
+Postman/
+postman/
+tmp/
+temp/
+*.tmp
+*.swp
+
+# ----------------------------
+# Postman collections
+# ----------------------------
+postman/
+*.postman_collection.json
+
+# ----------------------------
+# OS generated files
+# ----------------------------
+.DS_Store
+Thumbs.db
+
+# ----------------------------
+# Build or output folders
+# ----------------------------
+dist/
+build/
+out/
+coverage/
+
+# ----------------------------
+# IDE/editor files
+# ----------------------------
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ----------------------------
+# Optional: Sensitive system files
+# ----------------------------
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+*.jks
