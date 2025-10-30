@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vault - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        :root {
+            --primary: #2ecc71;
+            --primary-dark: #27ae60;
+            --secondary: #3498db;
+            --accent: #f1c40f;
+            --success: #2ecc71;
+            --warning: #e67e22;
+            --light: #f8f9fa;
+            --dark: #1e2a4a;
+            --card-bg: #ffffff;
+            --text-dark: #2d3436;
+            --text-light: #7f8fa6;
+            --border: #e6e9ef;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --green-gradient: linear-gradient(135deg, #2ecc71, #27ae60);
+            --nav-bg: #1a3a2a;
+        }
+        
+        body {
+            background: #f5f7fa;
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Vault background effect */
+        .vault-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.03;
+            background-image: 
+                radial-gradient(circle at 25% 25%, var(--primary) 2px, transparent 2px),
+                radial-gradient(circle at 75% 75%, var(--primary-dark) 2px, transparent 2px);
+            background-size: 30px 30px;
+            animation: backgroundMove 20s infinite linear;
+        }
+
+        @keyframes backgroundMove {
+            from { background-position: 0 0; }
+            to { background-position: 30px 30px; }
+        }
+        
+        /* Floating Animation */
+        .floating-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.02;
+            background: 
+                radial-gradient(circle at 20% 30%, var(--primary) 0%, transparent 30%),
+                radial-gradient(circle at 80% 70%, var(--primary-dark) 0%, transparent 30%),
+                radial-gradient(circle at 40% 80%, var(--accent) 0%, transparent 30%);
+            animation: floatBackground 40s infinite linear;
+        }
+        
+        @keyframes floatBackground {
+            0% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.05) rotate(90deg); }
+            50% { transform: scale(1.1) rotate(180deg); }
+            75% { transform: scale(1.05) rotate(270deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+        
+        /* Particle Animation */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleFloat 15s infinite linear;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Logo */
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeInDown 1s ease-out;
+        }
+        
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            background: var(--green-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            margin: 0 auto 15px;
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+            animation: spin 15s infinite linear;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .logo-text {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -1px;
+        }
+        
+        .tagline {
+            font-size: 16px;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+        
+        /* Main Container */
+        .container {
+            width: 100%;
+            max-width: 450px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(46, 204, 113, 0.05), transparent);
+            transform: rotate(45deg);
+            animation: shine 8s infinite linear;
+            z-index: 0;
+        }
+        
+        @keyframes shine {
+            0% {
+                left: -50%;
+            }
+            100% {
+                left: 150%;
+            }
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--text-dark);
+            font-size: 24px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+        
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px 45px 14px 15px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background-color: var(--light);
+            color: var(--text-dark);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.1);
+            background-color: white;
+        }
+        
+        .input-icon {
+            position: absolute;
+            right: 15px;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+        
+        input:focus + .input-icon {
+            color: var(--primary);
+        }
+        
+        .tooltip {
+            position: absolute;
+            right: 40px;
+            color: var(--text-light);
+            cursor: help;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+        
+        .tooltip:hover {
+            color: var(--primary);
+        }
+        
+        button {
+            width: 100%;
+            padding: 16px;
+            background: var(--green-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        button:hover::before {
+            left: 100%;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .signup-link {
+            text-align: center;
+            margin-top: 25px;
+            color: var(--text-light);
+            font-size: 14px;
+            z-index: 1;
+            position: relative;
+        }
+        
+        .signup-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        
+        .signup-link a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 30px;
+            color: var(--text-light);
+            font-size: 12px;
+        }
+        
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            font-size: 14px;
+            z-index: 1;
+            position: relative;
+        }
+        
+        .remember {
+            display: flex;
+            align-items: center;
+        }
+        
+        .remember input {
+            width: auto;
+            margin-right: 8px;
+        }
+        
+        .forgot-password {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+            color: var(--primary-dark);
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--success);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast.error {
+            background: #e74c3c;
+        }
+        
+        /* Password Toggle */
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+        
+        .password-toggle:hover {
+            color: var(--primary);
+        }
+        
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 22px;
+            }
+            
+            .remember-forgot {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="vault-background"></div>
+    <div class="floating-background"></div>
+    <div class="particles" id="particles"></div>
+    
+    <!-- Logo -->
+    <div class="logo-container">
+        <div class="logo-icon">
+            <i class="fas fa-vault"></i>
+        </div>
+        <div class="logo-text">Vault</div>
+        <div class="tagline">Save Today. Build Tomorrow.</div>
+    </div>
+    
+    <!-- Main Container -->
+    <div class="container">
+        <h1>Welcome Back</h1>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <div class="input-wrapper">
+                    <input type="email" id="email" placeholder="Enter your email" required>
+                    <i class="fas fa-envelope input-icon"></i>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-wrapper">
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                    <span class="password-toggle" id="passwordToggle">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                    <i class="fas fa-lock input-icon"></i>
+                </div>
+            </div>
+            
+            <div class="remember-forgot">
+                <div class="remember">
+                    <input type="checkbox" id="remember">
+                    <label for="remember">Remember me</label>
+                </div>
+                <a href="#" class="forgot-password" id="forgotPassword">Forgot Password?</a>
+            </div>
+            
+            <button type="submit" id="loginButton">
+                Log In <i class="fas fa-arrow-right"></i>
+            </button>
+        </form>
+        
+        <div class="signup-link">
+            Don't have an account? <a href="sign.php">Sign up here</a>
+        </div>
+    </div>
+    
+    <div class="copyright">
+        &copy; Vault 2023. All rights reserved.
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random properties
+                const size = Math.random() * 3 + 1;
+                const left = Math.random() * 100;
+                const animationDuration = Math.random() * 20 + 10;
+                const animationDelay = Math.random() * 10;
+                const color = `hsl(${Math.random() * 360}, 70%, 60%)`;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${left}%`;
+                particle.style.animationDuration = `${animationDuration}s`;
+                particle.style.animationDelay = `${animationDelay}s`;
+                particle.style.background = color;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Toggle password visibility
+        function setupPasswordToggle() {
+            const passwordToggle = document.getElementById('passwordToggle');
+            const passwordInput = document.getElementById('password');
+            
+            passwordToggle.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                // Toggle eye icon
+                this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+            });
+        }
+        
+        // Show toast notification
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast';
+            
+            if (isError) {
+                toast.classList.add('error');
+            }
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Form validation
+        function validateForm() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                showToast('Please fill in all required fields', true);
+                return false;
+            }
+            
+            if (!/^\S+@\S+\.\S+$/.test(email)) {
+                showToast('Please enter a valid email address', true);
+                return false;
+            }
+            
+            if (password.length < 6) {
+                showToast('Password must be at least 6 characters', true);
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Form submission to PHP backend
+        async function submitLogin(formData) {
+            // Show loading state
+            const loginBtn = document.getElementById('loginButton');
+            const originalText = loginBtn.innerHTML;
+            loginBtn.innerHTML = '<div class="loading"></div> Authenticating...';
+            loginBtn.disabled = true;
+            
+            try {
+                // In a real application, this would be a fetch request to a PHP endpoint
+                // For demonstration, we'll simulate the API call
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Simulate successful login
+                showToast('Login successful! Redirecting...');
+                
+                // Redirect to dashboard after success
+                setTimeout(() => {
+                    window.location.href = 'dash.html';
+                }, 1500);
+                
+            } catch (error) {
+                showToast('Invalid email or password. Please try again.', true);
+                loginBtn.innerHTML = originalText;
+                loginBtn.disabled = false;
+            }
+        }
+        
+        // Forgot password functionality
+        function setupForgotPassword() {
+            const forgotPassword = document.getElementById('forgotPassword');
+            
+            forgotPassword.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('email').value;
+                
+                if (!email) {
+                    showToast('Please enter your email address to reset password', true);
+                    document.getElementById('email').focus();
+                    return;
+                }
+                
+                // In a real app, this would send a password reset email
+                showToast('Password reset instructions sent to your email');
+            });
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            setupPasswordToggle();
+            setupForgotPassword();
+            
+            // Form submission
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (validateForm()) {
+                    // Collect form data
+                    const formData = {
+                        email: document.getElementById('email').value,
+                        password: document.getElementById('password').value,
+                        remember: document.getElementById('remember').checked
+                    };
+                    
+                    // Submit to backend
+                    submitLogin(formData);
+                }
+            });
+            
+            // Add some interactive effects to inputs
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.style.transform = 'scale(1.02)';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.style.transform = 'scale(1)';
+                });
+            });
+            
+            // Check if there's a saved email from previous session
+            const savedEmail = localStorage.getItem('vault_remember_email');
+            if (savedEmail) {
+                document.getElementById('email').value = savedEmail;
+                document.getElementById('remember').checked = true;
+            }
+        });
+
+        // PHP Simulation - In a real app, this would be server-side code
+        function simulatePHPBackend() {
+            // Track login page visit (in a real app, this would be stored in a database)
+            const visitData = {
+                page: 'login',
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent
+            };
+            
+            // In a real PHP app, you might store this in a database
+            console.log('Login page visit recorded:', visitData);
+            
+            // You could also set a session or cookie
+            document.cookie = "vault_login_visited=true; max-age=86400; path=/";
+        }
+        
+        // Call the PHP simulation
+        simulatePHPBackend();
+    </script>
+</body>
+</html>
