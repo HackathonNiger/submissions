@@ -4,11 +4,18 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
 
+# Give explicit permissions for GitHub token; keeps option to use GITHUB_TOKEN
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  projects: write
+
 jobs:
   add_to_project:
     runs-on: ubuntu-latest
     steps:
-      - name: Add PR to GitHub Project (fallback via REST API)
+      - name: Add PR to GitHub Project (REST API, robust)
         env:
           PROJECT_PAT: ${{ secrets.PROJECT_PAT }}
           PROJECT_URL: https://github.com/orgs/HackathonNiger/projects/1
@@ -16,8 +23,12 @@ jobs:
           set -euo pipefail
           echo "Starting adding PR to project"
 
-          # PR number and repo info
-          PR_NUMBER="${{ github.event.pull_request.number }}"
+          if [ -z "${PROJECT_PAT:-}" ]; then
+            echo "::error::Missing PROJECT_PAT secret. Set secrets.PROJECT_PAT with a PAT that has project permissions."
+            exit 1
+          fi
+
+          PR_NUMBER=${{ github.event.pull_request.number }}
           REPO="${GITHUB_REPOSITORY}"     # owner/repo
           REPO_OWNER="${REPO%/*}"
           REPO_NAME="${REPO#*/}"
@@ -31,45 +42,84 @@ PY
           <<< "$PROJECT_URL")
           echo "Project ID: $PROJECT_ID"
 
-          # List columns in the classic project and select the first column
-          COLUMNS_JSON=$(curl -s \
-            -H "Accept: application/vnd.github.inertia-preview+json" \
-            -H "Authorization: token $PROJECT_PAT" \
-            "https://api.github.com/projects/$PROJECT_ID/columns")
+          # Helper to call curl and capture HTTP status and body
+          call_api() {
+            local method=$1
+            local url=$2
+            local data="${3:-}"
+            if [ -n "$data" ]; then
+              resp=$(curl -s -w "\n%{http_code}" -X "$method" \
+                -H "Accept: application/vnd.github.inertia-preview+json" \
+                -H "Authorization: token $PROJECT_PAT" \
+                -H "Content-Type: application/json" \
+                -d "$data" "$url")
+            else
+              resp=$(curl -s -w "\n%{http_code}" \
+                -H "Accept: application/vnd.github.inertia-preview+json" \
+                -H "Authorization: token $PROJECT_PAT" \
+                "$url")
+            fi
+            http_code=$(echo "$resp" | tail -n1)
+            body=$(echo "$resp" | sed '$d')
+            echo "$http_code"
+            echo "$body"
+          }
+
+          # List columns and get first column ID
+          read -r status columns_body <<EOF
+$(call_api GET "https://api.github.com/projects/$PROJECT_ID/columns")
+EOF
+          echo "Columns API status: $status"
+          if [ "$status" != "200" ]; then
+            echo "::error::Failed to list project columns (HTTP $status):"
+            echo "$columns_body"
+            exit 1
+          fi
 
           COLUMN_ID=$(python3 - <<'PY'
 import sys, json
-cols = json.load(sys.stdin)
+cols = json.loads(sys.stdin.read())
 if not cols:
-  raise SystemExit("No columns found in project")
+    raise SystemExit("No columns found in project")
 print(cols[0]['id'])
 PY
-          <<<"$COLUMNS_JSON")
+          <<<"$columns_body")
           echo "Using column ID: $COLUMN_ID"
 
-          # Get the issue/pull request internal id for use as content_id
-          ISSUE_JSON=$(curl -s \
-            -H "Authorization: token $PROJECT_PAT" \
-            "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/issues/$PR_NUMBER")
+          # Get the internal issue id for the PR (issues endpoint returns PRs as issues)
+          read -r status issue_body <<EOF
+$(call_api GET "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/issues/$PR_NUMBER")
+EOF
+          echo "Issue API status: $status"
+          if [ "$status" != "200" ]; then
+            echo "::error::Failed to fetch issue/PR (HTTP $status):"
+            echo "$issue_body"
+            exit 1
+          fi
 
           CONTENT_ID=$(python3 - <<'PY'
 import sys, json
-obj = json.load(sys.stdin)
+obj = json.loads(sys.stdin.read())
 if 'id' not in obj:
-  raise SystemExit("Could not read issue id")
+    raise SystemExit("Could not read issue id")
 print(obj['id'])
 PY
-          <<<"$ISSUE_JSON")
+          <<<"$issue_body")
           echo "Content ID (issue internal id): $CONTENT_ID"
 
-          # Create the card in the selected column (content_type PullRequest)
-          RESP=$(curl -s -X POST \
-            -H "Accept: application/vnd.github.inertia-preview+json" \
-            -H "Authorization: token $PROJECT_PAT" \
-            "https://api.github.com/projects/columns/$COLUMN_ID/cards" \
-            -d "{\"content_id\": $CONTENT_ID, \"content_type\": \"PullRequest\"}")
+          # Create the card in the selected column
+          payload="{\"content_id\": $CONTENT_ID, \"content_type\": \"PullRequest\"}"
+          read -r status create_body <<EOF
+$(call_api POST "https://api.github.com/projects/columns/$COLUMN_ID/cards" "$payload")
+EOF
+          echo "Create card API status: $status"
+          if [ "$status" != "201" ]; then
+            echo "::error::Failed to create project card (HTTP $status):"
+            echo "$create_body"
+            exit 1
+          fi
+          echo "Project card created successfully: $create_body"
 
-          echo "Create card response: $RESP"
       - name: Add label to PR
         uses: actions-ecosystem/action-add-labels@v1
         with:
