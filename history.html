@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vault - Goal History</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        :root {
+            --primary: #2ecc71;
+            --primary-dark: #27ae60;
+            --secondary: #3498db;
+            --accent: #f1c40f;
+            --success: #2ecc71;
+            --warning: #e67e22;
+            --light: #f8f9fa;
+            --dark: #1e2a4a;
+            --card-bg: #ffffff;
+            --text-dark: #2d3436;
+            --text-light: #7f8fa6;
+            --border: #e6e9ef;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --green-gradient: linear-gradient(135deg, #2ecc71, #27ae60);
+            --nav-bg: #1a3a2a;
+        }
+
+        [data-theme="dark"] {
+            --light: #2d3436;
+            --dark: #f8f9fa;
+            --card-bg: #1e2a4a;
+            --text-dark: #f8f9fa;
+            --text-light: #b2bec3;
+            --border: #34495e;
+            --background: #0d1a2e;
+            --nav-bg: #0d1a0d;
+        }
+        
+        body {
+            background: var(--card-bg);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Vault background effect */
+        .vault-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.03;
+            background-image: 
+                radial-gradient(circle at 25% 25%, var(--primary) 2px, transparent 2px),
+                radial-gradient(circle at 75% 75%, var(--primary-dark) 2px, transparent 2px);
+            background-size: 30px 30px;
+            animation: backgroundMove 20s infinite linear;
+        }
+
+        @keyframes backgroundMove {
+            from { background-position: 0 0; }
+            to { background-position: 30px 30px; }
+        }
+        
+        /* History Background Effect */
+        .history-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.02;
+            background: 
+                radial-gradient(circle at 10% 10%, var(--primary) 0%, transparent 25%),
+                radial-gradient(circle at 90% 90%, var(--primary-dark) 0%, transparent 25%),
+                radial-gradient(circle at 50% 50%, var(--accent) 0%, transparent 25%);
+            animation: floatBackground 40s infinite linear;
+        }
+        
+        @keyframes floatBackground {
+            0% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.05) rotate(90deg); }
+            50% { transform: scale(1.1) rotate(180deg); }
+            75% { transform: scale(1.05) rotate(270deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+        
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 260px;
+            background: var(--nav-bg);
+            color: white;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            padding: 25px 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow);
+            z-index: 10;
+        }
+        
+        .logo {
+            padding: 0 25px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 25px;
+        }
+        
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            background: var(--green-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            animation: spin 15s infinite linear;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .logo-text {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        
+        .nav-items {
+            flex: 1;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            gap: 15px;
+            border-radius: 12px;
+            margin: 0 10px;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            border-right: 4px solid var(--primary);
+            transform: translateX(5px);
+        }
+        
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-footer {
+            padding: 20px 25px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: auto;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--green-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .user-email {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .notification-bell {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .notification-bell:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
+        }
+        
+        .notification-bell::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        /* Stats Overview */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .stat-card:hover::before {
+            opacity: 1;
+            animation: shine 6s infinite linear;
+        }
+        
+        @keyframes shine {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--green-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin: 0 auto 15px;
+            font-size: 24px;
+            position: relative;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        /* Completed Goals Section */
+        .goals-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .view-options {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .option-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--light);
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .option-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .option-btn:hover:not(.active) {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        /* Goals Grid */
+        .goals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .goal-card {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 0;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            cursor: pointer;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .goal-card:nth-child(2) { animation-delay: 0.1s; }
+        .goal-card:nth-child(3) { animation-delay: 0.2s; }
+        .goal-card:nth-child(4) { animation-delay: 0.3s; }
+        .goal-card:nth-child(5) { animation-delay: 0.4s; }
+        .goal-card:nth-child(6) { animation-delay: 0.5s; }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .goal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+        
+        .goal-card:hover::before {
+            left: 100%;
+        }
+        
+        .goal-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .goal-header {
+            padding: 20px;
+            background: var(--green-gradient);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .goal-header::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .goal-card:hover .goal-header::after {
+            opacity: 1;
+            animation: shine 4s infinite linear;
+        }
+        
+        .goal-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .goal-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .goal-date {
+            font-size: 14px;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .goal-content {
+            padding: 20px;
+        }
+        
+        .goal-description {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .goal-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .goal-stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .goal-timeline {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .timeline-fill {
+            height: 100%;
+            background: var(--green-gradient);
+            border-radius: 3px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .timeline-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .timeline-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .completed-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--success);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        /* Celebration Animation */
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 20px;
+            background: var(--primary);
+            opacity: 0;
+        }
+        
+        /* Naira Symbol */
+        .naira::before {
+            content: "₦";
+            font-weight: 600;
+        }
+        
+        /* Mobile Navigation */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+            padding: 15px;
+            z-index: 100;
+            justify-content: space-around;
+        }
+        
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 12px;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-nav-item.active {
+            color: var(--primary);
+            transform: translateY(-5px);
+        }
+        
+        .mobile-nav-item i {
+            font-size: 20px;
+        }
+
+        /* Settings Modal */
+        .settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .settings-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .settings-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .settings-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--text-dark);
+            transform: rotate(90deg);
+        }
+
+        .settings-body {
+            padding: 20px;
+        }
+
+        .setting-group {
+            margin-bottom: 25px;
+        }
+
+        .setting-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .setting-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--card-bg);
+            color: var(--text-dark);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .setting-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.1);
+        }
+
+        .theme-toggle {
+            display: flex;
+            gap: 10px;
+        }
+
+        .theme-option {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-option.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--success);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast.error {
+            background: #e74c3c;
+        }
+
+        /* Data Visualization */
+        .data-visualization {
+            margin-top: 30px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .viz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .viz-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .viz-container {
+            display: flex;
+            gap: 20px;
+            height: 200px;
+            align-items: flex-end;
+        }
+
+        .viz-bar {
+            flex: 1;
+            background: var(--green-gradient);
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            transition: all 0.5s ease;
+            min-height: 10px;
+        }
+
+        .viz-bar:hover {
+            transform: scaleY(1.05);
+            box-shadow: 0 -5px 15px rgba(46, 204, 113, 0.3);
+        }
+
+        .viz-label {
+            position: absolute;
+            bottom: -25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .viz-value {
+            position: absolute;
+            top: -25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        /* Particle Animation */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleFloat 15s infinite linear;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 220px;
+            }
+            
+            .goals-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .mobile-nav {
+                display: flex;
+            }
+            
+            .main-content {
+                padding: 20px;
+                padding-bottom: 90px;
+            }
+            
+            .stats-overview {
+                grid-template-columns: 1fr;
+            }
+            
+            .goals-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .view-options {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .viz-container {
+                flex-direction: column;
+                height: auto;
+                gap: 30px;
+            }
+
+            .viz-bar {
+                height: 30px !important;
+                border-radius: 8px;
+            }
+
+            .viz-value {
+                top: 50%;
+                transform: translateY(-50%);
+                left: 10px;
+                right: auto;
+                text-align: left;
+            }
+
+            .viz-label {
+                bottom: auto;
+                top: 50%;
+                transform: translateY(-50%);
+                right: 10px;
+                left: auto;
+                text-align: right;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Vault Background Effect -->
+    <div class="vault-background"></div>
+    
+    <!-- History Background Effect -->
+    <div class="history-background"></div>
+
+    <!-- Particle Animation -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-vault"></i>
+            </div>
+            <div class="logo-text">Vault</div>
+        </div>
+        
+        <div class="nav-items">
+            <a href="dash.php" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="story.html" class="nav-item">
+                <i class="fas fa-book-open"></i>
+                <span>My Story</span>
+            </a>
+            <a href="friend.html" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Friends</span>
+            </a>
+            <a href="progress.html" class="nav-item">
+                <i class="fas fa-chart-pie"></i>
+                <span>Progress</span>
+            </a>
+            <a href="history.html" class="nav-item active">
+                <i class="fas fa-history"></i>
+                <span>History</span>
+            </a>
+            <a href="#" class="nav-item" id="settingsBtn">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-info">
+                    <div class="user-name">Gift igwe</div>
+                    <div class="user-email">angelgift694@gmail.com</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1 class="page-title">Goal History</h1>
+            <div class="header-actions">
+                <div class="notification-bell">
+                    <i class="fas fa-bell"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stats Overview -->
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="stat-number">14</div>
+                <div class="stat-label">Goals Completed</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-piggy-bank"></i>
+                </div>
+                <div class="stat-number naira">1,245,800</div>
+                <div class="stat-label">Total Achieved</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar"></i>
+                </div>
+                <div class="stat-number">28</div>
+                <div class="stat-label">Avg. Days per Goal</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-number">9</div>
+                <div class="stat-label">Early Completions</div>
+            </div>
+        </div>
+
+        <!-- Data Visualization -->
+        <div class="data-visualization">
+            <div class="viz-header">
+                <h2 class="viz-title">Savings Timeline</h2>
+                <div class="view-options">
+                    <button class="option-btn active" data-viz="amount">By Amount</button>
+                    <button class="option-btn" data-viz="duration">By Duration</button>
+                </div>
+            </div>
+            <div class="viz-container" id="vizContainer">
+                <!-- Visualization will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Completed Goals Section -->
+        <div class="goals-section">
+            <div class="section-header">
+                <h2 class="section-title">Your Completed Goals</h2>
+                <div class="view-options">
+                    <button class="option-btn active" data-filter="all">All</button>
+                    <button class="option-btn" data-filter="year">This Year</button>
+                    <button class="option-btn" data-filter="last-year">Last Year</button>
+                    <button class="option-btn" data-filter="largest">Largest</button>
+                    <button class="option-btn" data-filter="quickest">Quickest</button>
+                </div>
+            </div>
+            
+            <div class="goals-grid" id="goalsGrid">
+                <!-- Goals will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="settings-modal" id="settingsModal">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h2 class="settings-title">Settings</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="settings-body">
+                <div class="setting-group">
+                    <label class="setting-label">Change PIN</label>
+                    <input type="password" class="setting-input" placeholder="Enter new PIN" maxlength="4" id="pinInput">
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">Theme</label>
+                    <div class="theme-toggle">
+                        <div class="theme-option active" data-theme="light">Light</div>
+                        <div class="theme-option" data-theme="dark">Dark</div>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">Notifications</label>
+                    <div>
+                        <input type="checkbox" id="goalCompletionAlerts" checked>
+                        <label for="goalCompletionAlerts">Goal completion celebrations</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="milestoneNotifications" checked>
+                        <label for="milestoneNotifications">Savings milestone notifications</label>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">Data Export</label>
+                    <button class="option-btn" id="exportData" style="width: 100%;">
+                        <i class="fas fa-download"></i> Export Goal History
+                    </button>
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">Auto-Refresh</label>
+                    <select class="setting-input" id="autoRefresh">
+                        <option value="0">Off</option>
+                        <option value="30" selected>30 seconds</option>
+                        <option value="60">1 minute</option>
+                        <option value="300">5 minutes</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Celebration Animation -->
+    <div class="celebration" id="celebration"></div>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+    
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav">
+        <a href="dash.html" class="mobile-nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="story.html" class="mobile-nav-item">
+            <i class="fas fa-book-open"></i>
+            <span>Story</span>
+        </a>
+        <a href="friend.html" class="mobile-nav-item">
+            <i class="fas fa-users"></i>
+            <span>Friends</span>
+        </a>
+        <a href="progress.html" class="mobile-nav-item">
+            <i class="fas fa-chart-pie"></i>
+            <span>Progress</span>
+        </a>
+        <a href="history.html" class="mobile-nav-item active">
+            <i class="fas fa-history"></i>
+            <span>History</span>
+        </a>
+    </div>
+
+    <script>
+        // Goal data (simulating data from PHP backend)
+        const goalsData = {
+            all: [
+                { id: 1, title: "MacBook Pro", description: "Saved for a new MacBook Pro for freelance design work. This helped increase my productivity by 40%.", amount: 550000, duration: 42, startDate: "2023-02-01", endDate: "2023-03-15", icon: "laptop", efficiency: 112 },
+                { id: 2, title: "Ghana Vacation", description: "Two-week vacation to Ghana. Visited Accra, Cape Coast, and Kumasi. An unforgettable cultural experience.", amount: 320000, duration: 65, startDate: "2022-10-01", endDate: "2022-12-05", icon: "plane", efficiency: 98 },
+                { id: 3, title: "Home Gym Setup", description: "Complete home gym with treadmill, weights, and yoga mats. Saved time and money on gym membership.", amount: 150000, duration: 30, startDate: "2022-07-21", endDate: "2022-08-20", icon: "dumbbell", efficiency: 125 },
+                { id: 4, title: "Smart TV", description: "55-inch 4K Smart TV for family entertainment. Movie nights have never been better!", amount: 225000, duration: 45, startDate: "2022-04-26", endDate: "2022-06-10", icon: "tv", efficiency: 100 },
+                { id: 5, title: "Emergency Fund", description: "Built a 6-month emergency fund for financial security and peace of mind.", amount: 450000, duration: 90, startDate: "2022-01-15", endDate: "2022-04-15", icon: "shield-alt", efficiency: 95 },
+                { id: 6, title: "Professional Camera", description: "DSLR camera for photography business and personal creative projects.", amount: 280000, duration: 56, startDate: "2021-11-01", endDate: "2021-12-27", icon: "camera", efficiency: 105 }
+            ],
+            year: [
+                { id: 1, title: "MacBook Pro", description: "Saved for a new MacBook Pro for freelance design work. This helped increase my productivity by 40%.", amount: 550000, duration: 42, startDate: "2023-02-01", endDate: "2023-03-15", icon: "laptop", efficiency: 112 },
+                { id: 2, title: "Ghana Vacation", description: "Two-week vacation to Ghana. Visited Accra, Cape Coast, and Kumasi. An unforgettable cultural experience.", amount: 320000, duration: 65, startDate: "2022-10-01", endDate: "2022-12-05", icon: "plane", efficiency: 98 }
+            ],
+            "last-year": [
+                { id: 3, title: "Home Gym Setup", description: "Complete home gym with treadmill, weights, and yoga mats. Saved time and money on gym membership.", amount: 150000, duration: 30, startDate: "2022-07-21", endDate: "2022-08-20", icon: "dumbbell", efficiency: 125 },
+                { id: 4, title: "Smart TV", description: "55-inch 4K Smart TV for family entertainment. Movie nights have never been better!", amount: 225000, duration: 45, startDate: "2022-04-26", endDate: "2022-06-10", icon: "tv", efficiency: 100 },
+                { id: 5, title: "Emergency Fund", description: "Built a 6-month emergency fund for financial security and peace of mind.", amount: 450000, duration: 90, startDate: "2022-01-15", endDate: "2022-04-15", icon: "shield-alt", efficiency: 95 }
+            ],
+            largest: [
+                { id: 1, title: "MacBook Pro", description: "Saved for a new MacBook Pro for freelance design work. This helped increase my productivity by 40%.", amount: 550000, duration: 42, startDate: "2023-02-01", endDate: "2023-03-15", icon: "laptop", efficiency: 112 },
+                { id: 5, title: "Emergency Fund", description: "Built a 6-month emergency fund for financial security and peace of mind.", amount: 450000, duration: 90, startDate: "2022-01-15", endDate: "2022-04-15", icon: "shield-alt", efficiency: 95 },
+                { id: 6, title: "Professional Camera", description: "DSLR camera for photography business and personal creative projects.", amount: 280000, duration: 56, startDate: "2021-11-01", endDate: "2021-12-27", icon: "camera", efficiency: 105 }
+            ],
+            quickest: [
+                { id: 3, title: "Home Gym Setup", description: "Complete home gym with treadmill, weights, and yoga mats. Saved time and money on gym membership.", amount: 150000, duration: 30, startDate: "2022-07-21", endDate: "2022-08-20", icon: "dumbbell", efficiency: 125 },
+                { id: 1, title: "MacBook Pro", description: "Saved for a new MacBook Pro for freelance design work. This helped increase my productivity by 40%.", amount: 550000, duration: 42, startDate: "2023-02-01", endDate: "2023-03-15", icon: "laptop", efficiency: 112 },
+                { id: 6, title: "Professional Camera", description: "DSLR camera for photography business and personal creative projects.", amount: 280000, duration: 56, startDate: "2021-11-01", endDate: "2021-12-27", icon: "camera", efficiency: 105 }
+            ]
+        };
+
+        let currentFilter = 'all';
+        let currentViz = 'amount';
+        let autoRefreshInterval;
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeGoals();
+            setupEventListeners();
+            createParticles();
+            createVisualization();
+            startAutoRefresh();
+            checkTheme();
+            animateStats();
+        });
+
+        // Initialize goals with data
+        function initializeGoals() {
+            updateGoalsGrid();
+        }
+
+        // Update goals grid with current filter
+        function updateGoalsGrid() {
+            const goalsGrid = document.getElementById('goalsGrid');
+            const goals = goalsData[currentFilter];
+            
+            goalsGrid.innerHTML = '';
+            
+            goals.forEach((goal, index) => {
+                const goalCard = document.createElement('div');
+                goalCard.className = 'goal-card';
+                goalCard.style.animationDelay = `${0.1 * index}s`;
+                goalCard.setAttribute('data-goal-id', goal.id);
+                
+                const startDate = new Date(goal.startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                const endDate = new Date(goal.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                
+                goalCard.innerHTML = `
+                    <div class="goal-header">
+                        <div class="goal-icon">
+                            <i class="fas fa-${goal.icon}"></i>
+                        </div>
+                        <div class="goal-title">${goal.title}</div>
+                        <div class="goal-date">
+                            <i class="fas fa-calendar"></i>
+                            Completed: ${endDate}
+                        </div>
+                    </div>
+                    <div class="goal-content">
+                        <div class="goal-description">
+                            ${goal.description}
+                        </div>
+                        <div class="goal-stats">
+                            <div class="goal-stat">
+                                <div class="stat-value naira">${goal.amount.toLocaleString()}</div>
+                                <div class="stat-label">Amount</div>
+                            </div>
+                            <div class="goal-stat">
+                                <div class="stat-value">${goal.duration}</div>
+                                <div class="stat-label">Days</div>
+                            </div>
+                            <div class="goal-stat">
+                                <div class="stat-value">${goal.efficiency}%</div>
+                                <div class="stat-label">Efficiency</div>
+                            </div>
+                        </div>
+                        <div class="goal-timeline">
+                            <div class="timeline-fill"></div>
+                        </div>
+                        <div class="timeline-info">
+                            <span>Start: ${startDate}</span>
+                            <span>End: ${endDate}</span>
+                        </div>
+                        <div class="completed-badge">
+                            <i class="fas fa-check"></i>
+                            ${goal.efficiency > 100 ? 'Completed Early' : 'Successfully Completed'}
+                        </div>
+                    </div>
+                `;
+                
+                goalsGrid.appendChild(goalCard);
+            });
+        }
+
+        // Create data visualization
+        function createVisualization() {
+            const vizContainer = document.getElementById('vizContainer');
+            const goals = goalsData.all;
+            
+            vizContainer.innerHTML = '';
+            
+            // Sort goals based on current visualization type
+            const sortedGoals = [...goals].sort((a, b) => {
+                if (currentViz === 'amount') {
+                    return b.amount - a.amount;
+                } else {
+                    return b.duration - a.duration;
+                }
+            });
+            
+            // Get max value for scaling
+            const maxValue = Math.max(...sortedGoals.map(goal => 
+                currentViz === 'amount' ? goal.amount : goal.duration
+            ));
+            
+            sortedGoals.forEach(goal => {
+                const value = currentViz === 'amount' ? goal.amount : goal.duration;
+                const percentage = (value / maxValue) * 100;
+                
+                const bar = document.createElement('div');
+                bar.className = 'viz-bar';
+                bar.style.height = `${Math.max(10, percentage)}%`;
+                bar.style.background = `linear-gradient(to top, var(--primary), var(--primary-dark))`;
+                
+                bar.innerHTML = `
+                    <div class="viz-value">${currentViz === 'amount' ? '₦' + (value/1000).toFixed(0) + 'K' : value + ' days'}</div>
+                    <div class="viz-label">${goal.title.split(' ')[0]}</div>
+                `;
+                
+                vizContainer.appendChild(bar);
+            });
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Filter buttons
+            document.querySelectorAll('.option-btn[data-filter]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.option-btn[data-filter]').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    currentFilter = this.getAttribute('data-filter');
+                    updateGoalsGrid();
+                    
+                    showToast(`Showing ${this.textContent} goals`);
+                });
+            });
+            
+            // Visualization buttons
+            document.querySelectorAll('.option-btn[data-viz]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.option-btn[data-viz]').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    currentViz = this.getAttribute('data-viz');
+                    createVisualization();
+                });
+            });
+            
+            // Goal card clicks
+            document.addEventListener('click', function(e) {
+                const goalCard = e.target.closest('.goal-card');
+                if (goalCard) {
+                    const goalId = goalCard.getAttribute('data-goal-id');
+                    const goal = goalsData.all.find(g => g.id == goalId);
+                    
+                    // Create celebration effect
+                    createCelebration();
+                    
+                    // Show goal details
+                    setTimeout(() => {
+                        showToast(`Viewing details for: ${goal.title}`);
+                    }, 1000);
+                }
+            });
+            
+            // Settings button
+            document.getElementById('settingsBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('settingsModal').style.display = 'flex';
+            });
+            
+            // Close settings modal
+            document.querySelector('.close-btn').addEventListener('click', function() {
+                document.getElementById('settingsModal').style.display = 'none';
+            });
+            
+            // Close modal when clicking outside
+            document.getElementById('settingsModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+            
+            // Theme toggle
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const theme = this.getAttribute('data-theme');
+                    document.documentElement.setAttribute('data-theme', theme);
+                    localStorage.setItem('vault-theme', theme);
+                    
+                    showToast(`Theme changed to ${theme} mode`);
+                });
+            });
+            
+            // PIN change
+            document.getElementById('pinInput').addEventListener('change', function() {
+                if (this.value.length === 4) {
+                    // In a real app, this would send to PHP backend
+                    showToast('PIN updated successfully');
+                }
+            });
+            
+            // Data export
+            document.getElementById('exportData').addEventListener('click', function() {
+                // Simulate data export
+                showToast('Exporting goal history data...');
+                setTimeout(() => {
+                    showToast('Goal history exported successfully!');
+                }, 1500);
+            });
+            
+            // Auto-refresh change
+            document.getElementById('autoRefresh').addEventListener('change', function() {
+                const seconds = parseInt(this.value);
+                clearInterval(autoRefreshInterval);
+                if (seconds > 0) {
+                    startAutoRefresh(seconds * 1000);
+                    showToast(`Auto-refresh set to ${seconds} seconds`);
+                } else {
+                    showToast('Auto-refresh disabled');
+                }
+            });
+        }
+
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random properties
+                const size = Math.random() * 3 + 1;
+                const left = Math.random() * 100;
+                const animationDuration = Math.random() * 20 + 10;
+                const animationDelay = Math.random() * 10;
+                const color = `hsl(${Math.random() * 360}, 70%, 60%)`;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${left}%`;
+                particle.style.animationDuration = `${animationDuration}s`;
+                particle.style.animationDelay = `${animationDelay}s`;
+                particle.style.background = color;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Start auto-refresh
+        function startAutoRefresh(interval = 30000) {
+            autoRefreshInterval = setInterval(() => {
+                // Simulate data update
+                updateGoalsData();
+                updateGoalsGrid();
+                createVisualization();
+                showToast('Data updated', false);
+            }, interval);
+        }
+
+        // Simulate data update (would be from PHP backend in real app)
+        function updateGoalsData() {
+            // In a real app, this would fetch new data from the server
+            // For now, we'll just add a small random amount to show the feature works
+            goalsData.all.forEach(goal => {
+                goal.amount += Math.floor(Math.random() * 1000);
+            });
+        }
+
+        // Create celebration animation
+        function createCelebration() {
+            const celebration = document.getElementById('celebration');
+            celebration.innerHTML = '';
+            celebration.style.opacity = '1';
+            
+            // Create confetti
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = getRandomColor();
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                confetti.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
+                celebration.appendChild(confetti);
+                
+                // Add falling animation
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes fall {
+                        0% { top: -20px; opacity: 1; transform: rotate(0deg); }
+                        100% { top: 100vh; opacity: 0; transform: rotate(360deg); }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            // Hide celebration after animation
+            setTimeout(() => {
+                celebration.style.opacity = '0';
+            }, 3000);
+        }
+
+        // Show toast notification
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast';
+            
+            if (isError) {
+                toast.classList.add('error');
+            }
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Animate stats on page load
+        function animateStats() {
+            const statNumbers = document.querySelectorAll('.stat-number');
+            
+            statNumbers.forEach(stat => {
+                const finalValue = stat.textContent;
+                if (!isNaN(parseInt(finalValue.replace(/[^0-9]/g, '')))) {
+                    const numericValue = parseInt(finalValue.replace(/[^0-9]/g, ''));
+                    let current = 0;
+                    const increment = numericValue / 30;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= numericValue) {
+                            stat.textContent = finalValue;
+                            clearInterval(timer);
+                        } else {
+                            if (finalValue.includes('₦')) {
+                                stat.textContent = '₦' + Math.floor(current).toLocaleString();
+                            } else {
+                                stat.textContent = Math.floor(current);
+                            }
+                        }
+                    }, 50);
+                }
+            });
+        }
+
+        // Helper function for random colors
+        function getRandomColor() {
+            const colors = ['#2ecc71', '#27ae60', '#3498db', '#f1c40f', '#e67e22', '#9b59b6', '#1abc9c'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // Check and apply saved theme
+        function checkTheme() {
+            const savedTheme = localStorage.getItem('vault-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            document.querySelectorAll('.theme-option').forEach(option => {
+                if (option.getAttribute('data-theme') === savedTheme) {
+                    option.classList.add('active');
+                } else {
+                    option.classList.remove('active');
+                }
+            });
+        }
+
+        // Simulate PHP backend data fetch
+        function fetchGoalsData(filter) {
+            // In a real app, this would be an AJAX call to a PHP endpoint
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve(goalsData[filter]);
+                }, 500);
+            });
+        }
+    </script>
+</body>
+</html>

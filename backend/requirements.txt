@@ -1,0 +1,18 @@
+aiofiles
+fastapi
+ffmpeg
+gTTS
+pydub
+python-dotenv
+python-multipart
+torch              # pick CPU or GPU wheel for your environment
+transformers
+sentencepiece
+supabase           # supabase client (optional)
+uvicorn[standard]
+openai-whisper     # The official package from OpenAI
+coqui-tts          # Advanced TTS system
+pandas             # For CSV/Excel processing
+opencv-python      # For video processing
+openpyxl           # For Excel file support
+langdetect         # For language detection

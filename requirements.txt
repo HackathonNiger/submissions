@@ -1,0 +1,14 @@
+transformers
+torch
+sentencepiece
+gradio
+pyttsx3
+coqui-tts
+
+# For lunex server
+# transformers
+# torch
+# sentencepiece
+# gradio
+# langdetect
+# coqui-tts
