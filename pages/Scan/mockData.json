@@ -1,0 +1,98 @@
+[
+  {
+    "nafdac_reg_no": "NAFDAC/03/21/0001",
+    "product_name": "Panadol Extra",
+    "manufacturer": "Acme Pharma Nigeria Ltd",
+    "batch_no": "BATCH-PA-1001",
+    "production_date": "2023-01-10",
+    "expiry_date": "2026-01-09",
+    "verification_status": "valid",
+    "active_ingredient": "Paracetamol 500mg",
+    "dosage_form": "tablet",
+    "product_image_url": "https://example.com/images/panadol_extra.jpg"
+  },
+  {
+    "nafdac_reg_no": "NAFDAC/07/22/0024",
+    "product_name": "AmoxiCure 500",
+    "manufacturer": "GreenLeaf Pharmaceuticals",
+    "batch_no": "BATCH-AMX-2203",
+    "production_date": "2022-05-12",
+    "expiry_date": "2025-05-11",
+    "verification_status": "valid",
+    "active_ingredient": "Amoxicillin 500mg",
+    "dosage_form": "capsule",
+    "product_image_url": "https://example.com/images/amoxicure500.jpg"
+  },
+  {
+    "nafdac_reg_no": "NAFDAC/11/23/0102",
+    "product_name": "MalariClear",
+    "manufacturer": "Sunrise Pharma Works",
+    "batch_no": "BATCH-MC-3302",
+    "production_date": "2023-09-01",
+    "expiry_date": "2026-08-31",
+    "verification_status": "valid",
+    "active_ingredient": "Artemether 20mg + Lumefantrine 120mg",
+    "dosage_form": "tablet",
+    "product_image_url": "https://example.com/images/malariclear.jpg"
+  },
+  {
+    "nafdac_reg_no": "NAFDAC/04/20/0057",
+    "product_name": "GastroRelief Syrup",
+    "manufacturer": "NileCare Pharmaceuticals",
+    "batch_no": "BATCH-GR-4501",
+    "production_date": "2021-11-15",
+    "expiry_date": "2024-11-14",
+    "verification_status": "expired",
+    "active_ingredient": "Omeprazole 20mg/5ml",
+    "dosage_form": "syrup",
+    "product_image_url": "https://example.com/images/gastrorelief.jpg"
+  },
+  {
+    "nafdac_reg_no": "NAFDAC/08/22/0099",
+    "product_name": "ZincoPlus Oral",
+    "manufacturer": "Harbor Medicines Ltd",
+    "batch_no": "BATCH-ZP-7010",
+    "production_date": "2022-03-03",
+    "expiry_date": "2025-03-02",
+    "verification_status": "valid",
+    "active_ingredient": "Zinc sulfate 20mg",
+    "dosage_form": "tablet",
+    "product_image_url": "https://example.com/images/zincoplus.jpg"
+  },
+  {
+    "nafdac_reg_no": "NAFDAC/02/24/0144",
+    "product_name": "OralRehydrate ORS",
+    "manufacturer": "FieldHealth Labs",
+    "batch_no": "BATCH-ORS-0012",
+    "production_date": "2024-02-01",
+    "expiry_date": "2027-01-31",
+    "verification_status": "valid",
+    "active_ingredient": "Oral rehydration salts",
+    "dosage_form": "powder",
+    "product_image_url": "https://example.com/images/ors.jpg"
+  },
+  {
+    "nafdac_reg_no": "NAFDAC/06/21/0333",
+    "product_name": "Ciprofast 500",
+    "manufacturer": "Atlas Pharma Nigeria",
+    "batch_no": "BATCH-CF-9003",
+    "production_date": "2021-06-10",
+    "expiry_date": "2024-06-09",
+    "verification_status": "expired",
+    "active_ingredient": "Ciprofloxacin 500mg",
+    "dosage_form": "tablet",
+    "product_image_url": "https://example.com/images/ciprofast.jpg"
+  },
+  {
+    "nafdac_reg_no": "NAFDAC/12/23/0077",
+    "product_name": "MamaCare Tablets",
+    "manufacturer": "HopeHealth Pharmaceuticals",
+    "batch_no": "BATCH-MC-1122",
+    "production_date": "2023-12-01",
+    "expiry_date": "2026-11-30",
+    "verification_status": "valid",
+    "active_ingredient": "Iron 60mg + Folic acid 400mcg",
+    "dosage_form": "tablet",
+    "product_image_url": "https://example.com/images/mamacare.jpg"
+  }
+]
