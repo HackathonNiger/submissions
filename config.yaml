@@ -1,0 +1,9 @@
+default_language: hausa
+output_language: english
+
+features:
+  nigerian_to_nigerian_enabled: true
+
+speech:
+  rate: 150
+  volume: 1.0
