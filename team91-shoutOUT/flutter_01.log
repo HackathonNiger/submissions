@@ -1,0 +1,115 @@
+Flutter crash report.
+Please report a bug at https://github.com/flutter/flutter/issues.
+
+## command
+
+flutter --no-color run --machine --track-widget-creation --device-id=emulator-5554 --start-paused --dart-define=flutter.inspector.structuredErrors=true lib/main.dart
+
+## exception
+
+FormatException: FormatException: Unexpected character (at character 1)
+../../runtime/vm/os_thread.cc: 348: error: Could not start thread DartWorke...
+^
+
+
+```
+#0      _ChunkedJsonParser.fail (dart:convert-patch/convert_patch.dart:1467:5)
+#1      _ChunkedJsonParser.parseNumber (dart:convert-patch/convert_patch.dart:1333:9)
+#2      _ChunkedJsonParser.parse (dart:convert-patch/convert_patch.dart:935:22)
+#3      _JsonStringDecoderSink.addSlice (dart:convert-patch/convert_patch.dart:1555:13)
+#4      _JsonStringDecoderSink.add (dart:convert-patch/convert_patch.dart:1560:5)
+#5      _ConverterStreamEventSink.add (dart:convert/chunked_conversion.dart:70:18)
+#6      _SinkTransformerStreamSubscription._handleData (dart:async/stream_transformers.dart:115:24)
+#7      _rootRunUnary (dart:async/zone.dart:1538:47)
+#8      _CustomZone.runUnary (dart:async/zone.dart:1429:19)
+#9      _CustomZone.runUnaryGuarded (dart:async/zone.dart:1329:7)
+#10     _BufferingStreamSubscription._sendData (dart:async/stream_impl.dart:381:11)
+#11     _BufferingStreamSubscription._add (dart:async/stream_impl.dart:312:7)
+#12     _SinkTransformerStreamSubscription._add (dart:async/stream_transformers.dart:67:11)
+#13     _EventSinkWrapper.add (dart:async/stream_transformers.dart:13:11)
+#14     _StringAdapterSink.add (dart:convert/string_conversion.dart:228:11)
+#15     _StringAdapterSink.addSlice (dart:convert/string_conversion.dart:233:7)
+#16     _Utf8ConversionSink.addSlice (dart:convert/string_conversion.dart:313:20)
+#17     _Utf8ConversionSink.add (dart:convert/string_conversion.dart:306:5)
+#18     _ConverterStreamEventSink.add (dart:convert/chunked_conversion.dart:70:18)
+#19     _SinkTransformerStreamSubscription._handleData (dart:async/stream_transformers.dart:115:24)
+#20     _rootRunUnary (dart:async/zone.dart:1538:47)
+#21     _CustomZone.runUnary (dart:async/zone.dart:1429:19)
+#22     _CustomZone.runUnaryGuarded (dart:async/zone.dart:1329:7)
+#23     _BufferingStreamSubscription._sendData (dart:async/stream_impl.dart:381:11)
+#24     _BufferingStreamSubscription._add (dart:async/stream_impl.dart:312:7)
+#25     _SyncStreamControllerDispatch._sendData (dart:async/stream_controller.dart:798:19)
+#26     _StreamController._add (dart:async/stream_controller.dart:663:7)
+#27     _StreamController.add (dart:async/stream_controller.dart:618:5)
+#28     _Socket._onData (dart:io-patch/socket_patch.dart:2912:41)
+#29     _rootRunUnary (dart:async/zone.dart:1546:13)
+#30     _CustomZone.runUnary (dart:async/zone.dart:1429:19)
+#31     _CustomZone.runUnaryGuarded (dart:async/zone.dart:1329:7)
+#32     _BufferingStreamSubscription._sendData (dart:async/stream_impl.dart:381:11)
+#33     _BufferingStreamSubscription._add (dart:async/stream_impl.dart:312:7)
+#34     _SyncStreamControllerDispatch._sendData (dart:async/stream_controller.dart:798:19)
+#35     _StreamController._add (dart:async/stream_controller.dart:663:7)
+#36     _StreamController.add (dart:async/stream_controller.dart:618:5)
+#37     new _RawSocket.<anonymous closure> (dart:io-patch/socket_patch.dart:2331:31)
+#38     _NativeSocket.issueReadEvent.issue (dart:io-patch/socket_patch.dart:1655:14)
+#39     _microtaskLoop (dart:async/schedule_microtask.dart:40:35)
+#40     _startMicrotaskLoop (dart:async/schedule_microtask.dart:49:5)
+#41     _runPendingImmediateCallback (dart:isolate-patch/isolate_patch.dart:127:13)
+#42     _RawReceivePort._handleMessage (dart:isolate-patch/isolate_patch.dart:194:5)
+```
+
+## flutter doctor
+
+```
+[!] Flutter (Channel stable, 3.35.4, on Ubuntu 22.04.5 LTS 6.8.0-83-generic, locale en_US.UTF-8) [322ms]
+    • Flutter version 3.35.4 on channel stable at /home/luckyme/Downloads/flutter
+    ! Warning: `flutter` on your path resolves to /usr/bin/snap, which is not inside your current Flutter SDK checkout at /home/luckyme/Downloads/flutter. Consider adding /home/luckyme/Downloads/flutter/bin to the front of your path.
+    ! Warning: `dart` on your path resolves to /usr/bin/snap, which is not inside your current Flutter SDK checkout at /home/luckyme/Downloads/flutter. Consider adding /home/luckyme/Downloads/flutter/bin to the front of your path.
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision d693b4b9db (2 weeks ago), 2025-09-16 14:27:41 +0000
+    • Engine revision c298091351
+    • Dart version 3.9.2
+    • DevTools version 2.48.0
+    • Feature flags: enable-web, enable-linux-desktop, enable-macos-desktop, enable-windows-desktop, enable-android, enable-ios, cli-animations, enable-lldb-debugging
+    • If those were intentional, you can disregard the above warnings; however it is recommended to use "git" directly to perform update checks and upgrades.
+
+[!] Android toolchain - develop for Android devices (Android SDK version 36.1.0) [4.3s]
+    • Android SDK at /home/luckyme/Android/Sdk
+    • Emulator version 36.1.9.0 (build_id 13823996) (CL:N/A)
+    • Platform android-36-ext19, build-tools 36.1.0
+    • Java binary at: /home/luckyme/Downloads/android-studio/jbr/bin/java
+      This is the JDK bundled with the latest Android Studio installation on this machine.
+      To manually set the JDK path, use: `flutter config --jdk-dir="path/to/jdk"`.
+    • Java version OpenJDK Runtime Environment (build 11.0.15+0-b2043.56-8887301)
+    ✗ Android license status unknown.
+      Run `flutter doctor --android-licenses` to accept the SDK licenses.
+      See https://flutter.dev/to/linux-android-setup for more details.
+
+[✗] Chrome - develop for the web (Cannot find Chrome executable at google-chrome) [241ms]
+    ! Cannot find Chrome. Try setting CHROME_EXECUTABLE to a Chrome executable.
+
+[✗] Linux toolchain - develop for Linux desktop [249ms]
+    ✗ clang++ is required for Linux development.
+      It is likely available from your distribution (e.g.: apt install clang), or can be downloaded from https://releases.llvm.org/
+    ✗ CMake is required for Linux development.
+      It is likely available from your distribution (e.g.: apt install cmake), or can be downloaded from https://cmake.org/download/
+    ✗ ninja is required for Linux development.
+      It is likely available from your distribution (e.g.: apt install ninja-build), or can be downloaded from https://github.com/ninja-build/ninja/releases
+    ✗ pkg-config is required for Linux development.
+      It is likely available from your distribution (e.g.: apt install pkg-config), or can be downloaded from https://www.freedesktop.org/wiki/Software/pkg-config/
+
+[✓] Android Studio (version 2022.1) [240ms]
+    • Android Studio at /home/luckyme/Downloads/android-studio
+    • Flutter plugin version 74.0.1
+    • Dart plugin version 221.6103.1
+    • Java version OpenJDK Runtime Environment (build 11.0.15+0-b2043.56-8887301)
+
+[✓] Connected device (2 available) [936ms]
+    • sdk gphone64 x86 64 (mobile) • emulator-5554 • android-x64 • Android 16 (API 36) (emulator)
+    • Linux (desktop)              • linux         • linux-x64   • Ubuntu 22.04.5 LTS 6.8.0-83-generic
+
+[✓] Network resources [7.9s]
+    • All expected network resources are available.
+
+! Doctor found issues in 4 categories.
+```
