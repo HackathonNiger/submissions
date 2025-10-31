@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "330812523877",
+    "project_id": "shoutout-55c27",
+    "storage_bucket": "shoutout-55c27.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:330812523877:android:ef3cdf0bcdfaa0b3744d8c",
+        "android_client_info": {
+          "package_name": "com.example.shout"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAT3QnxyGyMgCGC0x_1zKpffj_wl46fMbE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

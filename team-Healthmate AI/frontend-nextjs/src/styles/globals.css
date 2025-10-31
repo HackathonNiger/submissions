@@ -1,0 +1,166 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap');
+
+/* Base styles to match original design */
+@layer base {
+  :root {
+    --primary: #2db36f;
+    --primary-dark: #21965c;
+    --accent: #007bff;
+    --bg: #f8fbff;
+    --card: #e9f3ff;
+    --white: #ffffff;
+    --text: #1c1c1c;
+    --text-muted: #555;
+    --font-main: 'Segoe UI', 'Helvetica Neue', sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: var(--font-main);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    text-align: center;
+  }
+}
+
+/* Component layer for reusable patterns */
+@layer components {
+  .btn-primary {
+    @apply px-6 py-3 bg-primary text-white font-medium rounded-lg cursor-pointer transition-colors duration-300 hover:bg-primary-dark;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 bg-accent text-white font-medium rounded-lg cursor-pointer transition-colors duration-300 hover:bg-blue-600;
+  }
+
+  .card {
+    @apply bg-white rounded-xl shadow-custom p-6;
+  }
+
+  .sidebar-transition {
+    @apply transition-all duration-300 ease-in-out;
+  }
+}
+
+/* Utility layer for custom utilities */
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+  }
+
+  /* Custom Animations */
+  .animate-fade-in-up {
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  .animate-heartbeat {
+    animation: heartbeat 2s ease-in-out infinite;
+  }
+
+  .animate-spin-slow {
+    animation: spin 8s linear infinite;
+  }
+
+  .animate-ping-slow {
+    animation: ping 3s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  .animate-twinkle {
+    animation: twinkle 1.5s ease-in-out infinite alternate;
+  }
+
+  .delay-300 {
+    animation-delay: 0.3s;
+  }
+
+  .delay-500 {
+    animation-delay: 0.5s;
+  }
+
+  .delay-700 {
+    animation-delay: 0.7s;
+  }
+
+  .delay-900 {
+    animation-delay: 0.9s;
+  }
+
+  .delay-1000 {
+    animation-delay: 1s;
+  }
+
+  .delay-2000 {
+    animation-delay: 2s;
+  }
+
+  .delay-3000 {
+    animation-delay: 3s;
+  }
+}
+
+/* Keyframe Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heartbeat {
+  0%, 50%, 100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.1);
+  }
+  75% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes twinkle {
+  0% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* Enhanced hover effects */
+.feature-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-card:hover {
+  transform: translateY(-8px) scale(1.02);
+}
+
+/* Gradient backgrounds */
+.bg-nigeria-gradient {
+  background: linear-gradient(135deg, #008751 0%, #ffffff 50%, #008751 100%);
+}
+
+/* Custom shadows */
+.shadow-custom {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.shadow-2xl {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}

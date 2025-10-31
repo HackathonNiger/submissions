@@ -1,0 +1,9 @@
+Vault/
+├── config.php              # Database configuration and connection
+├── welcome.php             # Landing page with PWA features
+├── sign.php               # Multi-step registration system
+├── dashboard.php          # Main user dashboard
+├── logout.php             # Session cleanup
+├── icons/
+│   └── icon-192x192.png   # PWA application icon
+└── README.md              # This file
