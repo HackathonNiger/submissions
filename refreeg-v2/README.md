@@ -2,6 +2,8 @@
 
 RefreeG is a comprehensive web platform that enables communities to create fundraising campaigns (causes) and petitions, accept donations through multiple payment methods (Paystack, cryptocurrency), and track progress transparently. Built with Next.js 15, Supabase, and modern web technologies.
 
+pitch deck: https://www.canva.com/design/DAGf4ypibCE/6cfxP1KpKczKYIaax5ec2g/edit?utm_content=DAGf4ypibCE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+
 ## 🚀 Features
 
 - **Cause Management**: Create, manage, and track fundraising campaigns
