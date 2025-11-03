@@ -1,0 +1,6 @@
+System Architecture:
+- ESP32 reads sensor data
+- HC-SR04 and DHT11 are the sensors 
+- SIM800L sends SMS alerts
+- Firebase logs readings
+- Dashboard displays realtime data

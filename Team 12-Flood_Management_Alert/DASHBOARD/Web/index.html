@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flood Alert Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script type="module" src="app.js" defer></script>
+
+  </head>
+
+  <body>
+    <header>
+      <h1>Early Flood Alert System Dashboard</h1>
+      <h2>TEAM 12 (CODEFEST HACKATHON 2025)</h2>
+      <p>Real-Time Monitoring of Water Level & Weather</p>
+    </header>
+
+    <main>
+      <!-- Gauges -->
+      <section class="gauges">
+        <div class="gauge" id="waterLevel">
+          <svg viewBox="0 0 100 60">
+            <path d="M10 50 A40 40 0 0 1 90 50" class="bg-ring" />
+            <path d="M10 50 A40 40 0 0 1 90 50" class="fill-ring water" />
+          </svg>
+          <p class="value">-- cm</p>
+          <p class="label">Water Level</p>
+        </div>
+
+        <div class="gauge" id="temperature">
+          <svg viewBox="0 0 100 60">
+            <path d="M10 50 A40 40 0 0 1 90 50" class="bg-ring" />
+            <path d="M10 50 A40 40 0 0 1 90 50" class="fill-ring temp" />
+          </svg>
+          <p class="value">-- °C</p>
+          <p class="label">Temperature</p>
+        </div>
+
+        <div class="gauge" id="humidity">
+          <svg viewBox="0 0 100 60">
+            <path d="M10 50 A40 40 0 0 1 90 50" class="bg-ring" />
+            <path d="M10 50 A40 40 0 0 1 90 50" class="fill-ring humid" />
+          </svg>
+          <p class="value">-- %</p>
+          <p class="label">Humidity</p>
+        </div>
+      </section>
+
+      <!-- Status -->
+      <div id="statusIndicator" class="status">Status: Loading...</div>
+
+      <!-- Chart -->
+      <section class="chart">
+        <h3>Live Sensor Readings (Water Level, Temperature & Humidity)</h3>
+        <canvas id="sensorChart"></canvas>
+      </section>
+
+      <!-- Timestamp -->
+      <footer>
+        ⏱ Last Updated: <span id="timestamp">Waiting for data...</span>
+      </footer>
+    </main>
+  </body>
+</html>

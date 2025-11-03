@@ -1,0 +1,332 @@
+{
+  "version": {
+    "_version": 13.03,
+    "autoSaveFromRestore": false,
+    "canvasTemplates": [],
+    "components": [],
+    "creatorID": 1805121,
+    "manualSave": false,
+    "model": {},
+    "name": "Initial Version",
+    "platformData": {
+      "slots": [],
+      "intents": [
+        {
+          "key": "None",
+          "name": "None",
+          "slots": [],
+          "inputs": [],
+          "noteID": null
+        }
+      ],
+      "settings": {
+        "restart": true,
+        "repeat": 100,
+        "locales": [
+          "en-US"
+        ],
+        "globalNoMatch": {
+          "type": "static",
+          "prompt": {
+            "content": [
+              {
+                "children": [
+                  {
+                    "text": "Sorry, I didn’t get that. Please try again."
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "messageDelay": {
+          "durationMilliseconds": 500
+        },
+        "defaultVoice": "elevenlabs:eleven_turbo_v2_5:ZF6FPAbjXT4488VcRRnw",
+        "deepgramASR": {
+          "silenceWaitMS": 10,
+          "punctuationWaitMS": 200,
+          "partialWaitMS": 1000,
+          "interruptionWaitWords": 1,
+          "audioCue": null
+        }
+      },
+      "publishing": {
+        "avatar": "https://cdn.voiceflow.com/assets/logo.png",
+        "color": "#397DFF",
+        "description": "Hi, how can I help you today?",
+        "feedback": false,
+        "image": "https://cdn.voiceflow.com/assets/logo.png",
+        "persistence": "localStorage",
+        "position": "right",
+        "spacing": {
+          "side": 24,
+          "bottom": 24
+        },
+        "title": "Your AI agent",
+        "watermark": true,
+        "audioInterface": true
+      },
+      "platform": "webchat"
+    },
+    "programResources": {
+      "agents": {
+        "68dc88be06d442000740d8f6": {
+          "name": "Clarify farmer's request",
+          "settings": {
+            "model": "claude-4-sonnet",
+            "maxTokens": 5000,
+            "temperature": 0.3,
+            "reasoningEffort": null
+          },
+          "cardTool": null,
+          "apiTools": [],
+          "pathTools": [
+            {
+              "id": "68dc88be06d442000740d8ff",
+              "name": "Fertilizer advice requested",
+              "variables": [],
+              "description": "The farmer is primarily seeking fertilizer guidance."
+            },
+            {
+              "id": "68dc88be06d442000740d900",
+              "name": "Weather prediction needed",
+              "variables": [],
+              "description": "The farmer asks about upcoming weather conditions."
+            },
+            {
+              "id": "68dc88be06d442000740d901",
+              "name": "Both fertilizer and weather advice needed",
+              "variables": [],
+              "description": "The farmer wants advice on both fertilizer and weather."
+            },
+            {
+              "id": "68dc88be06d442000740d902",
+              "name": "Unable to understand the request",
+              "variables": [],
+              "description": "The query is unclear or language is not understood."
+            }
+          ],
+          "buttonTool": null,
+          "description": null,
+          "carouselTool": null,
+          "instructions": "Ask the farmer to describe, in their local language, their main concern: is it about fertilizer use, weather predictions, or both? Make sure to understand the specific crop and location involved.",
+          "functionTools": [],
+          "webSearchTool": null,
+          "callForwardTool": null,
+          "integrationTools": [],
+          "knowledgeBaseTool": null,
+          "mcpIntegrationTools": []
+        },
+        "68dc88be06d442000740d8f7": {
+          "name": "Provide fertilizer advice",
+          "settings": {
+            "model": "claude-4-sonnet",
+            "maxTokens": 5000,
+            "temperature": 0.3,
+            "reasoningEffort": null
+          },
+          "cardTool": null,
+          "apiTools": [],
+          "pathTools": [
+            {
+              "id": "68dc88be06d442000740d903",
+              "name": "Advice delivered",
+              "variables": [],
+              "description": "Fertilizer advice was successfully provided."
+            },
+            {
+              "id": "68dc88be06d442000740d904",
+              "name": "Farmer requested more information",
+              "variables": [],
+              "description": "The farmer asks for deeper details, clarifications, or alternative options."
+            },
+            {
+              "id": "68dc88be06d442000740d905",
+              "name": "Farmer also wants weather info",
+              "variables": [],
+              "description": "Farmer additionally needs weather data."
+            }
+          ],
+          "buttonTool": null,
+          "description": null,
+          "carouselTool": null,
+          "instructions": "Gather details on the crop type, growth stage, and local conditions from the farmer. Search the knowledge base for best fertilizer practices tailored to the crop and conditions. Present the most relevant, actionable advice, using simple, clear language.\n\nHere is the Information to draw from if the Knowledge Base is unavailable:\n\nPrimary Macronutrient Fertilizers (NPK)\n1. Nitrogen-Based Fertilizers (N) 🌿\nNitrogen promotes rapid vegetative growth and is essential for forming proteins and chlorophyll.\n\nUrea (CO(NH \n2\n\n ) \n2\n\n )\n\nType: Inorganic, High-N (46-0-0).\n\nCrops/Uses: Cereals (corn, wheat, rice), sugarcane, cotton, and leafy vegetables. Best for promoting green, leafy growth.\n\nApplication: Broadcasting and immediate soil incorporation (to prevent NH \n3\n\n  loss), Side-dressing for a mid-season boost, or Fertigation.\n\nAmmonium Nitrate (AN) (NH \n4\n\n NO \n3\n\n )\n\nType: Inorganic, N-based. Provides both fast-acting (nitrate) and slower-release (ammonium) N.\n\nCrops/Uses: Corn, pastures, and cool-season vegetables—crops with high nitrogen demand.\n\nApplication: Broadcasting or Side-dressing. Fast-acting due to high water solubility.\n\nBlood Meal\n\nType: Organic, N-based. Releases nitrogen slowly as it breaks down.\n\nCrops/Uses: Leafy vegetables and heavy feeders needing a consistent organic N boost.\n\nApplication: Top-dressed or Side-dressed and lightly worked into the soil.\n\n2. Phosphorus-Based Fertilizers (P) 🥕\nPhosphorus is vital for root development, early growth, flowering, and fruiting.\n\nDiammonium Phosphate (DAP) (NH \n4\n\n ) \n2\n\n HPO \n4\n\n \n\nType: Inorganic, Multi-nutrient (NP, e.g., 18-46-0).\n\nCrops/Uses: Virtually all crops, crucial at the time of planting to stimulate strong root systems.\n\nApplication: Band placement (near the seed line but not touching it) or Broadcasting and incorporating into the soil before planting.\n\nTriple Superphosphate (TSP) (Ca(H \n2\n\n PO \n4\n\n ) \n2\n\n )\n\nType: Inorganic, P-based. Highly concentrated source of phosphorus.\n\nCrops/Uses: All crops, specifically to correct phosphorus deficiencies and enhance root establishment.\n\nApplication: Broadcasting or Band placement before planting due to its low mobility in the soil.\n\nBone Meal\n\nType: Organic, P-based. Very slow-release.\n\nCrops/Uses: Root vegetables, bulbs, flowering plants, and perennials. Excellent for long-term P supply.\n\nApplication: Base dressing (mixed into the planting soil) or placed in the hole before planting.\n\n3. Potassium-Based Fertilizers (K) 🍎\nPotassium improves water use efficiency, disease resistance, stalk strength, and enhances the quality of fruit, seeds, and tubers.\n\nPotassium Chloride / Muriate of Potash (MOP) (KCl)\n\nType: Inorganic, High-K (e.g., 0-0-60). The most common K source.\n\nCrops/Uses: Grains (corn, wheat), potatoes, and cotton. Generally used for field crops needing high K.\n\nApplication: Broadcasting and incorporating before planting. Use with caution on chloride-sensitive crops.\n\nPotassium Sulfate / Sulfate of Potash (SOP) (K \n2\n\n SO \n4\n\n )\n\nType: Inorganic, Multi-nutrient (K and Sulfur, S).\n\nCrops/Uses: High-value crops, fruits, vegetables (tomatoes, berries, tobacco), and any crop sensitive to chloride.\n\nApplication: Broadcasting, Side-dressing, or Fertigation.\n\nOrganic and Multi-Purpose Fertilizers 🌻\nThese materials improve soil structure and gradually release a spectrum of nutrients.\n\nFarm Yard Manure (FYM)\n\nType: Organic (mixed animal waste and bedding).\n\nCrops/Uses: General soil conditioning for almost all field and horticultural crops. Improves soil structure and water retention.\n\nApplication: Broadcasting and incorporating deeply into the soil during land preparation. Must be aged/composted to prevent plant damage.\n\nCompost\n\nType: Organic (decomposed plant and food matter).\n\nCrops/Uses: Gardens, vegetables, and ornamental plants. Focuses on soil health and slow-release feeding.\n\nApplication: Incorporated into the planting soil (base dressing) or applied as a Top-dressing (mulch) around established plants.",
+          "functionTools": [],
+          "webSearchTool": null,
+          "callForwardTool": null,
+          "integrationTools": [
+            {
+              "variables": {},
+              "description": null,
+              "integrationToolID": "68dc8e130042a1d72ccb781f"
+            }
+          ],
+          "knowledgeBaseTool": {
+            "enabled": true,
+            "description": "Searches an external knowledge base to retrieve relevant information, supplementing or replacing the language model's internal context."
+          },
+          "mcpIntegrationTools": []
+        },
+        "68dc88be06d442000740d8f8": {
+          "name": "Deliver weather prediction",
+          "settings": {
+            "model": "claude-4-sonnet",
+            "maxTokens": 5000,
+            "temperature": 0.3,
+            "reasoningEffort": null
+          },
+          "cardTool": null,
+          "apiTools": [],
+          "pathTools": [
+            {
+              "id": "68dc88be06d442000740d906",
+              "name": "Prediction delivered",
+              "variables": [],
+              "description": "Weather forecast is provided, and the inquiry is complete."
+            },
+            {
+              "id": "68dc88be06d442000740d907",
+              "name": "Farmer requested more information",
+              "variables": [],
+              "description": "Farmer asks for more granular weather or impact insights."
+            },
+            {
+              "id": "68dc88be06d442000740d908",
+              "name": "Farmer also needs fertilizer advice",
+              "variables": [],
+              "description": "Farmer would also like fertilizer advice."
+            }
+          ],
+          "buttonTool": null,
+          "description": null,
+          "carouselTool": null,
+          "instructions": "Gather the farmer's location and timeframe of interest. Search the knowledge base for local weather data and short-term forecasts. Communicate the prediction clearly, explaining any implications for farming activities.\n\nIn the event that the knowledge base does not produce anything, use the following information instead : \n\n5-Day Weather Outlook and Agricultural Recommendations for Nigeria (Oct 1 - Oct 5)\n1. South (Coastal/Rainforest Zone, e.g., Lagos, Port Harcourt)\nConditions: Expect frequent rain, scattered showers, and thunderstorms for most of the period. Skies will be mostly cloudy.\n\nTemperatures: Highs: 29 \n∘\n C to 33 \n∘\n C (84 \n∘\n F to 91 \n∘\n F); Lows: 22 \n∘\n C to 25 \n∘\n C (72 \n∘\n F to 77 \n∘\n F).\n\nKey Feature: Very high humidity with high 'RealFeel' temperatures.\n\nAgricultural Recommendations (Late Rainy Season):\n\nFocus on Drainage: With continuous rainfall, ensure existing drainage channels are clear to prevent waterlogging, which can damage tubers (yams, cassava) and promote root rot.\n\nPest & Disease Management: High humidity favors fungal diseases (e.g., Black Pod in Cocoa) and pests. Intensify monitoring and proactive, systemic treatment for established tree crops.\n\nHarvesting: Accelerate the harvest of early-planted maize, rice, and vegetables to avoid spoilage from excessive moisture and sun-dry them quickly during any breaks in the rain.\n\nPlanting: Consider planting late-season, fast-maturing leafy vegetables (e.g., fluted pumpkin leaves) and preparing for the upcoming dry season planting of peppers and tomatoes.\n\n2. Middle Belt (Savannah Zone, e.g., Abuja, Benue)\nConditions: The forecast calls for isolated to scattered thunderstorms and moderate rain daily, particularly in the afternoons and evenings.\n\nTemperatures: Highs: 28 \n∘\n C to 31 \n∘\n C (82 \n∘\n F to 88 \n∘\n F); Lows: 21 \n∘\n C to 23 \n∘\n C (70 \n∘\n F to 73 \n∘\n F).\n\nKey Feature: The rainy season is tapering off, but downpours and possible flooding remain a risk.\n\nAgricultural Recommendations (Transition Period):\n\nHarvest & Storage: This is the prime period for harvesting main-season crops like sorghum, millet, and late-planted maize. Prioritize drying and safe storage to prevent post-harvest loss due to mold and pests.\n\nSoil Conservation: As rainfall becomes less frequent, apply mulch (crop residue, straw) to conserve residual soil moisture and protect the soil from direct sun exposure, preparing the land for the dry season.\n\nPlanting: Begin land preparation for irrigated, dry-season crops. Plant short-cycle, high-value vegetables (onions, pepper, tomatoes) only if you have access to a reliable irrigation source (wells, streams).\n\n3. North (Sahel/Semi-Arid Zone, e.g., Kano, Kaduna)\nConditions: The chance of rain is lower, with isolated storms still possible on some days. Expect more breaks in the cloud cover.\n\nTemperatures: This area will be the hottest. Highs: 31 \n∘\n C to 35 \n∘\n C (88 \n∘\n F to 95 \n∘\n F); Lows: 20 \n∘\n C to 23 \n∘\n C (68 \n∘\n F to 73 \n∘\n F).\n\nKey Feature: Rapid transition to the hot, dry season is underway.\n\nAgricultural Recommendations (Early Dry Season):\n\nHarvesting: Conclude all main-season harvest activities for drought-resistant crops like millet, sorghum, and groundnuts (peanuts). Ensure thorough drying under the increasing sun before shelling or storing.\n\nIrrigation Setup: Immediate focus on dry season farming. Inspect, repair, or install irrigation systems (drip or furrow irrigation) for vegetable plots. Without irrigation, no new planting is advised.\n\nDry Season Crops: Plant high-demand, high-value dry season crops immediately, such as onions, carrots, Irish potatoes, tomato varieties (that are heat-tolerant), and cowpea (beans).\n\nWater Management: Prioritize the use of mulching and efficient water delivery (like drip irrigation) to maximize the use of limited water resources.",
+          "functionTools": [],
+          "webSearchTool": null,
+          "callForwardTool": null,
+          "integrationTools": [],
+          "knowledgeBaseTool": {
+            "enabled": true,
+            "description": "Searches an external knowledge base to retrieve relevant information, supplementing or replacing the language model's internal context."
+          },
+          "mcpIntegrationTools": []
+        },
+        "68dc88be06d442000740d8f9": {
+          "name": "Provide extra fertilizer information",
+          "settings": {
+            "model": "claude-4-sonnet",
+            "maxTokens": 5000,
+            "temperature": 0.3,
+            "reasoningEffort": null
+          },
+          "cardTool": null,
+          "apiTools": [],
+          "pathTools": [
+            {
+              "id": "68dc88be06d442000740d909",
+              "name": "More advice delivered",
+              "variables": [],
+              "description": "Extra fertilizer information was given successfully."
+            },
+            {
+              "id": "68dc88be06d442000740d90a",
+              "name": "Farmer still not satisfied",
+              "variables": [],
+              "description": "Farmer is still confused or unsatisfied, or no more info can be provided."
+            }
+          ],
+          "buttonTool": null,
+          "description": null,
+          "carouselTool": null,
+          "instructions": "Use follow-up questions and additional knowledge base research to give further fertilizer guidance. Adapt advice to unique local or crop factors, if the farmer mentions them.",
+          "functionTools": [],
+          "webSearchTool": null,
+          "callForwardTool": null,
+          "integrationTools": [],
+          "knowledgeBaseTool": {
+            "enabled": true,
+            "description": "Searches an external knowledge base to retrieve relevant information, supplementing or replacing the language model's internal context."
+          },
+          "mcpIntegrationTools": []
+        },
+        "68dc88be06d442000740d8fa": {
+          "name": "Provide extra weather information",
+          "settings": {
+            "model": "claude-4-sonnet",
+            "maxTokens": 5000,
+            "temperature": 0.3,
+            "reasoningEffort": null
+          },
+          "cardTool": null,
+          "apiTools": [],
+          "pathTools": [
+            {
+              "id": "68dc88be06d442000740d90b",
+              "name": "More weather info delivered",
+              "variables": [],
+              "description": "Further weather information provided to farmer's satisfaction."
+            },
+            {
+              "id": "68dc88be06d442000740d90c",
+              "name": "Farmer still not satisfied",
+              "variables": [],
+              "description": "Farmer is still unsatisfied or request cannot be fulfilled."
+            }
+          ],
+          "buttonTool": null,
+          "description": null,
+          "carouselTool": null,
+          "instructions": "Ask for specifics on what more weather information is needed (timing, warnings, historical trends, etc.). Retrieve or summarize the requested knowledge, focusing on farm use.",
+          "functionTools": [],
+          "webSearchTool": null,
+          "callForwardTool": null,
+          "integrationTools": [],
+          "knowledgeBaseTool": {
+            "enabled": true,
+            "description": "Searches an external knowledge base to retrieve relevant information, supplementing or replacing the language model's internal context."
+          },
+          "mcpIntegrationTools": []
+        },
+        "68dc88be06d442000740d8fb": {
+          "name": "Routing for combined advice",
+          "settings": {
+            "model": "claude-4-sonnet",
+            "maxTokens": 5000,
+            "temperature": 0.3,
+            "reasoningEffort": null
+          },
+          "cardTool": null,
+          "apiTools": [],
+          "pathTools": [
+            {
+              "id": "68dc88be06d442000740d90d",
+              "name": "Start with fertilizer advice",
+              "variables": [],
+              "description": "Begin by providing fertilizer guidance."
+            },
+            {
+              "id": "68dc88be06d442000740d90e",
+              "name": "Start with weather prediction",
+              "variables": [],
+              "description": "Begin by delivering weather information."
+            }
+          ],
+          "buttonTool": null,
+          "description": null,
+          "carouselTool": null,
+          "instructions": "The farmer wants both fertilizer advice and weather information. Determine which to prioritize. Ask the farmer which topic is more urgent, or address fertilizer first by default if uncertain.",
+          "functionTools": [],
+          "webSearchTool": null,
+          "callForwardTool": null,
+          "integrationTools": [],
+          "knowledgeBaseTool": null,
+          "mcpIntegrationTools": []
+        },
+        "68dc88be06d442000740d8fc": {
+          "name": "Unable to understand farmer's request",
+          "settings": {
+            "model": "claude-4-sonnet",
+            "maxTokens": 5000,
+            "temperature": 0.3,
+            "reasoningEffort":

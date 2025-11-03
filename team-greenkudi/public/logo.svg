@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 32" fill="none">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#0ea55a"/>
+      <stop offset="100%" stop-color="#0a7a43"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="32" rx="6" fill="#ffffff"/>
+  <g transform="translate(8,6)">
+    <circle cx="10" cy="10" r="10" fill="url(#g)"/>
+    <path d="M9 6c0 4 5 5 5 9 0 3-2 5-5 5s-5-2-5-5c0-4 5-5 5-9z" fill="#fff" fill-opacity="0.9"/>
+  </g>
+  <text x="36" y="21" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#0a1f0a">
+    Green<tspan fill="#0ea55a">Kudi</tspan>
+  </text>
+</svg>

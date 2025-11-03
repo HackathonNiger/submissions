@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vault - World Leaderboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        :root {
+            --primary: #2ecc71;
+            --primary-dark: #27ae60;
+            --secondary: #3498db;
+            --accent: #f1c40f;
+            --success: #2ecc71;
+            --warning: #e67e22;
+            --light: #f8f9fa;
+            --dark: #1e2a4a;
+            --card-bg: #ffffff;
+            --text-dark: #2d3436;
+            --text-light: #7f8fa6;
+            --border: #e6e9ef;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --green-gradient: linear-gradient(135deg, #2ecc71, #27ae60);
+            --nav-bg: #1a3a2a;
+            --gold: #ffd700;
+            --silver: #c0c0c0;
+            --bronze: #cd7f32;
+        }
+
+        [data-theme="dark"] {
+            --light: #2d3436;
+            --dark: #f8f9fa;
+            --card-bg: #1e2a4a;
+            --text-dark: #f8f9fa;
+            --text-light: #b2bec3;
+            --border: #34495e;
+            --background: #0d1a2e;
+            --nav-bg: #0d1a0d;
+        }
+        
+        body {
+            background: var(--card-bg);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Vault background effect */
+        .vault-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.03;
+            background-image: 
+                radial-gradient(circle at 25% 25%, var(--primary) 2px, transparent 2px),
+                radial-gradient(circle at 75% 75%, var(--primary-dark) 2px, transparent 2px);
+            background-size: 30px 30px;
+            animation: backgroundMove 20s infinite linear;
+        }
+
+        @keyframes backgroundMove {
+            from { background-position: 0 0; }
+            to { background-position: 30px 30px; }
+        }
+        
+        /* Trophy Background Effect */
+        .trophy-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.02;
+            background-image: 
+                radial-gradient(circle at 20% 30%, var(--gold) 0%, transparent 30%),
+                radial-gradient(circle at 80% 70%, var(--silver) 0%, transparent 30%),
+                radial-gradient(circle at 40% 80%, var(--bronze) 0%, transparent 30%);
+            animation: float 30s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
+        }
+        
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 260px;
+            background: var(--nav-bg);
+            color: white;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            padding: 25px 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow);
+            z-index: 10;
+        }
+        
+        .logo {
+            padding: 0 25px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 25px;
+        }
+        
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            background: var(--green-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            animation: spin 15s infinite linear;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .logo-text {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        
+        .nav-items {
+            flex: 1;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            gap: 15px;
+            border-radius: 12px;
+            margin: 0 10px;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            border-right: 4px solid var(--primary);
+            transform: translateX(5px);
+        }
+        
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-footer {
+            padding: 20px 25px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: auto;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--green-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .user-email {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .notification-bell {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .notification-bell:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
+        }
+        
+        .notification-bell::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        /* Leaderboard Section */
+        .leaderboard-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .time-filter {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--light);
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .filter-btn:hover:not(.active) {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        /* Podium Section */
+        .podium-section {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 20px;
+            margin-bottom: 30px;
+            height: 200px;
+        }
+        
+        .podium-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            animation: bounceIn 1s ease-out;
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: translateY(100px); opacity: 0; }
+            60% { transform: translateY(-10px); }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        .podium-rank {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 20px;
+            color: white;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .podium-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+            border: 4px solid white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .podium-platform {
+            width: 120px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 10px 10px;
+            color: white;
+            font-weight: 600;
+            position: relative;
+        }
+        
+        .podium-platform::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: inherit;
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .podium-name {
+            font-size: 14px;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        
+        .podium-amount {
+            font-size: 16px;
+        }
+        
+        /* Podium Positions */
+        .podium-item:nth-child(1) {
+            order: 2;
+            height: 180px;
+            animation-delay: 0.2s;
+        }
+        
+        .podium-item:nth-child(1) .podium-rank {
+            background: var(--gold);
+            animation: glowGold 2s infinite alternate;
+        }
+        
+        .podium-item:nth-child(1) .podium-avatar {
+            background: var(--gold);
+        }
+        
+        .podium-item:nth-child(1) .podium-platform {
+            background: linear-gradient(to bottom, var(--gold), #e6c200);
+            height: 140px;
+        }
+        
+        .podium-item:nth-child(2) {
+            order: 1;
+            height: 160px;
+            animation-delay: 0.4s;
+        }
+        
+        .podium-item:nth-child(2) .podium-rank {
+            background: var(--silver);
+            animation: glowSilver 2s infinite alternate;
+        }
+        
+        .podium-item:nth-child(2) .podium-avatar {
+            background: var(--silver);
+        }
+        
+        .podium-item:nth-child(2) .podium-platform {
+            background: linear-gradient(to bottom, var(--silver), #a8a8a8);
+            height: 120px;
+        }
+        
+        .podium-item:nth-child(3) {
+            order: 3;
+            height: 140px;
+            animation-delay: 0.6s;
+        }
+        
+        .podium-item:nth-child(3) .podium-rank {
+            background: var(--bronze);
+            animation: glowBronze 2s infinite alternate;
+        }
+        
+        .podium-item:nth-child(3) .podium-avatar {
+            background: var(--bronze);
+        }
+        
+        .podium-item:nth-child(3) .podium-platform {
+            background: linear-gradient(to bottom, var(--bronze), #a56a3a);
+            height: 100px;
+        }
+        
+        @keyframes glowGold {
+            from { box-shadow: 0 0 10px var(--gold); }
+            to { box-shadow: 0 0 20px var(--gold), 0 0 30px rgba(255, 215, 0, 0.5); }
+        }
+        
+        @keyframes glowSilver {
+            from { box-shadow: 0 0 10px var(--silver); }
+            to { box-shadow: 0 0 20px var(--silver), 0 0 30px rgba(192, 192, 192, 0.5); }
+        }
+        
+        @keyframes glowBronze {
+            from { box-shadow: 0 0 10px var(--bronze); }
+            to { box-shadow: 0 0 20px var(--bronze), 0 0 30px rgba(205, 127, 50, 0.5); }
+        }
+        
+        /* Leaderboard List */
+        .leaderboard-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .leaderboard-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+        
+        .leaderboard-item:hover::before {
+            left: 100%;
+        }
+        
+        .leaderboard-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .leaderboard-item.you {
+            background: var(--green-gradient);
+            color: white;
+        }
+        
+        .leaderboard-item.you .rank {
+            color: white;
+        }
+        
+        .leaderboard-item.you .user-name {
+            color: white;
+        }
+        
+        .leaderboard-item.you .user-location {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .rank {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .leaderboard-item.you .rank {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .leaderboard-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            flex-shrink: 0;
+            background: var(--green-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .leaderboard-avatar::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .leaderboard-item:hover .leaderboard-avatar::after {
+            opacity: 1;
+            animation: shine 3s infinite linear;
+        }
+        
+        @keyframes shine {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .leaderboard-info {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .user-location {
+            font-size: 14px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .user-stats {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .leaderboard-item.you .stat-value {
+            color: white;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .leaderboard-item.you .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        /* Naira Symbol */
+        .naira::before {
+            content: "₦";
+            font-weight: 600;
+        }
+        
+        /* Mobile Navigation */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+            padding: 15px;
+            z-index: 100;
+            justify-content: space-around;
+        }
+        
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 12px;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-nav-item.active {
+            color: var(--primary);
+            transform: translateY(-5px);
+        }
+        
+        .mobile-nav-item i {
+            font-size: 20px;
+        }
+
+        /* Settings Modal */
+        .settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .settings-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .settings-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .settings-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--text-dark);
+            transform: rotate(90deg);
+        }
+
+        .settings-body {
+            padding: 20px;
+        }
+
+        .setting-group {
+            margin-bottom: 25px;
+        }
+
+        .setting-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .theme-toggle {
+            display: flex;
+            gap: 10px;
+        }
+
+        .theme-option {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-option.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--success);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast.error {
+            background: #e74c3c;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 220px;
+            }
+            
+            .podium-section {
+                height: 180px;
+            }
+            
+            .podium-avatar {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .podium-platform {
+                width: 100px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .mobile-nav {
+                display: flex;
+            }
+            
+            .main-content {
+                padding: 20px;
+                padding-bottom: 90px;
+            }
+            
+            .podium-section {
+                flex-direction: column;
+                align-items: center;
+                height: auto;
+                gap: 10px;
+            }
+            
+            .podium-item {
+                flex-direction: row;
+                width: 100%;
+                height: auto !important;
+                justify-content: flex-start;
+                padding: 15px;
+                background: var(--light);
+                border-radius: 16px;
+            }
+            
+            .podium-platform {
+                width: auto;
+                height: auto !important;
+                border-radius: 12px;
+                flex-direction: row;
+                gap: 10px;
+                margin-left: auto;
+            }
+            
+            .leaderboard-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .leaderboard-info {
+                width: 100%;
+            }
+            
+            .user-stats {
+                justify-content: center;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .leaderboard-item {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        .leaderboard-item:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+        
+        .leaderboard-item:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+        
+        .leaderboard-item:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+        
+        .leaderboard-item:nth-child(5) {
+            animation-delay: 0.4s;
+        }
+
+        /* Particle Animation */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleFloat 15s infinite linear;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Data Visualization */
+        .stats-visualization {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 20px;
+        }
+
+        .stat-card {
+            flex: 1;
+            background: var(--light);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--text-dark);
+        }
+
+        .stat-description {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+    </style>
+</head>
+<body>
+    <!-- Vault Background Effect -->
+    <div class="vault-background"></div>
+    
+    <!-- Trophy Background Effect -->
+    <div class="trophy-background"></div>
+
+    <!-- Particle Animation -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-vault"></i>
+            </div>
+            <div class="logo-text">Vault</div>
+        </div>
+        
+        <div class="nav-items">
+            <a href="dash.php" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="story.html" class="nav-item">
+                <i class="fas fa-book-open"></i>
+                <span>My Story</span>
+            </a>
+            <a href="friend.html" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Friends</span>
+            </a>
+            <a href="progress.html" class="nav-item active">
+                <i class="fas fa-trophy"></i>
+                <span>Progress</span>
+            </a>
+            <a href="history.html" class="nav-item">
+                <i class="fas fa-piggy-bank"></i>
+                <span>Savings</span>
+            </a>
+            <a href="#" class="nav-item" id="settingsBtn">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-info">
+                    <div class="user-name">Chinedu Okoro</div>
+                    <div class="user-email">chinedu@example.com</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1 class="page-title">World Leaderboard</h1>
+            <div class="header-actions">
+                <div class="notification-bell">
+                    <i class="fas fa-bell"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stats Visualization -->
+        <div class="stats-visualization">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-number" id="totalUsers">0</div>
+                <div class="stat-description">Total Savers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="stat-number naira" id="totalSavings">0</div>
+                <div class="stat-description">Total Saved</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-globe-africa"></i>
+                </div>
+                <div class="stat-number" id="totalCountries">0</div>
+                <div class="stat-description">Countries</div>
+            </div>
+        </div>
+        
+        <!-- Leaderboard Section -->
+        <div class="leaderboard-section">
+            <div class="section-header">
+                <h2 class="section-title">Global Savings Champions</h2>
+                <div class="time-filter">
+                    <button class="filter-btn active" data-filter="all">All Time</button>
+                    <button class="filter-btn" data-filter="month">This Month</button>
+                    <button class="filter-btn" data-filter="week">This Week</button>
+                </div>
+            </div>
+            
+            <!-- Podium for Top 3 -->
+            <div class="podium-section" id="podiumSection">
+                <!-- Podium will be populated by JavaScript -->
+            </div>
+            
+            <!-- Leaderboard List -->
+            <div class="leaderboard-list" id="leaderboardList">
+                <!-- Leaderboard will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="settings-modal" id="settingsModal">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h2 class="settings-title">Settings</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="settings-body">
+                <div class="setting-group">
+                    <label class="setting-label">Change PIN</label>
+                    <input type="password" class="setting-input" placeholder="Enter new PIN" maxlength="4" id="pinInput">
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">Theme</label>
+                    <div class="theme-toggle">
+                        <div class="theme-option active" data-theme="light">Light</div>
+                        <div class="theme-option" data-theme="dark">Dark</div>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">Notifications</label>
+                    <div>
+                        <input type="checkbox" id="leaderboardUpdates" checked>
+                        <label for="leaderboardUpdates">Leaderboard position updates</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="milestoneAlerts" checked>
+                        <label for="milestoneAlerts">Savings milestone alerts</label>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">Data Refresh Rate</label>
+                    <select class="setting-input" id="refreshRate">
+                        <option value="30">30 seconds</option>
+                        <option value="60" selected>1 minute</option>
+                        <option value="300">5 minutes</option>
+                        <option value="1800">30 minutes</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+    
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav">
+        <a href="index.html" class="mobile-nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="story.html" class="mobile-nav-item">
+            <i class="fas fa-book-open"></i>
+            <span>Story</span>
+        </a>
+        <a href="friend.html" class="mobile-nav-item">
+            <i class="fas fa-users"></i>
+            <span>Friends</span>
+        </a>
+        <a href="progress.html" class="mobile-nav-item active">
+            <i class="fas fa-trophy"></i>
+            <span>Progress</span>
+        </a>
+        <a href="history.html" class="mobile-nav-item">
+            <i class="fas fa-history"></i>
+            <span>History</span>
+        </a>
+    </div>
+
+    <script>
+        // Leaderboard data (simulating data from PHP backend)
+        const leaderboardData = {
+            all: [
+                { id: 1, name: "David Chen", location: "Shanghai, China", savings: 1245800, streak: 156, avatar: "D", isCurrentUser: false },
+                { id: 2, name: "Amina Yusuf", location: "Lagos, Nigeria", savings: 856420, streak: 142, avatar: "A", isCurrentUser: false },
+                { id: 3, name: "Maria Rodriguez", location: "Madrid, Spain", savings: 742150, streak: 128, avatar: "M", isCurrentUser: false },
+                { id: 4, name: "James Wilson", location: "London, UK", savings: 685300, streak: 119, avatar: "J", isCurrentUser: false },
+                { id: 5, name: "Sarah Johnson", location: "Sydney, Australia", savings: 621750, streak: 105, avatar: "S", isCurrentUser: false },
+                { id: 6, name: "Kenji Tanaka", location: "Tokyo, Japan", savings: 598400, streak: 98, avatar: "K", isCurrentUser: false },
+                { id: 7, name: "Chinedu Okoro", location: "Lagos, Nigeria", savings: 542800, streak: 92, avatar: "C", isCurrentUser: true },
+                { id: 8, name: "Olivia Martin", location: "Toronto, Canada", savings: 521600, streak: 87, avatar: "O", isCurrentUser: false }
+            ],
+            month: [
+                { id: 1, name: "David Chen", location: "Shanghai, China", savings: 124800, streak: 30, avatar: "D", isCurrentUser: false },
+                { id: 2, name: "Amina Yusuf", location: "Lagos, Nigeria", savings: 112500, streak: 30, avatar: "A", isCurrentUser: false },
+                { id: 3, name: "Chinedu Okoro", location: "Lagos, Nigeria", savings: 98500, streak: 28, avatar: "C", isCurrentUser: true },
+                { id: 4, name: "Maria Rodriguez", location: "Madrid, Spain", savings: 87600, streak: 27, avatar: "M", isCurrentUser: false },
+                { id: 5, name: "James Wilson", location: "London, UK", savings: 75400, streak: 25, avatar: "J", isCurrentUser: false }
+            ],
+            week: [
+                { id: 1, name: "Amina Yusuf", location: "Lagos, Nigeria", savings: 32500, streak: 7, avatar: "A", isCurrentUser: false },
+                { id: 2, name: "David Chen", location: "Shanghai, China", savings: 29800, streak: 7, avatar: "D", isCurrentUser: false },
+                { id: 3, name: "Chinedu Okoro", location: "Lagos, Nigeria", savings: 27500, streak: 7, avatar: "C", isCurrentUser: true },
+                { id: 4, name: "Maria Rodriguez", location: "Madrid, Spain", savings: 24100, streak: 6, avatar: "M", isCurrentUser: false },
+                { id: 5, name: "James Wilson", location: "London, UK", savings: 21800, streak: 6, avatar: "J", isCurrentUser: false }
+            ]
+        };
+
+        // Global stats
+        const globalStats = {
+            totalUsers: 12543,
+            totalSavings: 1567824500,
+            totalCountries: 84
+        };
+
+        let currentFilter = 'all';
+        let refreshInterval;
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeLeaderboard();
+            setupEventListeners();
+            createParticles();
+            startAutoRefresh();
+            checkTheme();
+            animateStats();
+        });
+
+        // Initialize leaderboard with data
+        function initializeLeaderboard() {
+            updatePodium();
+            updateLeaderboardList();
+            updateGlobalStats();
+        }
+
+        // Update podium with top 3
+        function updatePodium() {
+            const podiumSection = document.getElementById('podiumSection');
+            const topThree = leaderboardData[currentFilter].slice(0, 3);
+            
+            podiumSection.innerHTML = '';
+            
+            // Reorder for podium display: 2nd, 1st, 3rd
+            const podiumOrder = [topThree[1], topThree[0], topThree[2]];
+            
+            podiumOrder.forEach((user, index) => {
+                const podiumItem = document.createElement('div');
+                podiumItem.className = 'podium-item';
+                
+                // Set podium position based on index
+                let position, height;
+                if (index === 0) {
+                    position = 2; // 2nd place
+                    height = '160px';
+                } else if (index === 1) {
+                    position = 1; // 1st place
+                    height = '180px';
+                } else {
+                    position = 3; // 3rd place
+                    height = '140px';
+                }
+                
+                podiumItem.style.height = height;
+                podiumItem.style.animationDelay = `${0.2 + (index * 0.2)}s`;
+                
+                podiumItem.innerHTML = `
+                    <div class="podium-rank">${position}</div>
+                    <div class="podium-avatar">
+                        ${position === 1 ? '<i class="fas fa-crown"></i>' : `<i class="fas fa-user"></i>`}
+                    </div>
+                    <div class="podium-platform">
+                        <div class="podium-name">${user.name}</div>
+                        <div class="podium-amount naira">${user.savings.toLocaleString()}</div>
+                    </div>
+                `;
+                
+                podiumSection.appendChild(podiumItem);
+            });
+        }
+
+        // Update leaderboard list
+        function updateLeaderboardList() {
+            const leaderboardList = document.getElementById('leaderboardList');
+            const users = leaderboardData[currentFilter];
+            
+            leaderboardList.innerHTML = '';
+            
+            users.forEach((user, index) => {
+                // Skip top 3 as they're in the podium
+                if (index < 3) return;
+                
+                const leaderboardItem = document.createElement('div');
+                leaderboardItem.className = `leaderboard-item ${user.isCurrentUser ? 'you' : ''}`;
+                leaderboardItem.setAttribute('data-user-id', user.id);
+                
+                leaderboardItem.innerHTML = `
+                    <div class="rank">${index + 1}</div>
+                    <div class="leaderboard-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="leaderboard-info">
+                        <div class="user-name">${user.name} ${user.isCurrentUser ? '(You)' : ''}</div>
+                        <div class="user-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            ${user.location}
+                        </div>
+                    </div>
+                    <div class="user-stats">
+                        <div class="stat">
+                            <div class="stat-value naira">${user.savings.toLocaleString()}</div>
+                            <div class="stat-label">Saved</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">${user.streak}</div>
+                            <div class="stat-label">Streak</div>
+                        </div>
+                    </div>
+                `;
+                
+                leaderboardList.appendChild(leaderboardItem);
+            });
+        }
+
+        // Update global stats with animation
+        function updateGlobalStats() {
+            document.getElementById('totalUsers').textContent = globalStats.totalUsers.toLocaleString();
+            document.getElementById('totalSavings').textContent = globalStats.totalSavings.toLocaleString();
+            document.getElementById('totalCountries').textContent = globalStats.totalCountries;
+        }
+
+        // Animate stats counting up
+        function animateStats() {
+            const statElements = {
+                totalUsers: document.getElementById('totalUsers'),
+                totalSavings: document.getElementById('totalSavings'),
+                totalCountries: document.getElementById('totalCountries')
+            };
+            
+            Object.keys(statElements).forEach(stat => {
+                const element = statElements[stat];
+                const target = globalStats[stat];
+                let current = 0;
+                const increment = target / 50;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        element.textContent = target.toLocaleString();
+                        clearInterval(timer);
+                    } else {
+                        element.textContent = Math.floor(current).toLocaleString();
+                    }
+                }, 30);
+            });
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    currentFilter = this.getAttribute('data-filter');
+                    initializeLeaderboard();
+                    
+                    showToast(`Showing ${this.textContent} leaderboard`);
+                });
+            });
+            
+            // Leaderboard item clicks
+            document.addEventListener('click', function(e) {
+                const leaderboardItem = e.target.closest('.leaderboard-item');
+                if (leaderboardItem && !leaderboardItem.classList.contains('you')) {
+                    const userId = leaderboardItem.getAttribute('data-user-id');
+                    const user = leaderboardData[currentFilter].find(u => u.id == userId);
+                    showToast(`Viewing ${user.name}'s profile`);
+                }
+            });
+            
+            // Settings button
+            document.getElementById('settingsBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('settingsModal').style.display = 'flex';
+            });
+            
+            // Close settings modal
+            document.querySelector('.close-btn').addEventListener('click', function() {
+                document.getElementById('settingsModal').style.display = 'none';
+            });
+            
+            // Close modal when clicking outside
+            document.getElementById('settingsModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+            
+            // Theme toggle
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const theme = this.getAttribute('data-theme');
+                    document.documentElement.setAttribute('data-theme', theme);
+                    localStorage.setItem('vault-theme', theme);
+                    
+                    showToast(`Theme changed to ${theme} mode`);
+                });
+            });
+            
+            // PIN change
+            document.getElementById('pinInput').addEventListener('change', function() {
+                if (this.value.length === 4) {
+                    showToast('PIN updated successfully');
+                }
+            });
+            
+            // Refresh rate change
+            document.getElementById('refreshRate').addEventListener('change', function() {
+                const seconds = parseInt(this.value);
+                clearInterval(refreshInterval);
+                startAutoRefresh(seconds * 1000);
+                showToast(`Auto-refresh set to ${seconds} seconds`);
+            });
+        }
+
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random properties
+                const size = Math.random() * 3 + 1;
+                const left = Math.random() * 100;
+                const animationDuration = Math.random() * 20 + 10;
+                const animationDelay = Math.random() * 10;
+                const color = `hsl(${Math.random() * 360}, 70%, 60%)`;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${left}%`;
+                particle.style.animationDuration = `${animationDuration}s`;
+                particle.style.animationDelay = `${animationDelay}s`;
+                particle.style.background = color;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Start auto-refresh
+        function startAutoRefresh(interval = 60000) {
+            refreshInterval = setInterval(() => {
+                // Simulate data update
+                updateLeaderboardData();
+                initializeLeaderboard();
+                showToast('Leaderboard updated', false);
+            }, interval);
+        }
+
+        // Simulate data update (would be from PHP backend in real app)
+        function updateLeaderboardData() {
+            // Randomly adjust savings amounts to simulate live updates
+            leaderboardData.all.forEach(user => {
+                if (!user.isCurrentUser) {
+                    const change = Math.random() * 10000 - 5000;
+                    user.savings = Math.max(100000, user.savings + change);
+                }
+            });
+            
+            // Sort by savings
+            leaderboardData.all.sort((a, b) => b.savings - a.savings);
+            
+            // Update global stats slightly
+            globalStats.totalSavings += Math.floor(Math.random() * 1000000);
+            globalStats.totalUsers += Math.floor(Math.random() * 10);
+        }
+
+        // Show toast notification
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast';
+            
+            if (isError) {
+                toast.classList.add('error');
+            }
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Check and apply saved theme
+        function checkTheme() {
+            const savedTheme = localStorage.getItem('vault-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            document.querySelectorAll('.theme-option').forEach(option => {
+                if (option.getAttribute('data-theme') === savedTheme) {
+                    option.classList.add('active');
+                } else {
+                    option.classList.remove('active');
+                }
+            });
+        }
+
+        // Simulate PHP backend data fetch
+        function fetchLeaderboardData(filter) {
+            // In a real app, this would be an AJAX call to a PHP endpoint
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve(leaderboardData[filter]);
+                }, 500);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts",
+    "app/(tabs)/SignUp.jsx",
+    "app/Onboarding.jsx",
+    "app/(tabs)/Login.jsx",
+    "app/(tabs)/index.jsx",
+    "nativewind-env.d.ts"
+, "components/ui/tabs.jsx"  ]
+}
